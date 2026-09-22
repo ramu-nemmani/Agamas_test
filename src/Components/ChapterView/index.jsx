@@ -55,6 +55,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const containerRef = useRef(null);
+  const langMenuRef = useRef(null);
 
   // Synchronize fullscreen state with global state if provided
   useEffect(() => {
@@ -74,6 +75,18 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [isFullScreen]);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (langMenuRef.current && !langMenuRef.current.contains(event.target)) {
+        setShowLangMenu(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [langMenuRef]);
 
   useSaveProgress({
     bookId: lessonId,
@@ -489,7 +502,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                  </div>
                  
                  <div className="flex-1 flex justify-start md:justify-center pointer-events-auto min-w-0">
-                    <div className="flex items-center md:justify-center gap-1 sm:gap-3 bg-white px-1 sm:px-2 overflow-x-auto no-scrollbar w-full">
+                    <div className="flex items-center md:justify-center gap-1 sm:gap-3 bg-white px-1 sm:px-2 flex-wrap w-full">
                       {["Front", "Translation"].map(tab => (
                         <button 
                           key={tab}
@@ -507,7 +520,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                       ))}
 
                       {/* Language Dropdown Tab */}
-                      <div className="relative inline-flex items-center h-full">
+                      <div className="relative inline-flex items-center h-full" ref={langMenuRef}>
                         <button 
                           onClick={() => {
                             setActiveTab("Language");
