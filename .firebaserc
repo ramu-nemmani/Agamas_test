@@ -1,0 +1,18 @@
+{
+  "projects": {
+    "default": "agamatranslationsfordrlim"
+  },
+  "targets": {
+    "agamatranslationsfordrlim": {
+      "hosting": {
+        "agamas-test": [
+          "agamas-test"
+        ],
+        "theagamas": [
+          "theagamas"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

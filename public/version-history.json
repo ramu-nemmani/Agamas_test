@@ -1,0 +1,87 @@
+[
+    {
+        "version": "v1.2.0",
+        "type": "minor",
+        "date": "2026-09-07",
+        "changes": [
+            {
+                "category": "New Features",
+                "icon": "✨",
+                "items": [
+                    "Added book cover images in the My Books tab, library and read mode selection pages.",
+                    "Revamped delete account flow with inline re-authentication.",
+                    "Enhanced security tab to require current password for updates.",
+                    "Implemented AWS SES-powered forgot password and email verification features.",
+                    "Enhanced Text-to-Speech (TTS) logic and fullscreen auto-scroll.",
+                    "Added reading mode selection page and dynamic chapter counting.",
+                    "Implemented the page reader page."
+                ]
+            },
+            {
+                "category": "Improvements & UI Polish",
+                "icon": "🎨",
+                "items": [
+                    "Refactored UI styling, typography, and spacing across landing page and video sections.",
+                    "Standardized button shapes and action button sizes.",
+                    "Improved sticky sidebar layout and responsiveness on ViewPost.",
+                    "Redesigned mobile menu layout.",
+                    "Updated UI for chapter categories, page reader typography, and pagination.",
+                    "Removed shadows from profile page tab cards for a cleaner look."
+                ]
+            },
+            {
+                "category": "Bug Fixes",
+                "icon": "🐛",
+                "items": [
+                    "Fixed sticky hero section on small screens and toggled feature icons on mobile.",
+                    "Fixed AdminLessons by removing imageUrl from the new lesson payload.",
+                    "Cleaned up temporary media files and resolved critical frontend bugs."
+                ]
+            }
+        ]
+    },
+    {
+        "version": "v1.1.0",
+        "type": "minor",
+        "date": "2026-05-18",
+        "changes": [
+            {
+                "category": "New Features",
+                "icon": "✨",
+                "items": [
+                    "Added Contact Us page.",
+                    "Added initial website styling for clean content reading."
+                ]
+            }
+        ]
+    },
+    {
+        "version": "v1.0.0",
+        "type": "major",
+        "date": "2025-09-30",
+        "changes": [
+            {
+                "category": "New Features",
+                "icon": "✨",
+                "items": [
+                    "Launched the first public version of The Agamas website.",
+                    "Added the main website layout and navigation structure.",
+                    "Added The Agamas content presentation system.",
+                    "Added Ekottara Aagama chapter-wise listing structure.",
+                    "Added chapter titles with Chinese and English names.",
+                    "Added sutra count information for each chapter.",
+                    "Added individual sutra entries under each chapter.",
+                    "Added English sutra title support.",
+                    "Added Chinese sutra title support.",
+                    "Added bilingual content display for sutra listings.",
+                    "Added organized numbering format for sutras such as EA 3.1, EA 3.2, EA 4.1, etc.",
+                    "Added readable content structure for Buddhist text references.",
+                    "Added support for multiple chapters and sutra categories.",
+                    "Added basic responsive website layout.",
+                    "Added initial content foundation for future Agama updates.",
+                    "Prepared the website for future version log tracking."
+                ]
+            }
+        ]
+    }
+]

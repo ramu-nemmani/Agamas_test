@@ -1,0 +1,23 @@
+::-webkit-scrollbar {
+    width: 2px;
+    height: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0000;
+}
+
+::-webkit-scrollbar-thumb {
+    background: gray;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #dddcdc;
+}
+
+@media screen and (max-width: 768px) {
+    .pause-btn {
+        display: none !important;
+    }
+}
