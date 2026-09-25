@@ -1,12 +1,17 @@
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { db } from "../firebase";
 import BookCover from "./common/BookCover";
+import { useReadingProgress } from "../hooks/useReadingProgress";
+import { useAuth } from "../context/AuthContext";
 
 function Lessons() {
   const [lessons, setLessons] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const { progress } = useReadingProgress();
+  const navigate = useNavigate();
 
   const fetchLessons = async () => {
     try {
@@ -53,6 +58,55 @@ function Lessons() {
 
   return (
     <section className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-16" id="chapters">
+      
+      {/* Continue Reading Section (Only for logged in users with progress) */}
+      {user && progress && progress.length > 0 && (
+        <div className="mb-16 border-b border-[#e8e0d8] pb-12">
+          <p className="text-[12px] md:text-[14px] font-bold tracking-[3px] text-[#8a7a6c] uppercase font-sans mb-3">
+            YOUR PROGRESS
+          </p>
+          <h2 className="text-[#001e2d] text-3xl md:text-4xl font-normal tracking-tight mb-8" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}>
+            Continue <span style={{ fontStyle: 'italic', color: '#cd5c3d' }}>Reading</span>
+          </h2>
+          
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+            {progress.slice(0, 4).map((item) => (
+              <article
+                key={item.bookId}
+                onClick={() => navigate(item.lastUrl)}
+                className="group flex flex-col bg-transparent cursor-pointer w-full max-w-[200px]"
+              >
+                <div className="relative aspect-[2/3] w-full overflow-hidden rounded-2xl bg-[#16171d] transition-all duration-500 ease-out group-hover:-translate-y-2">
+                  <div className="absolute inset-y-0 left-0 w-3 bg-gradient-to-r from-black/60 via-black/25 to-transparent z-10" />
+                  <div className="absolute inset-y-0 left-3 w-[1px] bg-white/10 z-10" />
+                  
+                  <div className="absolute right-3 top-3 z-20 rounded bg-[#050608]/90 px-2 py-0.5 text-[9px] font-bold text-[#eee5da] backdrop-blur border border-white/10 uppercase tracking-widest font-sans">
+                    Resume
+                  </div>
+
+                  <BookCover
+                    imageUrl={item.coverUrl || item.imageUrl}
+                    title={item.bookTitle}
+                    author=""
+                    innerClassName="transition duration-500 group-hover:scale-105"
+                    className="opacity-85 transition duration-500 group-hover:scale-105 group-hover:opacity-100"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none" />
+                </div>
+                <div className="mt-4 flex flex-col gap-1 px-1">
+                  <h4
+                    style={{ fontFamily: "'PP Fragment Glare Regular', Georgia, serif" }}
+                    className="text-[15px] leading-snug font-normal text-[#001e2d] group-hover:text-[#cd5c3d] transition-colors line-clamp-2"
+                  >
+                    {item.bookTitle}
+                  </h4>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="mb-12 max-w-2xl">
         <p className="text-[12px] md:text-[14px] font-bold tracking-[3px] text-[#8a7a6c] uppercase font-sans mb-4">
           SCRIPTURE READING ROOM

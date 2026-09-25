@@ -6,13 +6,11 @@ import Footer from "./Footer";
 import LandingPage from "./LandingPage";
 import Navbar from "./Navbar";
 import VideoListPage from "./VideosList";
-import ViewPost from "./ViewPost";
 import ContactPage from "./ContactPage";
 import AboutUsPage from "./AboutUsPage";
 import WhatsAppButton from "./WhatsAppButton";
 import AgamaSutrasPage from "./AgamaSutrasPage";
 import EnglishTeachingsPage from "./EnglishTeachingsPage";
-import PageReader from "./PageReader";
 import ChineseTeachingsPage from "./ChineseTeachingsPage";
 import MindfulnessTeachingsPage from "./MindfulnessTeachingsPage";
 import FivePreceptsPage from "./FivePreceptsPage";
@@ -21,7 +19,6 @@ import GoodFriendsPage from "./GoodFriendsPage";
 import FAQPage from "./FAQPage";
 import Profile from "./Profile/Profile";
 import FeaturesPage from "./FeaturesPage";
-import ReadingModeSelectionPage from "./ReadingModeSelectionPage";
 import ChapterViewPage from "./ChapterView";
 const HomePage = () => {
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -43,22 +40,11 @@ const HomePage = () => {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/contact-us" element={<ContactPage />} />
         <Route path="/chapters/:id" element={<Categories />} />
-        <Route path="/select-mode/:id" element={<ReadingModeSelectionPage />} />
         <Route path="/features" element={<FeaturesPage />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/video" element={<VideoListPage />} />
         {/* <Route path="/video" element={<CategoriesVideos />} /> */}
         {/* <Route path="/video/:id" element={<VideoPlayer />} /> */}
-        <Route path="/book/:lessonId/read" element={<PageReader setIsFullScreen={setIsFullScreen} />} />
-        <Route
-          path="/chapters/:lessonId/:cn"
-          element={
-            <ViewPost
-              setIsFullScreen={setIsFullScreen}
-              isFullScreen={isFullScreen}
-            />
-          }
-        />
         <Route path="/chapter-view/:lessonId/:chapterId" element={<ChapterViewPage setIsFullScreen={setIsFullScreen} />} />
       </Routes>
       <Outlet />

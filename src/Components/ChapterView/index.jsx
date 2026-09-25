@@ -35,16 +35,17 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
   const [chapters, setChapters] = useState([]);
   const [currentChapter, setCurrentChapter] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [visibleChapterId, setVisibleChapterId] = useState(chapterId);
 
   // Settings
   const [fontSize, setFontSize] = useState("16");
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Auth & Bookmarks
   const { user } = useAuth();
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [markItStatus, setMarkItStatus] = useState(false);
+  const [pendingAction, setPendingAction] = useState(null);
 
   const [showLeftPanel, setShowLeftPanel] = useState(window.innerWidth >= 1024);
   const [showRightPanel, setShowRightPanel] = useState(false);
@@ -92,9 +93,42 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
     bookId: lessonId,
     bookTitle: lesson?.name,
     coverUrl: lesson?.image || null,
-    lastUrl: `/chapter-view/${lessonId}/${chapterId}?lang=${lang}`,
-    dependencies: [lessonId, chapterId, lang, lesson]
+    lastUrl: `/chapter-view/${lessonId}/${visibleChapterId}?lang=${lang}`,
+    dependencies: [lessonId, visibleChapterId, lang, lesson]
   });
+
+  useEffect(() => {
+    const container = document.getElementById('main-scroll-container');
+    if (!container || chapters.length === 0) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const cid = entry.target.id.replace('chapter-', '');
+          if (cid) {
+            setVisibleChapterId(cid);
+            window.history.replaceState(null, '', `/chapter-view/${lessonId}/${cid}?lang=${lang}`);
+          }
+        }
+      });
+    }, {
+      root: container,
+      rootMargin: "-20% 0px -60% 0px" 
+    });
+
+    // We need a short timeout to ensure children components have rendered their IDs
+    const timer = setTimeout(() => {
+      chapters.forEach(c => {
+        const el = document.getElementById(`chapter-${c.id}`);
+        if (el) observer.observe(el);
+      });
+    }, 500);
+
+    return () => {
+      clearTimeout(timer);
+      observer.disconnect();
+    };
+  }, [chapters, lessonId, lang, activeTab]);
 
   const fontSizes = [
     { label: "12", value: "12" },
@@ -156,6 +190,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
   const handleMarkIt = async () => {
     const currentUser = auth.currentUser || user;
     if (!currentUser) {
+      setPendingAction("mark");
       setAuthModalOpen(true);
       return;
     }
@@ -176,17 +211,45 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
   };
 
   const handleDownloadPdf = async () => {
-    if (!user) {
+    const currentUser = auth.currentUser || user;
+    if (!currentUser) {
+      setPendingAction("download");
       setAuthModalOpen(true);
       return;
     }
     
-    if (!currentChapter) {
+    const visibleChapter = chapters.find(c => c.id === visibleChapterId) || currentChapter;
+    if (!visibleChapter) {
       ToastMSG("error", "Chapter not found.");
       return;
     }
-    const langId = langMap[lang];
-    const pdfUrl = currentChapter?.pdfLink?.[langId];
+
+    let targetLangKey = lang;
+    if (activeTab === "Translation") {
+      targetLangKey = "EN";
+    } else if (activeTab === "Language") {
+      targetLangKey = parallelLang.includes("-") ? parallelLang : `${parallelLang}-EN`;
+      const keysToTry = [];
+      if (parallelLang.includes("-")) {
+        keysToTry.push(parallelLang);
+      } else {
+        keysToTry.push(`${parallelLang}-EN`);
+        keysToTry.push(`EN-${parallelLang}`);
+      }
+
+      for (const key of keysToTry) {
+        const id = langMap[key];
+        if (id && visibleChapter?.pdfLink?.[id]) {
+          targetLangKey = key;
+          break;
+        }
+      }
+    } else if (activeTab === "Source") {
+      targetLangKey = "CN";
+    }
+
+    const langId = langMap[targetLangKey];
+    const pdfUrl = visibleChapter?.pdfLink?.[langId];
     if (pdfUrl) {
       window.open(pdfUrl, '_blank');
       
@@ -197,9 +260,9 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
             userId: currentUser.uid,
             lessonId: lessonId,
             lessonName: lesson?.name || "",
-            chapterId: chapterId,
-            chapterName: currentChapter?.name || "",
-            language: lang,
+            chapterId: visibleChapter.id,
+            chapterName: visibleChapter?.name || "",
+            language: targetLangKey,
             pdfLink: pdfUrl,
             timestamp: new Date().toISOString()
           });
@@ -208,14 +271,16 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
         }
       }
     } else {
-      ToastMSG("error", "PDF not available for this chapter in this language.");
+      ToastMSG("error", `PDF not available for this chapter in ${targetLangKey}.`);
     }
   };
 
 
 
   const handleShareClick = () => {
-    if (!user) {
+    const currentUser = auth.currentUser || user;
+    if (!currentUser) {
+      setPendingAction("share");
       setAuthModalOpen(true);
       return;
     }
@@ -537,7 +602,14 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                         {showLangMenu && (
                           <div className="absolute top-full left-0 mt-[1px] w-48 bg-white border border-gray-100 rounded-b-lg shadow-lg overflow-hidden z-50">
                             <div className="py-1 flex flex-col">
-                              {languages.filter(l => l.shortForm).map((l) => (
+                              {languages.filter(l => {
+                                if (!l.shortForm || l.shortForm === 'EN') return false;
+                                const lowerName = (l.name || "").toLowerCase();
+                                const exclude = ["chinese to english", "english to hindi", "english to spanish"];
+                                if (exclude.some(ex => lowerName.includes(ex))) return false;
+                                if (["CN-EN", "EN-HI", "EN-ES"].includes(l.shortForm)) return false;
+                                return true;
+                              }).map((l) => (
                                 <button
                                   key={l.id}
                                   onClick={() => {
@@ -625,14 +697,18 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                    <TranslationTab 
                      chapters={chapters} 
                      langMap={langMap} 
-                     lang={lang} 
+                     lang="EN" 
                      fontSize={fontSize} 
                    />
                  )}
 
                  {/* Source Tab Content */}
                  {activeTab === "Source" && (
-                   <SourceTab />
+                   <SourceTab 
+                     chapters={chapters} 
+                     langMap={langMap} 
+                     fontSize={fontSize} 
+                   />
                  )}
 
                </div>
@@ -662,9 +738,22 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
 
       <AuthModal
         isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
+        onClose={() => {
+          setAuthModalOpen(false);
+          setPendingAction(null);
+        }}
         onSuccess={() => {
           setAuthModalOpen(false);
+          setTimeout(() => {
+            if (pendingAction === "download") {
+              handleDownloadPdf();
+            } else if (pendingAction === "share") {
+              handleShareClick();
+            } else if (pendingAction === "mark") {
+              handleMarkIt();
+            }
+            setPendingAction(null);
+          }, 500); // Give auth state a moment to settle
         }}
       />
       

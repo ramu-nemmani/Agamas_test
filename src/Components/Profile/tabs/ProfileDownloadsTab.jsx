@@ -46,22 +46,8 @@ export default function ProfileDownloadsTab() {
   const handleOpenPdf = async (item) => {
     if (!item.pdfLink) return;
     
-    // To prevent redownloading due to server headers, we can fetch it as a blob and open it.
-    // However, if CORS is an issue, we fallback to Google Docs viewer or window.open
-    setOpeningId(item.docId);
-    try {
-      const response = await fetch(item.pdfLink);
-      if (!response.ok) throw new Error("Network response was not ok");
-      const blob = await response.blob();
-      const objectUrl = URL.createObjectURL(blob);
-      window.open(objectUrl, "_blank");
-    } catch (error) {
-      console.error("Blob fetch failed, falling back to direct open:", error);
-      // Fallback: use google docs viewer to force inline viewing
-      window.open(`https://docs.google.com/viewer?url=${encodeURIComponent(item.pdfLink)}`, "_blank");
-    } finally {
-      setOpeningId(null);
-    }
+    // Using Google Docs Viewer forces the browser to display the PDF inline instead of downloading it.
+    window.open(`https://docs.google.com/viewer?url=${encodeURIComponent(item.pdfLink)}`, "_blank");
   };
 
   const formatDate = (isoString) => {

@@ -1,9 +1,13 @@
 import React from 'react';
+import TranslationTab from './TranslationTab';
 
-export default function SourceTab() {
+export default function SourceTab({ chapters, langMap, fontSize }) {
   return (
-    <div className="text-center py-12 text-gray-500 italic">
-       Source text details go here.
-    </div>
+    <TranslationTab 
+      chapters={chapters} 
+      langMap={langMap} 
+      lang="CN" 
+      fontSize={fontSize} 
+    />
   );
 }

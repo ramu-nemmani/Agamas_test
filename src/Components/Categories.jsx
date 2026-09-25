@@ -35,7 +35,6 @@ export default function Categories() {
   const { progress } = useReadingProgress();
   const currentBookProgress = progress.find(p => p.bookId === id);
 
-  const [activeAccordion, setActiveAccordion] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [chapters, setChapters] = useState([]);
   const [lesson, setLesson] = useState({});
@@ -163,37 +162,7 @@ export default function Categories() {
     }
   };
 
-  const fetchPosts = async (chapterId) => {
-    try {
-      const postQuery = query(
-        collection(db, "posts"),
-        where("chapterId", "==", chapterId),
-        where("language", "==", langMap[lang]),
-        orderBy("position"),
-      );
-      const snapshot = await getDocs(postQuery);
-      const postsList = snapshot.docs.map((doc) => {
-        const { post_title, position } = doc.data();
-        return { id: doc.id, postTitle: post_title, position };
-      });
-      setChapters((pre) =>
-        pre.map((c) => {
-          if (c.id === chapterId) {
-            c.postsData[langMap[lang]] = postsList;
-          }
-          return c;
-        }),
-      );
-    } catch (error) {
-      console.log("🚀 ~ fetchPosts ~ error:", error);
-    }
-  };
-
   const navigate = useNavigate();
-
-  const toggleAccordion = async (chapter) => {
-    setActiveAccordion(activeAccordion === chapter.id ? null : chapter.id);
-  };
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value.toLowerCase());
@@ -214,18 +183,6 @@ export default function Categories() {
     fetchLesson();
     fetchChapters();
   }, []);
-
-  useEffect(() => {
-    const fetchIfNeeded = async () => {
-      if (activeAccordion) {
-        const chapter = chapters.find((c) => c.id === activeAccordion);
-        if (chapter && !chapter.postsData[langMap[lang]]?.length) {
-          await fetchPosts(chapter.id);
-        }
-      }
-    };
-    fetchIfNeeded();
-  }, [lang, activeAccordion]);
 
   return (
     <div className="bg-[#fffdf8] min-h-screen text-[#2c2c2c]">
@@ -312,24 +269,15 @@ export default function Categories() {
         {/* ── Accordion List ───────────────────────────────────────── */}
         <div className="flex flex-col gap-4">
           {filteredCategories.map((cat, cIndex) => {
-            const isOpen = activeAccordion === cat.id;
             const displayName = cat.name ? cat.name.replace(/^Chapter\s+[a-zA-Z\-]+:/i, `Chapter ${cIndex + 1}:`) : "";
             return (
               <div
                 key={cat.id}
-                className={`rounded-2xl border overflow-hidden transition-all duration-200 ${
-                  isOpen
-                    ? "border-[#cd5c3d]"
-                    : "border-[#e8e0d8] bg-white hover:border-[#cd5c3d50]"
-                }`}
+                className={`rounded-2xl border overflow-hidden transition-all duration-200 border-[#e8e0d8] bg-white hover:border-[#cd5c3d50]`}
               >
-                {/* Accordion header */}
+                {/* Chapter Item */}
                 <div
-                  className={`flex justify-between items-center px-6 py-5 cursor-pointer transition-colors duration-150 ${
-                    isOpen
-                      ? "bg-[#fffdf8]"
-                      : "bg-white hover:bg-[#fdf3ec]"
-                  }`}
+                  className={`flex justify-between items-center px-6 py-5 cursor-pointer transition-colors duration-150 bg-white hover:bg-[#fdf3ec]`}
                   onClick={() => navigate(`/chapter-view/${id}/${cat.id}?lang=${lang || "CN-EN"}`)}
                 >
                   <div className="flex items-center gap-5">
@@ -341,7 +289,7 @@ export default function Categories() {
                     <div className="flex flex-col justify-center">
                       <h3
                         style={{
-                          color: isOpen ? "#cd5c3d" : "#3B270E",
+                          color: "#3B270E",
                           fontFamily: "Inter, system-ui, -apple-system, sans-serif",
                           fontSize: "16px",
                           lineHeight: "24px",
@@ -365,11 +313,7 @@ export default function Categories() {
 
                   <div className="flex items-center gap-4">
                     <button
-                      className={`inline-flex items-center gap-1.5 text-xs font-semibold border rounded-full px-3 py-1.5 transition-colors ${
-                        isOpen
-                          ? "border-[#cd5c3d] text-[#cd5c3d] hover:bg-[#cd5c3d] hover:text-white"
-                          : "border-[#e8e0d8] text-[#666] bg-white hover:border-[#cd5c3d] hover:text-[#cd5c3d]"
-                      }`}
+                      className={`inline-flex items-center gap-1.5 text-xs font-semibold border rounded-full px-3 py-1.5 transition-colors border-[#e8e0d8] text-[#666] bg-white hover:border-[#cd5c3d] hover:text-[#cd5c3d]`}
                       onClick={(e) => {
                         e.stopPropagation();
                         handleDownload(cat);
@@ -378,48 +322,8 @@ export default function Categories() {
                       <Download className="w-3.5 h-3.5" />
                       <span className="hidden md:inline">Download</span>
                     </button>
-
-                    <ChevronDown
-                      className={`w-5 h-5 transition-transform duration-200 ${
-                        isOpen ? "rotate-180 text-[#cd5c3d]" : "text-[#d8b094]"
-                      }`}
-                    />
                   </div>
                 </div>
-
-                {/* Accordion body */}
-                {isOpen && (
-                  <div className="bg-[#fdf8f4] border-t border-[#cd5c3d20]">
-                    <div className="p-4 md:p-6">
-                      {cat?.postsData[langMap[lang]]?.length > 0 ? (
-                        <div className="grid grid-cols-1 gap-1">
-                          {cat.postsData[langMap[lang]].map((sub, index) => (
-                            <div
-                              key={sub.id}
-                              onClick={() =>
-                                navigate(
-                                  `${cat.name}?id=${cat.id}&postNo=${sub.position}&lang=${lang}`,
-                                )
-                              }
-                              className="group flex items-baseline gap-3 rounded-xl px-4 py-2.5 hover:bg-white transition-colors cursor-pointer border border-transparent hover:border-[#e8e0d8]"
-                            >
-                              <span className="text-xs font-mono text-[#bbb] w-5 text-right shrink-0">
-                                {index + 1}.
-                              </span>
-                              <span className="text-sm text-[#2c2c2c] group-hover:text-[#cd5c3d] transition-colors font-medium">
-                                {sub.postTitle}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="text-sm text-[#888] border border-dashed border-[#e8e0d8] rounded-xl px-4 py-8 bg-white/60 text-center">
-                          No posts available for this language in this chapter.
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
               </div>
             );
           })}
