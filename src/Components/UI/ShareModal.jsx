@@ -136,7 +136,7 @@ export default function ShareModal({ isOpen, onClose, url, title }) {
                 className="flex flex-col items-center gap-2 group flex-shrink-0"
                 title={`Share to ${platform.name}`}
               >
-                <div className="transition-transform group-hover:scale-105 opacity-95 group-hover:opacity-100">
+                <div>
                   {platform.icon}
                 </div>
                 <span className="text-[13px] text-gray-700 font-medium">{platform.name}</span>
