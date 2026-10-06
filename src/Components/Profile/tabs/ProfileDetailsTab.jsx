@@ -35,16 +35,17 @@ export default function ProfileDetailsTab({ onProfileUpdate }) {
 
   return (
     <div className="animate-in fade-in duration-500 max-w-3xl">
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0 mb-8">
         <div>
-          <h2 className="text-2xl font-serif font-normal text-[#001e2d] mb-2">Profile Details</h2>
-          <p className="text-[#001e2d]/70 text-sm">Manage your personal information.</p>
+          <h2 className="text-2xl font-normal text-[#001e2d] mb-2" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}>Profile Details</h2>
+          <p className="text-[#001e2d]/70 text-sm" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}>Manage your personal information.</p>
         </div>
 
         {!isEditing ? (
           <button
             onClick={() => setIsEditing(true)}
             className="flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-700 rounded-full text-sm font-medium hover:bg-amber-200 transition-colors"
+            style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}
           >
             <Pen className="w-4 h-4" />
             Edit
@@ -54,6 +55,7 @@ export default function ProfileDetailsTab({ onProfileUpdate }) {
             <button
               onClick={handleCancel}
               className="flex items-center gap-1.5 px-4 py-2 bg-slate-100 text-slate-600 rounded-full text-sm font-medium hover:bg-slate-200 transition-colors"
+              style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}
             >
               <X className="w-4 h-4" />
               Cancel
@@ -61,7 +63,8 @@ export default function ProfileDetailsTab({ onProfileUpdate }) {
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="flex items-center gap-1.5 px-4 py-2 bg-amber-600 text-white rounded-full text-sm font-medium hover:bg-amber-700 transition-colors disabled:opacity-50"
+              className="flex items-center gap-1.5 px-4 py-2 text-white rounded-full text-sm font-medium disabled:opacity-50"
+              style={{ backgroundColor: 'rgb(184, 80, 58)', fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}
             >
               <Save className="w-4 h-4" />
               {isSaving ? "Saving..." : "Save"}
@@ -70,7 +73,7 @@ export default function ProfileDetailsTab({ onProfileUpdate }) {
         )}
       </div>
 
-      <div className="bg-white border border-[#001e2d]/10 rounded-3xl p-6 sm:p-8 space-y-6">
+      <div className="bg-white border border-[#001e2d]/10 rounded-3xl p-6 sm:p-8 space-y-6" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}>
         <div>
           <label className="block text-sm font-medium text-[#001e2d]/70 mb-1">Full Name</label>
           {isEditing ? (
@@ -78,7 +81,7 @@ export default function ProfileDetailsTab({ onProfileUpdate }) {
               type="text"
               value={editName}
               onChange={(e) => setEditName(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-[#001e2d] text-base"
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#cd5c3d]/20 focus:border-[#cd5c3d] transition-all text-[#001e2d] text-base"
             />
           ) : (
             <p className="text-base font-medium text-[#001e2d]/80">{user?.name || "Not provided"}</p>
@@ -95,7 +98,7 @@ export default function ProfileDetailsTab({ onProfileUpdate }) {
               type="text"
               value={editPhone}
               onChange={(e) => setEditPhone(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-[#001e2d] text-base"
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#cd5c3d]/20 focus:border-[#cd5c3d] transition-all text-[#001e2d] text-base"
               placeholder="Enter phone number"
             />
           ) : (

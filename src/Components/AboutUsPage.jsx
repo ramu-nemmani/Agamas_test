@@ -45,7 +45,7 @@ export default function AboutUsPage() {
             >
               Preserving Timeless Wisdom <span className="text-[rgb(205,92,61)] italic">for Modern Seekers.</span>
             </h1>
-            <p className="max-w-4xl mx-auto text-[#555] text-[24px] font-normal font-sans leading-relaxed">
+            <p className="max-w-4xl mx-auto section-description">
               The Agamas is a dedicated digital platform created to preserve,
               organize, and share the timeless teachings of the Agama scriptures,
               making them easily accessible, readable, and entirely free for students
@@ -66,7 +66,7 @@ export default function AboutUsPage() {
             <h3 style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '20px', fontWeight: 'bold', color: 'rgb(0, 30, 45)' }}>
               Digital Preservation
             </h3>
-            <p className="text-[#001e2d]/70 text-[16px] leading-relaxed font-sans mt-2">
+            <p className="mt-2 section-description">
               Safeguarding vulnerable ancient manuscripts and translating Sanskrit, Pali, and Tamil palm-leaf scriptures into clean, modern formats to ensure they remain alive for generations to come.
             </p>
           </div>
@@ -79,7 +79,7 @@ export default function AboutUsPage() {
             <h3 style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '20px', fontWeight: 'bold', color: 'rgb(0, 30, 45)' }}>
               Accessible Study
             </h3>
-            <p className="text-[#001e2d]/70 text-[16px] leading-relaxed font-sans mt-2">
+            <p className="mt-2 section-description">
               Providing standard translations, readable digital slides, and bilingual views that bridges the gap between deep academic research and everyday spiritual reflection.
             </p>
           </div>
@@ -104,7 +104,7 @@ export default function AboutUsPage() {
             <h3 style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '20px', fontWeight: 'bold', color: 'rgb(0, 30, 45)' }}>
               Agama Text Collection
             </h3>
-            <p className="text-[#001e2d]/70 text-[16px] leading-relaxed font-sans mt-2">
+            <p className="mt-2 section-description">
               Explore a growing collection of Agama writings arranged chapter-wise and topic-wise for easy reading.
             </p>
           </div>
@@ -129,7 +129,7 @@ export default function AboutUsPage() {
             <h3 style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '20px', fontWeight: 'bold', color: 'rgb(0, 30, 45)' }}>
               English and Chinese Access
             </h3>
-            <p className="text-[#001e2d]/70 text-[16px] leading-relaxed font-sans mt-2">
+            <p className="mt-2 section-description">
               Read selected texts in English and Chinese, helping users from different backgrounds connect with the teachings.
             </p>
           </div>
@@ -160,7 +160,7 @@ export default function AboutUsPage() {
                     Datuk Dr Lim Siow Jin (Acharya Nagajiva)
                   </h2>
                 </div>
-                <p className="text-[#001e2d]/70 text-[16px] leading-relaxed font-sans">
+                <p className="section-description">
                   Founder of DXN and Sunyatee International Foundation, Datuk Dr Lim has devoted decades to studying, researching, and preserving the timeless teachings of the Buddha and India's ancient seers. This project grows out of his deep wish that the timeless, peaceful wisdom of these ancient sutras remains freely and widely available to everyone who seeks it.
                 </p>
               </div>
@@ -172,7 +172,7 @@ export default function AboutUsPage() {
       {/* ── 4. WHY WE ARE DOING THIS ─────────────────────────────────────── */}
       <section className="px-6 pb-8 md:pb-12">
         <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="space-y-6 text-[#001e2d]/70 text-[16px] font-normal leading-relaxed font-sans">
+          <div className="space-y-6 section-description">
             <h3
               className="mb-4"
               style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '24px', fontWeight: 700, color: 'rgb(0, 30, 45)' }}

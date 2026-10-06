@@ -487,7 +487,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
         </div>
       )}
 
-      <div className={`flex flex-1 min-h-0 w-full mx-auto max-w-[1336px] ${isFullScreen ? "" : "px-0 pb-0 lg:px-8 lg:pb-4 pt-0 bg-[#f0f4f6]"}`}>
+      <div className={`flex flex-1 min-h-0 w-full mx-auto max-w-[1336px] ${isFullScreen ? "" : "px-0 pb-0 lg:px-2 lg:pb-4 pt-0 bg-[#f0f4f6]"}`}>
         <div className={`flex h-full w-full overflow-hidden ${isFullScreen ? "bg-white" : ""}`}>
           <PanelGroup orientation="horizontal" id="agamas-reader-panels">
           

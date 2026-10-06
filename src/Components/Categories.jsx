@@ -228,7 +228,7 @@ export default function Categories() {
               {lesson.name || "Loading…"}
             </span>
             <span className="mx-3 text-[#cd5c3d] font-light text-[30px]">·</span>
-            <span className="text-[#cd5c3d] italic font-serif text-[30px]">All Chapters</span>
+            <span className="text-[#cd5c3d] italic text-[30px]" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}>All Chapters</span>
           </h1>
 
           {/* Controls */}
@@ -255,15 +255,17 @@ export default function Categories() {
 
       {/* ── Controls ─────────────────────────────────────────────────── */}
       <div className="max-w-screen-xl mx-auto px-6 md:px-10 pt-2 pb-24">
-        <div className="relative mb-8">
+        <div className="mb-8">
           <p className="text-[#888] text-sm mb-3 ml-1">Select a chapter to view all verses or search below</p>
-          <Search className="absolute left-4 top-[42px] w-4 h-4 text-[#aaa]" />
-          <input
-            type="text"
-            onChange={handleSearch}
-            placeholder="Search chapters…"
-            className="w-full pl-11 pr-4 py-3 rounded-full border border-[#e8e0d8] bg-white outline-none focus:border-[#cd5c3d] focus:ring-2 focus:ring-[#cd5c3d20] transition text-sm"
-          />
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#aaa]" />
+            <input
+              type="text"
+              onChange={handleSearch}
+              placeholder="Search chapters…"
+              className="w-full pl-11 pr-4 py-3 rounded-full border border-[#e8e0d8] bg-white outline-none focus:border-[#cd5c3d] focus:ring-2 focus:ring-[#cd5c3d20] transition text-sm"
+            />
+          </div>
         </div>
 
         {/* ── Accordion List ───────────────────────────────────────── */}

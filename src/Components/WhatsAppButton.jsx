@@ -104,7 +104,7 @@ const WhatsAppButton = () => {
           </h4>
 
           {/* Description */}
-          <p className="text-[11px] text-[#666] leading-relaxed mb-4 font-sans">
+          <p className="mb-4 text-[13px] text-[#666] leading-relaxed px-1">
             Feel free to ask your questions here. We are always ready to assist
             you all the time whenever you need.
           </p>

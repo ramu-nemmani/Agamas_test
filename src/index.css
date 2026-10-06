@@ -1976,3 +1976,11 @@ button:hover .draw-path {
     transform: translate3d(var(--end-x), var(--end-y), 0) rotate(var(--end-rotate)) scale(1);
   }
 }
+@layer components {
+  .section-description {
+    @apply !text-[16px] sm:!text-[18px] md:!text-[20px] !text-[#555555] !font-sans !font-normal !leading-relaxed;
+  }
+  .section-description-light {
+    @apply !text-[16px] sm:!text-[18px] md:!text-[20px] !text-[#fdf8f4] !font-sans !font-normal !leading-relaxed;
+  }
+}

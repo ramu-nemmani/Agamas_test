@@ -62,27 +62,15 @@ function Lessons() {
 
 
       <div className="mb-12 max-w-2xl">
-        <p className="text-[12px] md:text-[14px] font-bold tracking-[3px] text-[#8a7a6c] uppercase font-sans mb-4">
+        <p className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans mb-4">
           SCRIPTURE READING ROOM
         </p>
-        <h2 className="text-[#001e2d] text-4xl md:text-5xl font-normal tracking-tight mb-6" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}>
+        <h2 className="text-[#001e2d] font-normal tracking-tight mb-6" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: 'clamp(40px, 6vw, 52px)' }}>
           All Sacred <span style={{ fontStyle: 'italic', color: '#cd5c3d' }}>Sutras</span>
         </h2>
-        <p 
-          className="text-[#555] leading-relaxed"
-          style={{
-            fontFamily: '"Open Sans", Helvetica, Arial, Lucida, sans-serif',
-            fontSize: '20px',
-            fontStyle: 'normal',
-            fontVariantCaps: 'normal',
-            fontVariantEastAsian: 'normal',
-            fontVariantLigatures: 'normal',
-            fontVariantNumeric: 'normal',
-            fontWeight: 400
-          }}
-        >
-          A carefully preserved library of e-books. Click on the read button of any book below to explore the chapters.
-        </p>
+        <p className="section-description">
+              A carefully preserved library of e-books. Click on the read button of any book below to explore the chapters.
+            </p>
       </div>
 
       <div className="border-b border-[#e8e0d8] mb-12" />
@@ -143,7 +131,7 @@ function Lessons() {
                     By {bookAuthor}
                   </p>
 
-                  <p className="text-[#555] text-sm leading-relaxed mb-4">
+                  <p className="mb-4 text-[#555] text-[15px] leading-relaxed">
                     {description || "Authentic ancient scriptures translated with care and devotion."}
                   </p>
 

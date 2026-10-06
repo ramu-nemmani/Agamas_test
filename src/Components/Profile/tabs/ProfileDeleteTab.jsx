@@ -132,8 +132,8 @@ export default function ProfileDeleteTab() {
   return (
     <div className="animate-in fade-in duration-500 max-w-2xl">
       <div className="mb-8">
-        <h2 className="text-2xl font-serif text-red-600 mb-2">Delete Account</h2>
-        <p className="text-[#001e2d]/70 text-sm">Permanently delete your account and all associated data.</p>
+        <h2 className="text-2xl text-red-600 mb-2" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}>Delete Account</h2>
+        <p className="text-[#001e2d]/70 text-sm" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}>Permanently delete your account and all associated data.</p>
       </div>
 
       <div className="bg-red-50/50 rounded-3xl border border-red-100 p-6 sm:p-8">

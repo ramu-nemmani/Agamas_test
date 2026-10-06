@@ -223,7 +223,7 @@ export default function VersionHistory() {
                                                                 {group.items.map((item, i) => (
                                                                     <li key={i} className="flex items-start gap-2.5">
                                                                         <span className="mt-2 w-1 h-1 rounded-full bg-[#cd5c3d]/50 flex-shrink-0" />
-                                                                        <span className="text-sm text-black leading-relaxed">
+                                                                        <span className="text-black section-description">
                                                                             {item}
                                                                         </span>
                                                                     </li>

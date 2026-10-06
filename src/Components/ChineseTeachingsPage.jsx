@@ -51,7 +51,7 @@ export default function ChineseTeachingsPage() {
         <div className="relative max-w-3xl mx-auto px-6 text-center">
           <div className="inline-flex items-center gap-2 bg-[#cd5c3d0d] border border-[#cd5c3d1a] rounded-full px-3.5 py-1 mb-5">
             <span className="w-1.5 h-1.5 rounded-full bg-[#cd5c3d] inline-block" />
-            <span className="text-[11px] font-semibold tracking-wider text-[#cd5c3d] uppercase">Chinese Canons</span>
+            <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans">Chinese Canons</span>
           </div>
           <h1 className="text-4xl md:text-5.5xl font-light text-[#1e1e1e] tracking-tight leading-tight mb-4 font-serif-display">
             Chinese <span className="text-[#cd5c3d] font-semibold">Teachings</span>
@@ -61,7 +61,7 @@ export default function ChineseTeachingsPage() {
             <span className="text-[#cd5c3d] text-sm">❧</span>
             <div className="h-px w-16 bg-[#e8e0d8]" />
           </div>
-          <p className="max-w-2xl mx-auto text-[#555] text-base md:text-lg leading-relaxed">
+          <p className="max-w-2xl mx-auto section-description">
             Exploring the original classical Chinese Agama collections preserved in the Taishō Tripiṭaka.
           </p>
         </div>
@@ -73,10 +73,10 @@ export default function ChineseTeachingsPage() {
           <h2 className="text-2xl md:text-3xl font-light text-[#1e1e1e] font-serif-display text-center mb-6">
             Preserved in the <span className="text-[#cd5c3d] font-semibold">Classical Chinese Canon</span>
           </h2>
-          <p className="text-base md:text-lg leading-relaxed text-[#555] mb-6">
+          <p className="mb-6 section-description">
             The Chinese Agamas (阿含經) were translated from Sanskrit or Middle Indo-Aryan dialects during the 4th and 5th centuries CE. They represent the shared heritage of early Buddhist schools before sectarian divisions arose.
           </p>
-          <p className="text-base md:text-lg leading-relaxed text-[#555]">
+          <p className="section-description">
             As one of the most complete collections of early discourses, the Chinese translations serve as a crucial cross-reference to the Pāli Nikāyas. By studying these texts, practitioners and researchers can reconstruct the earliest layers of Buddhist doctrine with great accuracy.
           </p>
         </div>
@@ -86,7 +86,7 @@ export default function ChineseTeachingsPage() {
       <section className="bg-[#f5ede4] py-20 border-b border-[#e8e0d8]/60">
         <div className="max-w-screen-xl mx-auto px-6 md:px-10">
           <div className="text-center mb-16">
-            <span className="text-[11px] font-bold tracking-widest text-[#cd5c3d] uppercase block mb-1">Chinese Texts</span>
+            <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans block mb-1">Chinese Texts</span>
             <h2 className="text-3xl md:text-4xl font-light text-[#1e1e1e] tracking-tight font-serif-display">
               Translation <span className="text-[#cd5c3d] font-semibold">History</span>
             </h2>
@@ -105,7 +105,7 @@ export default function ChineseTeachingsPage() {
                     <h3 className="text-lg md:text-xl font-semibold text-[#1e1e1e] font-serif-display">{item.title}</h3>
                     <span className="text-[10px] bg-[#cd5c3d0d] text-[#cd5c3d] font-bold px-3 py-1 rounded-full uppercase tracking-wider">{item.dynasty}</span>
                   </div>
-                  <p className="text-sm text-[#555] leading-relaxed mb-4">{item.desc}</p>
+                  <p className="mb-4 section-description">{item.desc}</p>
                 </div>
               </div>
             ))}

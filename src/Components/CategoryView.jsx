@@ -87,7 +87,7 @@ export default function CategoryView() {
                 </div>
               </div>
               <div className="space-y-4">
-                <div className="chinese-text leading-relaxed text-gray-800 text-base">
+                <div className="chinese-text text-gray-800 section-description">
                   {text.chinese}
                 </div>
                 <div className="english-text border-l-4 border-[#cd5c3d] pl-5 italic text-gray-600 text-sm">

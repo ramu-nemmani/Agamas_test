@@ -132,7 +132,7 @@ function AdminLessons({ lessons, setLessons }) {
                     </Typography>
                     <Typography
                       variant="body2"
-                      className="text-gray-600 leading-relaxed line-clamp-3"
+                      className="text-gray-600 line-clamp-3 section-description"
                     >
                       {description}
                     </Typography>

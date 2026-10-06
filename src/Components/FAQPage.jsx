@@ -1,6 +1,7 @@
 import { useState } from "react";
 import SEO from "./SEO";
 import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 
 export default function FAQPage() {
   const [activeFaq, setActiveFaq] = useState(null);
@@ -32,14 +33,14 @@ export default function FAQPage() {
 
         <div className="relative max-w-3xl mx-auto px-6 text-center">
           <div className="text-center mb-8 flex flex-col items-center gap-2 md:gap-3">
-            <p className="uppercase tracking-[0.2em] text-[16px] font-bold text-[#888] font-sans">
+            <p className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans">
               FREQUENTLY ASKED QUESTIONS
             </p>
             <h1 className="text-[52px] text-[#001e2d] font-agamas-faq font-normal">
               You Ask? We <span className="text-[#cd5c3d] italic font-normal">Answer</span>
             </h1>
           </div>
-          <p className="max-w-2xl mx-auto text-[#555] text-base md:text-lg leading-relaxed">
+          <p className="max-w-2xl mx-auto section-description">
             Find answers to common questions about the platform, scriptural formats, translation languages, and usage guidelines.
           </p>
         </div>
@@ -60,11 +61,11 @@ export default function FAQPage() {
                     className="w-full flex items-center justify-between p-6 md:px-8 md:py-6 text-left focus:outline-none group cursor-pointer transition-colors"
                     onClick={() => setActiveFaq(isOpen ? null : idx)}
                   >
-                    <span className="text-[16px] font-sans font-semibold transition-colors text-[#001e2d] group-hover:text-[#cd5c3d] pr-4">
+                    <span className={`text-[16px] font-sans font-semibold transition-colors pr-4 ${isOpen ? "text-[#cd5c3d]" : "text-[#001e2d] group-hover:text-[#cd5c3d]"}`}>
                       {faq.q}
                     </span>
                     <span
-                      className={`text-[#001e2d]/60 group-hover:text-[#cd5c3d] transition-colors shrink-0 ml-4 flex items-center justify-center transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                      className={`transition-colors shrink-0 ml-4 flex items-center justify-center transform duration-200 ${isOpen ? "rotate-180 text-[#cd5c3d]" : "text-[#001e2d]/60 group-hover:text-[#cd5c3d]"}`}
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-plus w-5 h-5 stroke-[2.5]" aria-hidden="true">
                         {isOpen ? (
@@ -81,7 +82,7 @@ export default function FAQPage() {
                   <div
                     className={`transition-all duration-300 ease-in-out ${isOpen ? "max-h-60" : "max-h-0"} overflow-hidden`}
                   >
-                    <div className="px-6 md:px-8 pb-6 text-sm md:text-[15px] text-[#001e2d]/70 leading-relaxed bg-transparent">
+                    <div className="px-6 md:px-8 pb-6 bg-transparent section-description">
                       {faq.a}
                     </div>
                   </div>
@@ -102,10 +103,10 @@ export default function FAQPage() {
         <div className="absolute inset-0 bg-black/40" />
         
         <div className="relative z-10 max-w-4xl mx-auto px-6 flex flex-col items-center">
-          <h2 className="text-4xl md:text-[56px] text-[#fdf8f4] font-agamas-faq font-normal leading-tight mb-8">
+          <h2 className="text-4xl md:text-[52px] text-[#fdf8f4] font-agamas-faq font-normal leading-tight mb-8">
             Have Questions? Connect<br className="hidden md:block" /> With Us
           </h2>
-          <p className="text-[#cbd5e1] font-sans text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-10 opacity-90">
+          <p className="max-w-2xl mx-auto mb-10 opacity-90 text-[16px] md:text-[20px] text-[#fdf8f4] font-sans font-normal leading-relaxed text-center px-4 w-full block">
             Whether you want to learn more about the Agama scriptures, inquire about our translations, or collaborate, we are here to support your journey.
           </p>
           <Link 
@@ -119,7 +120,7 @@ export default function FAQPage() {
               fontWeight: "700" 
             }}
           >
-            Contact Us<span className="ml-2 transition-transform group-hover:translate-x-1">→</span>
+            Contact Us<ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
             <svg className="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none" viewBox="0 0 245 62" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path className="draw-path" d="M221.454 1.05992C209.233 1.05992 196.967 0.844056 184.758 1.23176C152.169 2.26666 119.695 6.1216 87.9185 11.0694C62.8697 14.9696 32.0837 18.8916 11.2304 30.315C6.18539 33.0786 1.43096 36.7352 1.03015 41.4414C0.265972 50.4143 14.1888 53.7299 24.416 55.5319C61.6914 62.0998 101.664 61.6475 139.728 59.8278C160.389 58.8402 181.344 57.1035 201.302 53.1262C212.268 50.9411 223.078 48.2177 232.898 44.1478C236.243 42.7616 243.25 40.0257 243.783 36.7159C243.94 35.74 244.181 34.1569 243.783 33.1933C243.336 32.1125 238.317 30.4143 237.128 30.0143C229.872 27.5744 221.408 25.6031 213.617 24.2578" stroke="#EEE5DA" strokeWidth="1.5" strokeLinecap="round"></path>
             </svg>

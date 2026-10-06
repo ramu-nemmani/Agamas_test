@@ -85,7 +85,7 @@ function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-[60] transition-all duration-300 border-b border-[#E5DEC9]/60 bg-[#f3ede5] shadow-sm py-3">
+    <header className="sticky top-0 z-[60] transition-all duration-300 border-b border-[#E5DEC9]/60 bg-[#f3ede5] py-3">
       <div className="mx-auto flex max-w-[1360px] items-center justify-between px-4 sm:px-6 lg:px-8 py-3">
 
         {/* Logo */}

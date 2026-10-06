@@ -57,7 +57,7 @@ export default function AgamaSutrasPage() {
         <div className="relative max-w-3xl mx-auto px-6 text-center">
           <div className="inline-flex items-center gap-2 bg-[#cd5c3d0d] border border-[#cd5c3d1a] rounded-full px-3.5 py-1 mb-5">
             <span className="w-1.5 h-1.5 rounded-full bg-[#cd5c3d] inline-block" />
-            <span className="text-[11px] font-semibold tracking-wider text-[#cd5c3d] uppercase">Sutra Collection</span>
+            <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans">Sutra Collection</span>
           </div>
           <h1 className="text-4xl md:text-5.5xl font-light text-[#1e1e1e] tracking-tight leading-tight mb-4 font-serif-display">
             The <span className="text-[#cd5c3d] font-semibold">Agama Sutras</span>
@@ -67,7 +67,7 @@ export default function AgamaSutrasPage() {
             <span className="text-[#cd5c3d] text-sm">❧</span>
             <div className="h-px w-16 bg-[#e8e0d8]" />
           </div>
-          <p className="max-w-2xl mx-auto text-[#555] text-base md:text-lg leading-relaxed">
+          <p className="max-w-2xl mx-auto section-description">
             The Agamas are the foundational collections of early Buddhist scriptures, preserving the direct teachings of the historical Buddha.
           </p>
         </div>
@@ -79,10 +79,10 @@ export default function AgamaSutrasPage() {
           <h2 className="text-2xl md:text-3xl font-light text-[#1e1e1e] font-serif-display text-center mb-6">
             A Digital Repository of <span className="text-[#cd5c3d] font-semibold">Canonical Discourses</span>
           </h2>
-          <p className="text-base md:text-lg leading-relaxed text-[#555] mb-6 font-normal">
+          <p className="mb-6 section-description">
             The Sanskrit term *Agama* literally means "that which has come down" or "sacred tradition". These scriptures are parallel to the Pāli Nikāyas and represent the oldest record of the Buddha's discourses on mindfulness, ethics, dependent origination, and liberation.
           </p>
-          <p className="text-base md:text-lg leading-relaxed text-[#555] font-normal">
+          <p className="section-description">
             Originally transmitted orally in ancient India, these discourses were translated into Chinese starting in the 2nd century CE and preserved in the Chinese Buddhist Canon (Taishō Tripiṭaka). Today, they serve as an invaluable resource for students, meditators, and scholars worldwide.
           </p>
         </div>
@@ -92,7 +92,7 @@ export default function AgamaSutrasPage() {
       <section className="bg-[#f5ede4] py-20 border-b border-[#e8e0d8]/60">
         <div className="max-w-screen-xl mx-auto px-6 md:px-10">
           <div className="text-center mb-16">
-            <span className="text-[11px] font-bold tracking-widest text-[#cd5c3d] uppercase block mb-1">Four Major Agamas</span>
+            <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans block mb-1">Four Major Agamas</span>
             <h2 className="text-3xl md:text-4xl font-light text-[#1e1e1e] tracking-tight font-serif-display">
               Structure of the <span className="text-[#cd5c3d] font-semibold">Scriptures</span>
             </h2>
@@ -111,11 +111,11 @@ export default function AgamaSutrasPage() {
                     <h3 className="text-lg md:text-xl font-semibold text-[#1e1e1e] font-serif-display">{item.title}</h3>
                     <span className="text-xs bg-[#cd5c3d0d] text-[#cd5c3d] font-semibold px-3 py-1 rounded-full uppercase tracking-wider">{item.sutras}</span>
                   </div>
-                  <p className="text-sm md:text-base text-[#555] leading-relaxed mb-4">{item.desc}</p>
+                  <p className="md: mb-4 section-description">{item.desc}</p>
                 </div>
                 <div className="bg-[#fdf8f4] border border-[#e8e0d8]/60 rounded-xl p-4 mt-2">
                   <span className="text-xs font-semibold text-[#8a7a6c] uppercase block mb-1">Primary Focus:</span>
-                  <p className="text-xs md:text-sm text-[#cd5c3d] font-medium leading-relaxed">{item.focus}</p>
+                  <p className="section-description">{item.focus}</p>
                 </div>
               </div>
             ))}

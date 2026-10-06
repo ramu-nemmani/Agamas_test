@@ -125,6 +125,7 @@ export default function Profile() {
                 <button
                   onClick={handleRemoveImage}
                   className="text-xs font-medium text-red-500 hover:text-red-600 transition-colors"
+                  style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}
                 >
                   Remove Photo
                 </button>
@@ -133,7 +134,7 @@ export default function Profile() {
 
             <div className="flex flex-col items-center sm:items-start text-center sm:text-left pt-2 sm:pt-4">
               <h1 className="text-[36px] leading-[40px] font-bold font-display mb-2 text-[#001e2d]">{displayName}</h1>
-              <p className="text-[#001e2d]/60 text-sm sm:text-base font-medium mb-4">
+              <p className="text-[#001e2d]/60 text-sm sm:text-base font-normal mb-4" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}>
                 {contextUser?.email || activeUser?.email}
               </p>
             </div>
@@ -148,7 +149,8 @@ export default function Profile() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`pb-4 text-sm font-medium transition-colors relative
+                    style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}
+                    className={`pb-4 text-base font-normal transition-colors relative
                       ${isActive
                         ? "text-[#001e2d]"
                         : "text-[#001e2d]/50 hover:text-[#001e2d]/80"

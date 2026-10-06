@@ -42,19 +42,18 @@ function TalksVideos({ hideSectionHeader = false }) {
 
   return (
     <section
-      className="max-w-screen-xl mx-auto px-6 md:px-10 pt-6 pb-16 md:pb-24"
+      className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-16 md:pb-24"
       aria-label="Talks & Videos"
     >
       {/* Section header — shown only when not overridden by parent */}
       {!hideSectionHeader && (
         <div className="flex items-end justify-between gap-4 mb-8">
           <div>
-            <h3 className="text-2xl md:text-3xl font-semibold text-[#2c2c2c]">
+            <h3 className="text-[#001e2d] font-normal leading-tight" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: 'clamp(40px, 6vw, 52px)' }}>
               Talks & Videos
             </h3>
-            <p className="text-sm md:text-base text-[#666] mt-1">
-              Discourses, interviews, and study sessions by teachers and
-              practitioners.
+            <p className="text-sm md:text-base text-[#666] mt-1 whitespace-nowrap overflow-hidden text-ellipsis">
+              Discourses, interviews, and study sessions by teachers and speakers.
             </p>
           </div>
           <Link
@@ -105,7 +104,7 @@ function TalksVideos({ hideSectionHeader = false }) {
         </div>
       ) : (
         <>
-          <div className="grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-8 md:gap-12 lg:gap-16 md:grid-cols-2 lg:grid-cols-3">
             {talks.map(
               ({ id, title, description, thumbnailImg, position }, idx) => {
                 const key = id ?? String(idx);
@@ -113,22 +112,22 @@ function TalksVideos({ hideSectionHeader = false }) {
                   <Link
                     to={`/video?id=${position}`}
                     key={key}
-                    className="group bg-white rounded-2xl overflow-hidden border border-[#e8e0d8] shadow-sm hover:border-[#cd5c3d] transition-colors duration-200"
+                    className="bg-white rounded-2xl overflow-hidden border border-[#e8e0d8] flex flex-col h-full"
                   >
-                    <div className="relative">
+                    <div className="relative shrink-0">
                       <img
                         src={thumbnailImg}
                         alt="Play"
-                        className="aspect-video w-full"
+                        className="aspect-video w-full object-cover"
                       />
                     </div>
 
-                    <div className="p-6">
+                    <div className="p-6 flex flex-col flex-1">
                       <h4 className="text-base md:text-lg font-semibold text-[#2c2c2c]">
                         {title}
                       </h4>
                       {description ? (
-                        <p className="text-sm text-[#666] leading-relaxed mt-3 line-clamp-3">
+                        <p className="mt-3 line-clamp-3 text-[#666] text-[15px] leading-relaxed">
                           {description}
                         </p>
                       ) : null}

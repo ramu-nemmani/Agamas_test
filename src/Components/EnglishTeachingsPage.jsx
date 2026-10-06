@@ -58,7 +58,7 @@ export default function EnglishTeachingsPage() {
         <div className="relative max-w-3xl mx-auto px-6 text-center">
           <div className="inline-flex items-center gap-2 bg-[#cd5c3d0d] border border-[#cd5c3d1a] rounded-full px-3.5 py-1 mb-5">
             <span className="w-1.5 h-1.5 rounded-full bg-[#cd5c3d] inline-block" />
-            <span className="text-[11px] font-semibold tracking-wider text-[#cd5c3d] uppercase">Translations</span>
+            <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans">Translations</span>
           </div>
           <h1 className="text-4xl md:text-5.5xl font-light text-[#1e1e1e] tracking-tight leading-tight mb-4 font-serif-display">
             English <span className="text-[#cd5c3d] font-semibold">Teachings</span>
@@ -68,7 +68,7 @@ export default function EnglishTeachingsPage() {
             <span className="text-[#cd5c3d] text-sm">❧</span>
             <div className="h-px w-16 bg-[#e8e0d8]" />
           </div>
-          <p className="max-w-2xl mx-auto text-[#555] text-base md:text-lg leading-relaxed">
+          <p className="max-w-2xl mx-auto section-description">
             Bringing ancient wisdom to English-speaking readers with literal precision, preserving semantic intent and original textual guidance.
           </p>
         </div>
@@ -80,10 +80,10 @@ export default function EnglishTeachingsPage() {
           <h2 className="text-2xl md:text-3xl font-light text-[#1e1e1e] font-serif-display text-center mb-6">
             Translating the Dharma for the <span className="text-[#cd5c3d] font-semibold">Modern World</span>
           </h2>
-          <p className="text-base md:text-lg leading-relaxed text-[#555] mb-6">
+          <p className="mb-6 section-description">
             For centuries, the Agama scriptures have been preserved primarily in classical languages like Classical Chinese, Tibetan, and reconstructed Sanskrit fragments. The unavailability of these texts in English has left a gap in the study of early Buddhism for global practitioners.
           </p>
-          <p className="text-base md:text-lg leading-relaxed text-[#555]">
+          <p className="section-description">
             Our platform bridges this gap by offering high-quality, verified English translations. By working under the continuous guidance of experienced teachers and scholars, we ensure the translated English sutras match the exact depth and instructions of the original scriptures.
           </p>
         </div>
@@ -93,7 +93,7 @@ export default function EnglishTeachingsPage() {
       <section className="bg-[#f5ede4] py-20 border-b border-[#e8e0d8]/60">
         <div className="max-w-screen-xl mx-auto px-6 md:px-10">
           <div className="text-center mb-16">
-            <span className="text-[11px] font-bold tracking-widest text-[#cd5c3d] uppercase block mb-1">Methodology</span>
+            <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans block mb-1">Methodology</span>
             <h2 className="text-3xl md:text-4xl font-light text-[#1e1e1e] tracking-tight font-serif-display">
               Translation <span className="text-[#cd5c3d] font-semibold">Pillars</span>
             </h2>
@@ -111,7 +111,7 @@ export default function EnglishTeachingsPage() {
                   {item.icon}
                 </div>
                 <h3 className="text-lg md:text-xl font-semibold text-[#1e1e1e] font-serif-display mb-3">{item.title}</h3>
-                <p className="text-sm text-[#555] leading-relaxed">{item.desc}</p>
+                <p className="section-description">{item.desc}</p>
               </div>
             ))}
           </div>

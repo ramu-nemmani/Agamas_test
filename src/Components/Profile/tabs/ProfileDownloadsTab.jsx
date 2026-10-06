@@ -65,8 +65,8 @@ export default function ProfileDownloadsTab() {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-6">
-        <h2 className="text-2xl font-serif font-normal text-[#001e2d] mb-1">Downloads</h2>
-        <p className="text-sm text-[#001e2d]/70">Manage your downloaded sutras for offline reading.</p>
+        <h2 className="text-2xl font-normal text-[#001e2d] mb-1" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}>Downloads</h2>
+        <p className="text-sm text-[#001e2d]/70" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}>Manage your downloaded sutras for offline reading.</p>
       </div>
 
       {loading ? (
@@ -78,8 +78,8 @@ export default function ProfileDownloadsTab() {
           <div className="w-16 h-16 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4">
             <Download className="w-8 h-8 text-amber-600" />
           </div>
-          <h3 className="text-[#001e2d] font-semibold mb-2">Download history</h3>
-          <p className="text-sm text-[#001e2d]/70">Chapters you download will be listed here.</p>
+          <h3 className="text-[#001e2d] font-semibold mb-2" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}>Download history</h3>
+          <p className="text-sm text-[#001e2d]/70" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}>Chapters you download will be listed here.</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -98,7 +98,7 @@ export default function ProfileDownloadsTab() {
                   )}
                 </div>
                 <div>
-                  <h4 className="text-[#001e2d] font-semibold text-sm">{item.lessonName}</h4>
+                  <h4 className="text-[#001e2d] font-semibold text-base" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}>{item.lessonName}</h4>
                   <p className="text-[#001e2d]/50 text-xs flex flex-wrap items-center gap-1.5 mt-0.5">
                     <span>{item.chapterName}</span>
                     {item.language && (

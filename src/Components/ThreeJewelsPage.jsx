@@ -46,7 +46,7 @@ export default function ThreeJewelsPage() {
         <div className="relative max-w-3xl mx-auto px-6 text-center">
           <div className="inline-flex items-center gap-2 bg-[#cd5c3d0d] border border-[#cd5c3d1a] rounded-full px-3.5 py-1 mb-5">
             <span className="w-1.5 h-1.5 rounded-full bg-[#cd5c3d] inline-block" />
-            <span className="text-[11px] font-semibold tracking-wider text-[#cd5c3d] uppercase">Refuge & Devotion</span>
+            <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans">Refuge & Devotion</span>
           </div>
           <h1 className="text-4xl md:text-5.5xl font-light text-[#1e1e1e] tracking-tight leading-tight mb-4 font-serif-display">
             The <span className="text-[#cd5c3d] font-semibold">Three Jewels</span>
@@ -56,7 +56,7 @@ export default function ThreeJewelsPage() {
             <span className="text-[#cd5c3d] text-sm">❧</span>
             <div className="h-px w-16 bg-[#e8e0d8]" />
           </div>
-          <p className="max-w-2xl mx-auto text-[#555] text-base md:text-lg leading-relaxed">
+          <p className="max-w-2xl mx-auto section-description">
             Discover the three-fold refuge (Triratna) that guides practitioners on the path of awakening and moral stability.
           </p>
         </div>
@@ -68,10 +68,10 @@ export default function ThreeJewelsPage() {
           <h2 className="text-2xl md:text-3xl font-light text-[#1e1e1e] font-serif-display text-center mb-6">
             Taking Refuge in <span className="text-[#cd5c3d] font-semibold">Buddha, Dharma, and Sangha</span>
           </h2>
-          <p className="text-base md:text-lg leading-relaxed text-[#555] mb-6">
+          <p className="mb-6 section-description">
             The *Triratna* or Three Jewels are the primary reference points for all Buddhist schools. Taking refuge is a conscious act of trust, recognizing the Buddha as the ultimate teacher, the Dharma as the path of truth, and the Sangha as the community of noble practitioners.
           </p>
-          <p className="text-base md:text-lg leading-relaxed text-[#555]">
+          <p className="section-description">
             In the Agamas, refuge is described as a protective dwelling for the mind. When we orient our lives around these three qualities, we establish a secure base that protects us from error, negligence, and suffering.
           </p>
         </div>
@@ -81,7 +81,7 @@ export default function ThreeJewelsPage() {
       <section className="bg-[#f5ede4] py-20 border-b border-[#e8e0d8]/60">
         <div className="max-w-screen-xl mx-auto px-6 md:px-10">
           <div className="text-center mb-16">
-            <span className="text-[11px] font-bold tracking-widest text-[#cd5c3d] uppercase block mb-1">Triratna</span>
+            <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans block mb-1">Triratna</span>
             <h2 className="text-3xl md:text-4xl font-light text-[#1e1e1e] tracking-tight font-serif-display">
               The Three pillars of <span className="text-[#cd5c3d] font-semibold">Refuge</span>
             </h2>
@@ -97,11 +97,11 @@ export default function ThreeJewelsPage() {
               <div key={idx} className="bg-white border border-[#e8e0d8] rounded-3xl p-8 hover:border-[#cd5c3d50] transition-colors duration-300 flex flex-col justify-between">
                 <div>
                   <h3 className="text-lg md:text-xl font-semibold text-[#1e1e1e] font-serif-display mb-4 border-b border-[#f5ede4] pb-3 text-[#cd5c3d]">{item.title}</h3>
-                  <p className="text-sm text-[#555] leading-relaxed mb-6">{item.desc}</p>
+                  <p className="mb-6 section-description">{item.desc}</p>
                 </div>
                 <div className="bg-[#fdf8f4] border border-[#e8e0d8]/60 rounded-xl p-4 mt-2">
                   <span className="text-xs font-semibold text-[#8a7a6c] uppercase block mb-1">Key Aspects:</span>
-                  <p className="text-xs md:text-sm text-[#cd5c3d] font-medium leading-relaxed">{item.aspects}</p>
+                  <p className="section-description">{item.aspects}</p>
                 </div>
               </div>
             ))}

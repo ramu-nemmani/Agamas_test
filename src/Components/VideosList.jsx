@@ -71,7 +71,7 @@ const VideoCard = ({ video, onClick, active }) => {
           {video?.label && <Badge>{video.label}</Badge>}
         </div>
         {video?.description && (
-          <p className="line-clamp-2 text-xs text-[#777] leading-relaxed">
+          <p className="line-clamp-2 text-xs text-[#666] leading-relaxed">
             {video.description}
           </p>
         )}
@@ -232,13 +232,13 @@ export default function VideosListPage() {
 
           {/* Header */}
           <div className="text-center max-w-[800px] mx-auto space-y-4">
-            <span className="text-[16px] font-bold tracking-[3px] text-[#001e2d]/60 uppercase font-sans block mb-4 text-center">
+            <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans block mb-4 text-center">
               MEDIA LIBRARY
             </span>
             <h2 className="text-[#001e2d] text-center" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: 'clamp(40px, 6vw, 52px)', lineHeight: 1, fontWeight: 400 }}>
-              Video <span style={{ fontStyle: 'italic', color: '#cd5c3d', fontSize: 'clamp(52px, 6vw, 62px)', fontWeight: 400 }}>Episodes</span>
+              Video <span style={{ fontStyle: 'italic', color: '#cd5c3d', fontWeight: 400 }}>Episodes</span>
             </h2>
-            <p className="text-[#001e2d]/85 text-[24px] max-w-[620px] mx-auto font-sans leading-relaxed text-center mt-4">
+            <p className="section-description text-center">
               Curated teachings — watch and explore episodes.
             </p>
           </div>
@@ -286,7 +286,7 @@ export default function VideosListPage() {
                     {selectedVideo?.title}
                   </h2>
                   {selectedVideo?.description && (
-                    <p className="mt-2 text-base leading-relaxed text-[#555]">
+                    <p className="mt-2 section-description">
                       {selectedVideo.description}
                     </p>
                   )}

@@ -58,11 +58,11 @@ export default function ProfileSecurityTab() {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-6">
-        <h2 className="text-2xl font-serif font-normal text-[#001e2d] mb-1">Security</h2>
-        <p className="text-sm text-slate-500">Manage your password.</p>
+        <h2 className="text-2xl font-normal text-[#001e2d] mb-1" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}>Security</h2>
+        <p className="text-sm text-slate-500" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}>Manage your password.</p>
       </div>
-      <div className="bg-white rounded-3xl border border-[#001e2d]/10 p-8 max-w-xl">
-        <h3 className="text-[#001e2d] font-semibold mb-6">Change Password</h3>
+      <div className="bg-white rounded-3xl border border-[#001e2d]/10 p-8 max-w-xl" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}>
+        <h3 className="text-[#001e2d] font-normal mb-6 text-xl">Change Password</h3>
         
         {message.text && (
           <div className={`p-3 rounded-xl text-sm mb-6 border font-medium ${message.type === 'error' ? 'bg-red-50 text-red-600 border-red-200' : 'bg-green-50 text-green-600 border-green-200'}`}>
@@ -77,7 +77,7 @@ export default function ProfileSecurityTab() {
               type="password"
               value={oldPassword}
               onChange={(e) => setOldPassword(e.target.value)}
-              className="w-full text-base font-medium text-[#001e2d]/80 border border-amber-200 rounded-xl focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none px-4 py-2 bg-transparent transition-all"
+              className="w-full text-base text-[#001e2d] border border-slate-200 rounded-xl focus:outline-none focus:border-[#cd5c3d] focus:ring-2 focus:ring-[#cd5c3d]/20 px-4 py-2.5 bg-transparent transition-all"
               required
             />
           </div>
@@ -87,7 +87,7 @@ export default function ProfileSecurityTab() {
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full text-base font-medium text-[#001e2d]/80 border border-amber-200 rounded-xl focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none px-4 py-2 bg-transparent transition-all"
+              className="w-full text-base text-[#001e2d] border border-slate-200 rounded-xl focus:outline-none focus:border-[#cd5c3d] focus:ring-2 focus:ring-[#cd5c3d]/20 px-4 py-2.5 bg-transparent transition-all"
               required
             />
           </div>
@@ -97,7 +97,7 @@ export default function ProfileSecurityTab() {
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full text-base font-medium text-[#001e2d]/80 border border-amber-200 rounded-xl focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none px-4 py-2 bg-transparent transition-all"
+              className="w-full text-base text-[#001e2d] border border-slate-200 rounded-xl focus:outline-none focus:border-[#cd5c3d] focus:ring-2 focus:ring-[#cd5c3d]/20 px-4 py-2.5 bg-transparent transition-all"
               required
             />
           </div>
@@ -105,7 +105,8 @@ export default function ProfileSecurityTab() {
             <button 
               type="submit"
               disabled={isUpdating}
-              className="px-6 py-2.5 bg-amber-600 text-white font-semibold rounded-full hover:bg-amber-700 transition-colors text-sm disabled:opacity-50"
+              className="px-6 py-2.5 text-white font-medium rounded-full text-sm disabled:opacity-50"
+              style={{ backgroundColor: 'rgb(184, 80, 58)', fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}
             >
               {isUpdating ? "Updating..." : "Update Password"}
             </button>

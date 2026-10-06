@@ -148,7 +148,7 @@ const ContactPage = () => {
           >
             Get in touch <span className="text-[rgb(205,92,61)] italic font-normal">with us.</span>
           </h1>
-          <p className="max-w-3xl mx-auto text-[#001e2d]/70 text-[24px] font-sans font-normal leading-relaxed text-center">
+          <p className="max-w-3xl mx-auto text-center section-description">
             Have questions about the translations? Want to join a study circle? <br className="hidden md:block" />
             We'd love to hear from you. Fill out the form below <br className="hidden md:block" />
             and we'll get back to you as soon as possible.
@@ -213,7 +213,7 @@ const ContactPage = () => {
             <div className="bg-[#cd5c3d] p-8 rounded-2xl shadow-lg shadow-[#cd5c3d20] text-white relative overflow-hidden">
               <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white opacity-10 rounded-full blur-2xl" />
               <h3 className="text-xl font-semibold mb-3">Study Groups</h3>
-              <p className="text-white/80 text-sm leading-relaxed mb-4">
+              <p className="text-white/80 mb-4 section-description">
                 Join our international community of practitioners and scholars studying the Agama scriptures.
               </p>
               <button className="text-sm font-bold bg-white text-[#cd5c3d] px-5 py-2 rounded-lg hover:bg-opacity-90 transition-all">
@@ -226,7 +226,7 @@ const ContactPage = () => {
           {/* Contact Form */}
           {/* Contact Form */}
           <div className="flex justify-center mb-10">
-            <div className="w-full max-w-2xl p-4 sm:p-6 md:p-10 rounded-[2rem] border bg-white border-amber-100 shadow-sm shadow-[0_18px_60px_rgba(15,23,42,0.08)]">
+            <div className="w-full max-w-2xl p-4 sm:p-6 md:p-10 rounded-[2rem] border bg-white border-amber-100">
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div className="space-y-2">
@@ -414,7 +414,7 @@ const ContactPage = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3.5 rounded-full bg-amber-700 hover:bg-amber-800 text-white font-semibold flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-amber-900/10 cursor-pointer"
+                  className="w-full py-3.5 rounded-full bg-amber-700 hover:bg-amber-800 text-white font-semibold flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer"
                 >
                   {loading ? (
                     <>

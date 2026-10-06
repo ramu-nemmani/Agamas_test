@@ -21,8 +21,8 @@ export default function MyBooksTab() {
   return (
     <div className="animate-in fade-in duration-500">
       <div className="mb-8">
-        <h2 className="text-2xl font-serif text-[#001e2d] mb-2">My Books</h2>
-        <p className="text-[#001e2d]/70 text-sm">Continue where you left off and explore your recently read sutras.</p>
+        <h2 className="text-2xl text-[#001e2d] mb-2" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}>My Books</h2>
+        <p className="text-[#001e2d]/70 text-sm" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}>Continue where you left off and explore your recently read sutras.</p>
       </div>
 
       {loading ? (
@@ -81,7 +81,7 @@ export default function MyBooksTab() {
                   {item.bookTitle}
                 </h4>
                 {item.timestamp && (
-                  <p className="text-[11px] font-normal text-[rgb(216,117,25)] font-sans">
+                  <p className="text-[11px] font-normal text-[rgb(216,117,25)] font-sans" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}>
                     Last read: {new Date(item.timestamp?.toDate()).toLocaleDateString()}
                   </p>
                 )}

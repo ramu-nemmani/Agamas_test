@@ -41,13 +41,13 @@ function Footer() {
               </span>
             </div>
             
-            <p className="border-l-2 border-[#cd5c3d]/40 pl-3 text-sm italic leading-relaxed text-[#94a3b8] max-w-sm">
+            <p className="border-l-2 border-[#cd5c3d]/40 pl-3 italic max-w-sm section-description">
               "Ancient wisdom faithfully translated — free for all to read, study, and share."
             </p>
 
             <div className="flex items-center gap-2 mt-1">
               <span className="w-1.5 h-1.5 rounded-full bg-[#cd5c3d]" />
-              <span className="text-[10px] text-[#cd5c3d] tracking-widest uppercase font-semibold">
+              <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans">
                 Open & Free Access
               </span>
             </div>

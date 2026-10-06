@@ -66,15 +66,15 @@ const FeaturesPage = () => {
 
         {/* Header */}
         <div className="text-center max-w-[800px] mx-auto mb-16 space-y-4">
-          <span className="text-[16px] font-bold tracking-[3px] text-[#001e2d]/60 uppercase font-sans block mb-4 text-center">
+          <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans block mb-4 text-center">
             FEATURES
           </span>
           <h2 className="text-[#001e2d] text-center" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: 'clamp(40px, 6vw, 52px)', lineHeight: 1, fontWeight: 400 }}>
-            Why Choose <span style={{ fontStyle: 'italic', color: '#cd5c3d', fontSize: 'clamp(52px, 6vw, 62px)', fontWeight: 400 }}>The Agamas</span>
+            Why Choose <span style={{ fontStyle: 'italic', color: '#cd5c3d', fontSize: 'clamp(40px, 6vw, 52px)', fontWeight: 400 }}>The Agamas</span>
           </h2>
-          <p className="text-[#001e2d]/85 text-[24px] max-w-[620px] mx-auto font-sans leading-relaxed text-center mt-4">
-            The platform is designed to make ancient wisdom easy to access, read, and reflect upon.
-          </p>
+          <p className="section-description text-center max-w-3xl mx-auto">
+              The platform is designed to make ancient wisdom easy to access, read, and reflect upon.
+            </p>
         </div>
 
         {/* Grid */}
@@ -91,7 +91,7 @@ const FeaturesPage = () => {
               <h3 style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '20px', fontWeight: 'bold', color: '#001e2d' }}>
                 {feature.title}
               </h3>
-              <p className="text-[#001e2d]/70 text-[16px] leading-relaxed font-sans">
+              <p className="section-description">
                 {feature.desc}
               </p>
             </div>

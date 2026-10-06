@@ -55,11 +55,11 @@ function CategoriesVideos() {
             Media Library
           </p>
           <h1
-            className="text-3xl md:text-4xl font-light text-[#1e1e1e] tracking-tight font-serif-display mt-4"
-            style={{ fontFamily: "'Lora', Georgia, serif" }}
+            className="text-[#001e2d] font-normal leading-tight mt-4"
+            style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: 'clamp(40px, 6vw, 52px)' }}
           >
             Talks &{" "}
-            <span className="text-[#cd5c3d] font-semibold">Videos</span>
+            <span className="text-[#cd5c3d] italic">Videos</span>
           </h1>
           <p className="max-w-2xl text-sm md:text-base text-[#888] mt-4">
             Browse video collections by lesson category.
@@ -93,7 +93,7 @@ function CategoriesVideos() {
                 <h2 className="text-xl font-semibold text-[#1e1e1e] mb-3 leading-snug">
                   {name}
                 </h2>
-                <p className="text-sm text-[#777] mb-7 leading-relaxed">
+                <p className="mb-7 section-description">
                   {description}
                 </p>
                 <Link
