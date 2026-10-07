@@ -100,7 +100,7 @@ function Navbar() {
               className="w-10 h-10 rounded-lg object-cover group-hover:scale-105 transition-transform duration-200"
               alt="The Agamas Logo"
             />
-            <span className="relative inline-block text-[30px] leading-[36px] font-normal font-agamas-title">
+            <span className="relative inline-block text-[22px] md:text-[30px] leading-[28px] md:leading-[36px] font-normal font-agamas-title">
               <span className="text-[#1e1e1e]">The </span>
               <span className="text-[#cd5c3d] font-normal">Agamas</span>
             </span>

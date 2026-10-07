@@ -147,7 +147,7 @@ export default function LandingPage() {
     }, [location.hash]);
 
     return (
-        <div className="min-h-screen bg-[#fdf8f4] text-[#0a0a0a] font-sans">
+        <div className="min-h-screen bg-[#fdf8f4] text-[#0a0a0a] font-sans overflow-x-clip">
             <SEO
                 title="The Agamas - A Translation As It Is"
                 description="Discover the ancient Agama texts—the real-time notes of the teachings of the Teacher—survived and retained in Chinese translations from original Sanskrit, now retranslated into English."
@@ -174,26 +174,26 @@ export default function LandingPage() {
                         animate="visible"
                         className="max-w-[900px] text-left"
                     >
-                        <motion.h1
-                            variants={fadeInUp}
-                            custom={1}
-                            className="font-light leading-[1.15] tracking-tight text-left"
-                            style={{
-                                color: "#EEE5DA",
-                                fontFamily: "'PP Fragment Glare Regular', 'Playfair Display', Georgia, serif",
-                                fontSize: "clamp(44px, 8vw, 62px)",
-                                fontWeight: "400",
-                                backgroundColor: "transparent",
-                            }}
-                        >
-                            You Don't Need to Have<br />it All Figured Out.
-                        </motion.h1>
+                            <motion.h1
+                                variants={fadeInUp}
+                                custom={1}
+                                className="font-light leading-[1.15] tracking-tight text-left"
+                                style={{
+                                    color: "#EEE5DA",
+                                    fontFamily: "'PP Fragment Glare Regular', 'Playfair Display', Georgia, serif",
+                                    fontSize: "clamp(36px, 8vw, 62px)",
+                                    fontWeight: "400",
+                                    backgroundColor: "transparent",
+                                }}
+                            >
+                                You Don't Need to Have<br className="hidden md:block" />it All Figured Out.
+                            </motion.h1>
                         <motion.h2
                             variants={fadeInUp}
                             custom={2.2}
-                            className="mt-4 text-left"
+                            className="mt-2 md:mt-4 text-left"
                             style={{
-                                fontSize: "clamp(44px, 8vw, 62px)",
+                                fontSize: "clamp(36px, 8vw, 62px)",
                                 color: "RGB(238, 229, 218)",
                                 fontStyle: "italic",
                                 fontWeight: "400",
@@ -305,7 +305,7 @@ export default function LandingPage() {
                             Talks & <span className="font-serif-display italic text-[#cd5c3d] font-normal">Videos</span>
                         </h2>
                         <p
-                            className="section-description mx-auto max-w-2xl whitespace-nowrap overflow-hidden text-ellipsis">
+                            className="section-description mx-auto max-w-2xl">
                             Discourses, interviews, and study sessions by teachers and speakers.
                         </p>
                     </div>

@@ -55,7 +55,7 @@ function TalksVideos({ hideSectionHeader = false }) {
             <h3 className="text-[#001e2d] font-normal leading-tight" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: 'clamp(40px, 6vw, 52px)' }}>
               Talks & Videos
             </h3>
-            <p className="text-sm md:text-base text-[#666] mt-1 whitespace-nowrap overflow-hidden text-ellipsis">
+            <p className="text-sm md:text-base text-[#666] mt-1">
               Discourses, interviews, and study sessions by teachers and speakers.
             </p>
           </div>
