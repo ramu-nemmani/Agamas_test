@@ -181,32 +181,32 @@ export default function LandingPage() {
                                 style={{
                                     color: "#EEE5DA",
                                     fontFamily: "'PP Fragment Glare Regular', 'Playfair Display', Georgia, serif",
-                                    fontSize: "clamp(36px, 8vw, 62px)",
+                                    fontSize: "clamp(44px, 8.5vw, 62px)",
                                     fontWeight: "400",
                                     backgroundColor: "transparent",
                                 }}
                             >
-                                You Don't Need to Have<br className="hidden md:block" />it All Figured Out.
+                                You Don't Need to <br className="md:hidden" />Have <br />it All Figured Out.
                             </motion.h1>
                         <motion.h2
                             variants={fadeInUp}
                             custom={2.2}
                             className="mt-2 md:mt-4 text-left"
                             style={{
-                                fontSize: "clamp(36px, 8vw, 62px)",
+                                fontSize: "clamp(44px, 8.5vw, 62px)",
                                 color: "RGB(238, 229, 218)",
                                 fontStyle: "italic",
                                 fontWeight: "400",
                                 lineHeight: "1.1",
                             }}
                         >
-                            Just a Place to Start
+                            Just a Place to <br className="md:hidden" />Start
                         </motion.h2>
                     </motion.div>
                 </div>
 
                 {/* Hero Bottom Content (Three-Column Strip) */}
-                <div className="relative z-10 mx-auto w-full max-w-[1360px] px-4 sm:px-6 lg:px-8 pb-4">
+                <div className="relative z-10 mx-auto w-full max-w-[1360px] px-4 sm:px-6 lg:px-8 pb-12 md:pb-8">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -229,7 +229,12 @@ export default function LandingPage() {
                                 >
                                     What You’ll Learn
                                 </h3>
-                                <a href="#chapters" className="mt-0.5 inline-block w-fit font-sans text-[16px] text-white underline decoration-white underline-offset-4 transition-colors duration-200 hover:text-white">
+                                <a href="#chapters" onClick={(e) => {
+                                    e.preventDefault();
+                                    const section = document.getElementById("chapters");
+                                    if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });
+                                    window.history.pushState(null, "", "#chapters");
+                                }} className="mt-0.5 inline-block w-fit font-sans text-[16px] text-white underline decoration-white underline-offset-4 transition-colors duration-200 hover:text-white">
                                     Learn More
                                 </a>
                             </div>
@@ -249,7 +254,12 @@ export default function LandingPage() {
                                 >
                                     What You’ll Gain
                                 </h3>
-                                <a href="#chapters" className="mt-0.5 inline-block w-fit font-sans text-[16px] text-white underline decoration-white underline-offset-4 transition-colors duration-200 hover:text-white">
+                                <a href="#chapters" onClick={(e) => {
+                                    e.preventDefault();
+                                    const section = document.getElementById("chapters");
+                                    if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });
+                                    window.history.pushState(null, "", "#chapters");
+                                }} className="mt-0.5 inline-block w-fit font-sans text-[16px] text-white underline decoration-white underline-offset-4 transition-colors duration-200 hover:text-white">
                                     Learn More
                                 </a>
                             </div>
@@ -269,7 +279,12 @@ export default function LandingPage() {
                                 >
                                     Who Should Attend?
                                 </h3>
-                                <a href="#chapters" className="mt-0.5 inline-block w-fit font-sans text-[16px] text-white underline decoration-white underline-offset-4 transition-colors duration-200 hover:text-white">
+                                <a href="#chapters" onClick={(e) => {
+                                    e.preventDefault();
+                                    const section = document.getElementById("chapters");
+                                    if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });
+                                    window.history.pushState(null, "", "#chapters");
+                                }} className="mt-0.5 inline-block w-fit font-sans text-[16px] text-white underline decoration-white underline-offset-4 transition-colors duration-200 hover:text-white">
                                     Learn More
                                 </a>
                             </div>
@@ -284,7 +299,7 @@ export default function LandingPage() {
             <main className="relative z-10 bg-[#f3ede5] rounded-t-[32px] md:rounded-t-[48px] border-t border-[#001e2d]/5">
 
                 {/* ── LESSONS ──────────────────────────────────────────────────── */}
-                <section className="pt-16 md:pt-20 pb-0 text-[#001e2d]">
+                <section id="chapters" className="pt-4 md:pt-8 pb-0 text-[#001e2d]">
                     <Lessons />
                 </section>
 
@@ -840,7 +855,7 @@ export default function LandingPage() {
 
                 {/* ── FAQ ──────────────────────────────────────────────────────── */}
                 <section className="pt-10 pb-20" id="faq">
-                    <div className="max-w-screen-md mx-auto px-6">
+                    <div className="max-w-screen-md mx-auto px-4 sm:px-6">
                         <div className="text-center mb-12 flex flex-col items-center gap-2 md:gap-3">
                             <p className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans">
                                 FREQUENTLY ASKED QUESTIONS
