@@ -49,7 +49,7 @@ export default function FAQPage() {
       {/* FAQ content */}
       <section className="py-16 md:py-20 border-b border-[#e8e0d8]/40 bg-[#fdfdfd]/50">
         <div className="max-w-screen-md mx-auto px-6">
-          <div className="bg-white/45 border border-[#001e2d]/5 rounded-[32px] divide-y divide-[#001e2d]/5 overflow-hidden shadow-sm">
+          <div className="bg-white/45 border border-[#001e2d]/5 rounded-[32px] divide-y divide-[#001e2d]/5 overflow-hidden">
             {faqs.map((faq, idx) => {
               const isOpen = activeFaq === idx;
               return (

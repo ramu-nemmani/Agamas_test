@@ -147,8 +147,8 @@ function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-5 text-xs sm:flex-row text-[#94a3b8]">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-5 text-xs sm:flex-row text-[#94a3b8] text-center">
+          <div className="flex flex-row items-center gap-2">
             <span>© 2026 The Agamas. All rights reserved.</span>
             <button
               onClick={handleVersionClick}
@@ -158,8 +158,8 @@ function Footer() {
             </button>
           </div>
           
-          <div className="flex items-center">
-            <span>Developed by <span className="font-medium text-[#cbd5e1]">Sunyatee International Foundation</span></span>
+          <div className="flex items-center text-center">
+            <span>Developed by <br className="sm:hidden" /><span className="font-medium text-[#cbd5e1]">Sunyatee International Foundation</span></span>
           </div>
         </div>
       </div>

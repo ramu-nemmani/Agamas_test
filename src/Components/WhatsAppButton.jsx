@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 const WhatsAppButton = () => {
   const [showBubble, setShowBubble] = useState(false);
   const [wobble, setWobble] = useState(false);
+  const location = useLocation();
+  const isChapterView = location.pathname.includes('/chapter-view');
 
   useEffect(() => {
     // Show speech bubble after 2.5 seconds
@@ -26,7 +29,7 @@ const WhatsAppButton = () => {
 
   return (
     <div
-      className="fixed bottom-6 right-6 z-[9999] flex flex-col items-end"
+      className={`fixed bottom-6 right-6 z-[9999] flex-col items-end ${isChapterView ? 'hidden sm:flex' : 'flex'}`}
       onMouseLeave={() => setShowBubble(false)}
     >
       {/* Embedded CSS Animations */}

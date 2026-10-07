@@ -279,11 +279,11 @@ export default function LandingPage() {
                                 >
                                     Who Should Attend?
                                 </h3>
-                                <a href="#chapters" onClick={(e) => {
+                                <a href="#leadership" onClick={(e) => {
                                     e.preventDefault();
-                                    const section = document.getElementById("chapters");
+                                    const section = document.getElementById("leadership");
                                     if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });
-                                    window.history.pushState(null, "", "#chapters");
+                                    window.history.pushState(null, "", "#leadership");
                                 }} className="mt-0.5 inline-block w-fit font-sans text-[16px] text-white underline decoration-white underline-offset-4 transition-colors duration-200 hover:text-white">
                                     Learn More
                                 </a>
@@ -865,7 +865,7 @@ export default function LandingPage() {
                             </h2>
                         </div>
 
-                        <div className="bg-white/45 border border-[#001e2d]/5 rounded-[32px] divide-y divide-[#001e2d]/5 overflow-hidden shadow-sm">
+                        <div className="bg-white/45 border border-[#001e2d]/5 rounded-[32px] divide-y divide-[#001e2d]/5 overflow-hidden">
                             {[
                                 {
                                     q: "What is The Agamas website about?",

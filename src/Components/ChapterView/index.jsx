@@ -663,7 +663,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                <div className="fixed top-4 right-6 z-50">
                  <button
                    onClick={() => setIsFullScreen(false)}
-                   className="p-3 bg-white/80 backdrop-blur border border-gray-200 shadow-sm rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
+                   className="p-3 bg-white/80 backdrop-blur border border-gray-200 rounded-full text-gray-700 hover:bg-gray-50 transition-colors"
                    title="Exit Distraction Free"
                  >
                    <X className="w-5 h-5 stroke-1" />
