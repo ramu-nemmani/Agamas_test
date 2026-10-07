@@ -298,6 +298,9 @@ export default function LandingPage() {
                 {/* ── TALKS & VIDEOS ───────────────────────────────────────────── */}
                 <section className="pt-16 md:pt-20 pb-0 text-[#001e2d]">
                     <div className="max-w-screen-xl mx-auto px-6 md:px-10 text-center mb-5 flex flex-col items-center gap-4">
+                        <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans block">
+                            MEDIA LIBRARY
+                        </span>
                         <h2 className="text-[#001e2d]" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: 'clamp(40px, 6vw, 52px)', fontWeight: 400 }}>
                             Talks & <span className="font-serif-display italic text-[#cd5c3d] font-normal">Videos</span>
                         </h2>
@@ -313,7 +316,7 @@ export default function LandingPage() {
                 <section className="pt-16 pb-8 md:pt-28 md:pb-12 text-[#001e2d]">
                     <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row gap-8 md:gap-16 items-start md:items-center">
                         <div className="flex-1 space-y-4">
-                            <span className="text-[14px] md:text-[16px] font-bold tracking-[3px] text-[#001e2d]/60 uppercase font-sans block">
+                            <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans block">
                                 WHERE TO BEGIN
                             </span>
                             <h2
@@ -354,7 +357,7 @@ export default function LandingPage() {
                             className="relative z-[10] mx-auto max-w-[680px] text-center px-4 sm:px-6 lg:px-8 space-y-3 pointer-events-none select-none"
                         >
                             <img src={floralImg} alt="Floral Logo" className="w-24 mx-auto mb-6 object-contain" />
-                            <span className="text-[16px] font-bold tracking-[3px] text-[#001e2d]/60 uppercase font-sans block">
+                            <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans block">
                                 OPEN TO ALL
                             </span>
 
@@ -469,7 +472,7 @@ export default function LandingPage() {
 
                     <div className="mx-auto max-w-[1360px] px-4 sm:px-6 lg:px-8">
                         <div className="text-center max-w-[900px] mx-auto mb-20 space-y-4">
-                            <span className="text-[14px] md:text-[16px] font-bold tracking-[3px] text-[#001e2d]/60 uppercase font-sans block mb-6 text-center">
+                            <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans block mb-6 text-center">
                                 VISION · MISSION · IMPORTANCE
                             </span>
                             <h2 className="text-[#001e2d] text-center" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: 'clamp(40px, 6vw, 52px)', lineHeight: 1.2, fontWeight: 400 }}>
@@ -502,7 +505,7 @@ export default function LandingPage() {
                                     <img alt="shape background" className={`absolute inset-0 w-full h-full object-contain transition-all duration-300 group-hover:opacity-0 group-hover:scale-90 ${activeFeature === 'vision' ? 'opacity-0 scale-90' : 'opacity-100 scale-100'}`} src="https://www.namchak.org/wp-content/uploads/2025/11/1.png" />
                                     <img alt="Vase of Treasure" className={`relative z-10 w-full h-full object-contain transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 ${activeFeature === 'vision' ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`} src="https://www.namchak.org/wp-content/uploads/2026/02/illustration-symbol-3.svg" />
                                 </div>
-                                <span className="text-[14px] font-bold tracking-[2px] text-[rgb(205,92,61)] uppercase font-sans block">VISION</span>
+                                <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans block">VISION</span>
                                 <h3 style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '22px', fontWeight: 400, color: 'rgb(0, 30, 45)', lineHeight: 1.3, minHeight: '56px' }}>
                                     Agama wisdom, within reach of every sincere reader.
                                 </h3>
@@ -531,7 +534,7 @@ export default function LandingPage() {
                                     <img alt="shape background" className={`absolute inset-0 w-full h-full object-contain transition-all duration-300 group-hover:opacity-0 group-hover:scale-90 ${activeFeature === 'mission' ? 'opacity-0 scale-90' : 'opacity-100 scale-100'}`} src="https://www.namchak.org/wp-content/uploads/2025/11/2.png" />
                                     <img alt="Victory Banner" className={`relative z-10 w-full h-full object-contain transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 ${activeFeature === 'mission' ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`} src="https://www.namchak.org/wp-content/uploads/2026/02/illustration-symbol-2.svg" />
                                 </div>
-                                <span className="text-[14px] font-bold tracking-[2px] text-[rgb(205,92,61)] uppercase font-sans block">MISSION</span>
+                                <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans block">MISSION</span>
                                 <h3 style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '22px', fontWeight: 400, color: 'rgb(0, 30, 45)', lineHeight: 1.3, minHeight: '56px' }}>
                                     Preserve, retranslate, and share freely.
                                 </h3>
@@ -560,7 +563,7 @@ export default function LandingPage() {
                                     <img alt="shape background" className={`absolute inset-0 w-full h-full object-contain transition-all duration-300 group-hover:opacity-0 group-hover:scale-90 ${activeFeature === 'importance' ? 'opacity-0 scale-90' : 'opacity-100 scale-100'}`} src="https://www.namchak.org/wp-content/uploads/2025/11/3.png" />
                                     <img alt="Auspicious Drawing" className={`relative z-10 w-full h-full object-contain transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 ${activeFeature === 'importance' ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`} src="https://www.namchak.org/wp-content/uploads/2026/02/illustration-symbol-1.svg" />
                                 </div>
-                                <span className="text-[14px] font-bold tracking-[2px] text-[rgb(205,92,61)] uppercase font-sans block">IMPORTANCE</span>
+                                <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans block">IMPORTANCE</span>
                                 <h3 style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '22px', fontWeight: 400, color: 'rgb(0, 30, 45)', lineHeight: 1.3, minHeight: '56px' }}>
                                     Keeping timeless teachings alive in a changing world.
                                 </h3>
@@ -622,7 +625,7 @@ export default function LandingPage() {
                 <div id="leadership" className="pt-12 pb-8 md:pt-16 md:pb-12 text-[#001e2d]">
                     <div className="mx-auto max-w-[1360px] px-4 sm:px-6 lg:px-8">
                         <div className="text-left mb-16">
-                            <span className="text-[16px] font-bold tracking-[3px] text-[#001e2d]/60 uppercase font-sans">
+                            <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans">
                                 OUR TEACHERS
                             </span>
                         </div>
@@ -712,8 +715,8 @@ export default function LandingPage() {
                             </h2>
                             <div className="space-y-4">
                                 <p className="section-description">
-              We're Here to Help You Find Your Path.
-            </p>
+                                    We're Here to Help You Find Your Path.
+                                </p>
                                 <p
                                     style={{
                                         fontFamily: '"Open Sans", Helvetica, Arial, Lucida, sans-serif',
@@ -764,15 +767,15 @@ export default function LandingPage() {
                 <section className="pt-12 pb-16 md:pt-20 md:pb-28 text-[#001e2d]" id="testimonials">
                     <div className="mx-auto max-w-[1360px] px-4 sm:px-6 lg:px-8">
                         <div className="text-center max-w-[800px] mx-auto mb-16 space-y-2">
-                            <span className="uppercase tracking-[0.2em] text-[16px] font-bold text-[#888888] font-sans block text-center">
+                            <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans block text-center">
                                 TESTIMONIALS
                             </span>
                             <h2 className="text-[#001e2d]" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: 'clamp(40px, 6vw, 52px)', fontWeight: 400 }}>
                                 Reflections from Our <span className="italic" style={{ color: '#cd5c3d' }}>Readers</span>
                             </h2>
                             <p className="section-description text-center mx-auto max-w-2xl">
-              Ancient wisdom, modern impact. Here's what our readers have to say about their journey.
-            </p>
+                                Ancient wisdom, modern impact. Here's what our readers have to say about their journey.
+                            </p>
                         </div>
 
                         <div className="w-full overflow-hidden">
@@ -839,7 +842,7 @@ export default function LandingPage() {
                 <section className="pt-10 pb-20" id="faq">
                     <div className="max-w-screen-md mx-auto px-6">
                         <div className="text-center mb-12 flex flex-col items-center gap-2 md:gap-3">
-                            <p className="uppercase tracking-[0.2em] text-[16px] font-bold text-[#888] font-sans">
+                            <p className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans">
                                 FREQUENTLY ASKED QUESTIONS
                             </p>
                             <h2 className="text-[52px] text-[#001e2d] font-agamas-faq font-normal">

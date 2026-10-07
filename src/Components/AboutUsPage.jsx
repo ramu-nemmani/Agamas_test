@@ -36,8 +36,8 @@ export default function AboutUsPage() {
 
         <div className="max-w-6xl mx-auto px-6">
           <div className="max-w-full mx-auto text-center overflow-visible">
-            <p className="text-[16px] font-bold text-[#64748b] font-sans uppercase tracking-[0.2em] mb-4 md:mb-6">
-              our mission
+            <p className="text-[14px] font-bold text-[#888888] font-sans tracking-[0.2em] mb-4 md:mb-6">
+              OUR MISSION
             </p>
             <h1
               className="text-[32px] md:text-[52px] font-normal text-[#0f2e3d] tracking-tight leading-[1.2] mb-6 md:mb-8 md:whitespace-nowrap"

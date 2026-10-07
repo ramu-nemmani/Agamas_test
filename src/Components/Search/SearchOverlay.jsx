@@ -8,7 +8,6 @@ import { db } from "../../firebase";
 export default function SearchOverlay({ 
   isOpen, 
   onClose, 
-  lessonId, 
   chapters, 
   languages,
   currentLang,

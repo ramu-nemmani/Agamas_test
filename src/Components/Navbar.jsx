@@ -90,7 +90,11 @@ function Navbar() {
 
         {/* Logo */}
         <div className="flex items-center gap-3 cursor-pointer -ml-1">
-          <Link to="/" className="flex items-center gap-3 flex-shrink-0 group">
+          <Link 
+            to="/" 
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="flex items-center gap-3 flex-shrink-0 group"
+          >
             <img
               src={logo}
               className="w-10 h-10 rounded-lg object-cover group-hover:scale-105 transition-transform duration-200"

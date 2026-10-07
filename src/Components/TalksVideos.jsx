@@ -49,6 +49,9 @@ function TalksVideos({ hideSectionHeader = false }) {
       {!hideSectionHeader && (
         <div className="flex items-end justify-between gap-4 mb-8">
           <div>
+            <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans block mb-2">
+                MEDIA LIBRARY
+            </span>
             <h3 className="text-[#001e2d] font-normal leading-tight" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: 'clamp(40px, 6vw, 52px)' }}>
               Talks & Videos
             </h3>
