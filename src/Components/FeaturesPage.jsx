@@ -49,11 +49,11 @@ const FeaturesPage = () => {
   return (
     <div className="min-h-screen bg-[#fffdf8] pt-12 pb-24">
       <div className="mx-auto max-w-[1360px] px-4 sm:px-6 lg:px-8">
-        
+
         {/* Back Link */}
         <div className="mb-8 -ml-1">
-          <Link 
-            to="/" 
+          <Link
+            to="/"
             className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#cd5c3d] hover:opacity-80 transition font-sans"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-left h-4 w-4" aria-hidden="true">
@@ -73,8 +73,8 @@ const FeaturesPage = () => {
             Why Choose <span style={{ fontStyle: 'italic', color: '#cd5c3d', fontSize: 'clamp(40px, 6vw, 52px)', fontWeight: 400 }}>The Agamas</span>
           </h2>
           <p className="section-description text-center max-w-3xl mx-auto">
-              The platform is designed to make ancient wisdom easy to access, read, and reflect upon.
-            </p>
+            The platform is designed to make ancient wisdom easy to access, read, and reflect upon.
+          </p>
         </div>
 
         {/* Grid */}
@@ -88,10 +88,10 @@ const FeaturesPage = () => {
                 {feature.icon}
               </div>
               <div className="w-8 h-[2px] bg-[#cd5c3d]"></div>
-              <h3 style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '20px', fontWeight: 'bold', color: '#001e2d' }}>
+              <h3 style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '18px', fontWeight: 'bold', color: '#001e2d' }}>
                 {feature.title}
               </h3>
-              <p className="section-description">
+              <p className="text-[16px] text-[#555555] font-sans font-normal leading-[1.625]">
                 {feature.desc}
               </p>
             </div>

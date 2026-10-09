@@ -521,21 +521,21 @@ export default function LandingPage() {
                                     <img alt="Vase of Treasure" className={`relative z-10 w-full h-full object-contain transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 ${activeFeature === 'vision' ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`} src="https://www.namchak.org/wp-content/uploads/2026/02/illustration-symbol-3.svg" />
                                 </div>
                                 <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans block">VISION</span>
-                                <h3 style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '22px', fontWeight: 400, color: 'rgb(0, 30, 45)', lineHeight: 1.3, minHeight: '56px' }}>
+                                <h3 style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '20px', fontWeight: 400, color: 'rgb(0, 30, 45)', lineHeight: 1.3, minHeight: '56px' }}>
                                     Agama wisdom, within reach of every sincere reader.
                                 </h3>
-                                <ul className="text-left md: space-y-4 pt-2 w-full section-description">
+                                <ul className="text-left md: space-y-4 pt-2 w-full section-description" style={{ fontSize: '16px' }}>
                                     <li className="flex items-start gap-3">
                                         <span className="text-[rgb(205,92,61)] mt-0.5 font-bold shrink-0">✓</span>
-                                        <span>To let India's Agama heritage flow beyond rare bookshelves and academies.</span>
+                                        <span style={{ fontSize: '16px' }}>To let India's Agama heritage flow beyond rare bookshelves and academies.</span>
                                     </li>
                                     <li className="flex items-start gap-3">
                                         <span className="text-[rgb(205,92,61)] mt-0.5 font-bold shrink-0">✓</span>
-                                        <span>To bring ancient wisdom to the hands of people who want to read, reflect, and live by it.</span>
+                                        <span style={{ fontSize: '16px' }}>To bring ancient wisdom to the hands of people who want to read, reflect, and live by it.</span>
                                     </li>
                                     <li className="flex items-start gap-3">
                                         <span className="text-[rgb(205,92,61)] mt-0.5 font-bold shrink-0">✓</span>
-                                        <span>To create an inclusive space for seekers from all walks of life.</span>
+                                        <span style={{ fontSize: '16px' }}>To create an inclusive space for seekers from all walks of life.</span>
                                     </li>
                                 </ul>
                             </div>
@@ -550,21 +550,21 @@ export default function LandingPage() {
                                     <img alt="Victory Banner" className={`relative z-10 w-full h-full object-contain transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 ${activeFeature === 'mission' ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`} src="https://www.namchak.org/wp-content/uploads/2026/02/illustration-symbol-2.svg" />
                                 </div>
                                 <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans block">MISSION</span>
-                                <h3 style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '22px', fontWeight: 400, color: 'rgb(0, 30, 45)', lineHeight: 1.3, minHeight: '56px' }}>
+                                <h3 style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '20px', fontWeight: 400, color: 'rgb(0, 30, 45)', lineHeight: 1.3, minHeight: '56px' }}>
                                     Preserve, retranslate, and share freely.
                                 </h3>
-                                <ul className="text-left md: space-y-4 pt-2 w-full section-description">
+                                <ul className="text-left md: space-y-4 pt-2 w-full section-description" style={{ fontSize: '16px' }}>
                                     <li className="flex items-start gap-3">
                                         <span className="text-[rgb(205,92,61)] mt-0.5 font-bold shrink-0">✓</span>
-                                        <span>Collect Agamas from authentic sources and safeguard them digitally.</span>
+                                        <span style={{ fontSize: '16px' }}>Collect Agamas from authentic sources and safeguard them digitally.</span>
                                     </li>
                                     <li className="flex items-start gap-3">
                                         <span className="text-[rgb(205,92,61)] mt-0.5 font-bold shrink-0">✓</span>
-                                        <span>Re-translate them in clear language, without losing depth or respect.</span>
+                                        <span style={{ fontSize: '16px' }}>Re-translate them in clear language, without losing depth or respect.</span>
                                     </li>
                                     <li className="flex items-start gap-3">
                                         <span className="text-[rgb(205,92,61)] mt-0.5 font-bold shrink-0">✓</span>
-                                        <span>Make these sacred teachings freely accessible to all worldwide.</span>
+                                        <span style={{ fontSize: '16px' }}>Make these sacred teachings freely accessible to all worldwide.</span>
                                     </li>
                                 </ul>
                             </div>
@@ -579,21 +579,21 @@ export default function LandingPage() {
                                     <img alt="Auspicious Drawing" className={`relative z-10 w-full h-full object-contain transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 ${activeFeature === 'importance' ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`} src="https://www.namchak.org/wp-content/uploads/2026/02/illustration-symbol-1.svg" />
                                 </div>
                                 <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans block">IMPORTANCE</span>
-                                <h3 style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '22px', fontWeight: 400, color: 'rgb(0, 30, 45)', lineHeight: 1.3, minHeight: '56px' }}>
+                                <h3 style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '20px', fontWeight: 400, color: 'rgb(0, 30, 45)', lineHeight: 1.3, minHeight: '56px' }}>
                                     Keeping timeless teachings alive in a changing world.
                                 </h3>
-                                <ul className="text-left md: space-y-4 pt-2 w-full section-description">
+                                <ul className="text-left md: space-y-4 pt-2 w-full section-description" style={{ fontSize: '16px' }}>
                                     <li className="flex items-start gap-3">
                                         <span className="text-[rgb(205,92,61)] mt-0.5 font-bold shrink-0">✓</span>
-                                        <span>the reading room becomes a stable reference point for future generations.</span>
+                                        <span style={{ fontSize: '16px' }}>the reading room becomes a stable reference point for future generations.</span>
                                     </li>
                                     <li className="flex items-start gap-3">
                                         <span className="text-[rgb(205,92,61)] mt-0.5 font-bold shrink-0">✓</span>
-                                        <span>It helps preserve our spiritual heritage in its truest and most respectful form.</span>
+                                        <span style={{ fontSize: '16px' }}>It helps preserve our spiritual heritage in its truest and most respectful form.</span>
                                     </li>
                                     <li className="flex items-start gap-3">
                                         <span className="text-[rgb(205,92,61)] mt-0.5 font-bold shrink-0">✓</span>
-                                        <span>It inspires mindful living, inner peace, and compassionate action.</span>
+                                        <span style={{ fontSize: '16px' }}>It inspires mindful living, inner peace, and compassionate action.</span>
                                     </li>
                                 </ul>
                             </div>
@@ -802,7 +802,7 @@ export default function LandingPage() {
                                                 <svg className="w-[32px] h-[32px] text-[#cd5c3d] fill-current mb-[16px]" viewBox="0 0 24 24">
                                                     <path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"></path>
                                                 </svg>
-                                                <p className="text-left text-[16px] lg:text-[16px] font-normal text-[#6F6F6F] leading-[1.8] font-sans">
+                                                <p className="text-left text-[16px] lg:text-[16px] font-normal text-[#555555] leading-[1.8] font-sans">
                                                     “{t.quote}”
                                                 </p>
                                             </div>
@@ -813,8 +813,8 @@ export default function LandingPage() {
                                                         <span className="font-sans text-[18px] lg:text-[22px] font-bold text-[#cd5c3d] select-none">{t.initial}</span>
                                                     </div>
                                                     <div className="flex flex-col text-left">
-                                                        <h4 className="font-sans text-[16px] lg:text-[16px] font-medium text-[#1D2235] mb-[4px] leading-none">{t.name}</h4>
-                                                        <p className="font-sans text-[14px] lg:text-[15px] font-normal text-[#777777] leading-none">{t.role}</p>
+                                                        <h4 className="font-sans text-[16px] lg:text-[16px] font-medium text-[#001E2D] mb-[4px] leading-none">{t.name}</h4>
+                                                        <p className="font-sans text-[14px] lg:text-[15px] font-normal text-[#555555] leading-none">{t.role}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -829,7 +829,7 @@ export default function LandingPage() {
                                                 <svg className="w-[32px] h-[32px] text-[#cd5c3d] fill-current mb-[16px]" viewBox="0 0 24 24">
                                                     <path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"></path>
                                                 </svg>
-                                                <p className="text-left text-[16px] lg:text-[16px] font-normal text-[#6F6F6F] leading-[1.8] font-sans">
+                                                <p className="text-left text-[16px] lg:text-[16px] font-normal text-[#555555] leading-[1.8] font-sans">
                                                     “{t.quote}”
                                                 </p>
                                             </div>
@@ -840,8 +840,8 @@ export default function LandingPage() {
                                                         <span className="font-sans text-[18px] lg:text-[22px] font-bold text-[#cd5c3d] select-none">{t.initial}</span>
                                                     </div>
                                                     <div className="flex flex-col text-left">
-                                                        <h4 className="font-sans text-[16px] lg:text-[16px] font-medium text-[#1D2235] mb-[4px] leading-none">{t.name}</h4>
-                                                        <p className="font-sans text-[14px] lg:text-[15px] font-normal text-[#777777] leading-none">{t.role}</p>
+                                                        <h4 className="font-sans text-[16px] lg:text-[16px] font-medium text-[#001E2D] mb-[4px] leading-none">{t.name}</h4>
+                                                        <p className="font-sans text-[14px] lg:text-[15px] font-normal text-[#555555] leading-none">{t.role}</p>
                                                     </div>
                                                 </div>
                                             </div>
