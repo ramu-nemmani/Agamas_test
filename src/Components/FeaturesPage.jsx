@@ -88,10 +88,10 @@ const FeaturesPage = () => {
                 {feature.icon}
               </div>
               <div className="w-8 h-[2px] bg-[#cd5c3d]"></div>
-              <h3 style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '18px', fontWeight: 'bold', color: '#001e2d' }}>
+              <h3 style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '20px', fontWeight: 'bold', color: '#001e2d' }}>
                 {feature.title}
               </h3>
-              <p className="text-[16px] text-[#555555] font-sans font-normal leading-[1.625]">
+              <p className="text-[18px] text-[#555555] font-sans font-normal leading-[1.625]">
                 {feature.desc}
               </p>
             </div>

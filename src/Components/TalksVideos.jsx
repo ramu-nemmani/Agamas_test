@@ -128,12 +128,12 @@ function TalksVideos({ hideSectionHeader = false }) {
                     <div className="p-6 flex flex-col flex-1">
                       <h4 
                         className="text-[#001E2D]" 
-                        style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '18px', fontWeight: 700 }}
+                        style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '20px', fontWeight: 700 }}
                       >
                         {title}
                       </h4>
                       {description ? (
-                        <p className="mt-3 line-clamp-3 text-[#555555] text-[16px] font-sans font-normal leading-relaxed">
+                        <p className="mt-3 line-clamp-3 text-[#555555] text-[18px] font-sans font-normal leading-relaxed">
                           {description}
                         </p>
                       ) : null}

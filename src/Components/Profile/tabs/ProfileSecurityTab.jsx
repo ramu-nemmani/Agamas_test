@@ -61,7 +61,7 @@ export default function ProfileSecurityTab() {
         <h2 className="text-2xl font-normal text-[#001e2d] mb-1" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}>Security</h2>
         <p className="text-sm text-slate-500" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}>Manage your password.</p>
       </div>
-      <div className="bg-white rounded-3xl border border-[#001e2d]/10 p-8 max-w-xl" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}>
+      <div className="bg-white rounded-3xl border border-[#001e2d]/10 p-8 max-w-xl" style={{ fontFamily: 'ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"' }}>
         <h3 className="text-[#001e2d] font-normal mb-6 text-xl">Change Password</h3>
         
         {message.text && (
@@ -106,7 +106,7 @@ export default function ProfileSecurityTab() {
               type="submit"
               disabled={isUpdating}
               className="px-6 py-2.5 text-white font-medium rounded-full text-sm disabled:opacity-50"
-              style={{ backgroundColor: 'rgb(184, 80, 58)', fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}
+              style={{ backgroundColor: 'rgb(205, 92, 61)', fontFamily: 'ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"' }}
             >
               {isUpdating ? "Updating..." : "Update Password"}
             </button>

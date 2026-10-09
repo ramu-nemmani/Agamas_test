@@ -20,7 +20,7 @@ export default function AboutUsPage() {
       />
 
       {/* ── 1. MISSION HEADER ───────────────────────────────────────────── */}
-      <section className="pt-8 md:pt-12 pb-12 relative">
+      <section className="py-8 md:py-12 relative">
         {/* Back to Home Button aligned with Navbar */}
         <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 w-full mb-6 md:mb-10">
           <Link
@@ -56,7 +56,7 @@ export default function AboutUsPage() {
       </section>
 
       {/* ── 2. FEATURE CARDS ───────────────────────────────────────────── */}
-      <section className="pb-8 md:pb-12">
+      <section className="py-8 md:py-12 ">
         <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 grid gap-6 sm:grid-cols-2">
           {/* Card 1 */}
           <div className="rounded-3xl bg-[#fffdf8] border border-[#ECECEC] p-6 sm:p-8 shadow-sm">
@@ -66,7 +66,7 @@ export default function AboutUsPage() {
             <h3 style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '20px', fontWeight: 'bold', color: 'rgb(0, 30, 45)' }}>
               Digital Preservation
             </h3>
-            <p className="mt-2 section-description">
+            <p className="mt-2 text-[#555555] text-[18px] font-sans font-normal leading-[1.625]">
               Safeguarding vulnerable ancient manuscripts and translating Sanskrit, Pali, and Tamil palm-leaf scriptures into clean, modern formats to ensure they remain alive for generations to come.
             </p>
           </div>
@@ -79,7 +79,7 @@ export default function AboutUsPage() {
             <h3 style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '20px', fontWeight: 'bold', color: 'rgb(0, 30, 45)' }}>
               Accessible Study
             </h3>
-            <p className="mt-2 section-description">
+            <p className="mt-2 text-[#555555] text-[18px] font-sans font-normal leading-[1.625]">
               Providing standard translations, readable digital slides, and bilingual views that bridges the gap between deep academic research and everyday spiritual reflection.
             </p>
           </div>
@@ -104,7 +104,7 @@ export default function AboutUsPage() {
             <h3 style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '20px', fontWeight: 'bold', color: 'rgb(0, 30, 45)' }}>
               Agama Text Collection
             </h3>
-            <p className="mt-2 section-description">
+            <p className="mt-2 text-[#555555] text-[18px] font-sans font-normal leading-[1.625]">
               Explore a growing collection of Agama writings arranged chapter-wise and topic-wise for easy reading.
             </p>
           </div>
@@ -112,24 +112,12 @@ export default function AboutUsPage() {
           {/* Card 4 */}
           <div className="rounded-3xl bg-[#fffdf8] border border-[#ECECEC] p-6 sm:p-8 shadow-sm">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-800 mb-4">
-              <svg
-                className="h-5 w-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                strokeWidth="2"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 5c-.975-3.3-3.036-6.3-6.088-8.5m5.412 8.5H3m14 1a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-globe h-5 w-5" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path><path d="M2 12h20"></path></svg>
             </div>
             <h3 style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '20px', fontWeight: 'bold', color: 'rgb(0, 30, 45)' }}>
               English and Chinese Access
             </h3>
-            <p className="mt-2 section-description">
+            <p className="mt-2 text-[#555555] text-[18px] font-sans font-normal leading-[1.625]">
               Read selected texts in English and Chinese, helping users from different backgrounds connect with the teachings.
             </p>
           </div>
@@ -137,7 +125,7 @@ export default function AboutUsPage() {
       </section>
 
       {/* ── 3. TEACHER CARD ────────────────────────────────────────────── */}
-      <section className="pb-8 md:pb-12">
+      <section className="py-8 md:py-12 ">
         <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="rounded-3xl bg-[#fffdf8] border border-[#ECECEC] p-6 sm:p-10 shadow-sm">
             <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
@@ -150,17 +138,17 @@ export default function AboutUsPage() {
               </div>
               <div className="space-y-4 text-center sm:text-left">
                 <div>
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#001e2d]/60">
+                  <span className="text-[12px] font-semibold uppercase tracking-wider text-[#001e2d]/60">
                     The Guiding Teacher
                   </span>
                   <h2
                     className="mt-1"
-                    style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '24px', fontWeight: 'bold', color: 'rgb(0, 30, 45)' }}
+                    style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '20px', fontWeight: 'bold', color: 'rgb(0, 30, 45)' }}
                   >
                     Datuk Dr Lim Siow Jin (Acharya Nagajiva)
                   </h2>
                 </div>
-                <p className="section-description">
+                <p className="mt-2 text-[#555555] text-[18px] font-sans font-normal leading-[1.625]">
                   Founder of DXN and Sunyatee International Foundation, Datuk Dr Lim has devoted decades to studying, researching, and preserving the timeless teachings of the Buddha and India's ancient seers. This project grows out of his deep wish that the timeless, peaceful wisdom of these ancient sutras remains freely and widely available to everyone who seeks it.
                 </p>
               </div>
@@ -170,12 +158,12 @@ export default function AboutUsPage() {
       </section>
 
       {/* ── 4. WHY WE ARE DOING THIS ─────────────────────────────────────── */}
-      <section className="px-6 pb-8 md:pb-12">
+      <section className="py-8 md:py-12 px-6">
         <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="space-y-6 section-description">
+          <div className="space-y-6 text-[#555555] text-[18px] font-sans font-normal leading-[1.625]">
             <h3
               className="mb-4"
-              style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '24px', fontWeight: 700, color: 'rgb(0, 30, 45)' }}
+              style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '20px', fontWeight: 700, color: 'rgb(0, 30, 45)' }}
             >
               Why We Are Doing This
             </h3>
@@ -190,7 +178,7 @@ export default function AboutUsPage() {
       </section>
 
       {/* ── 5. CALL TO ACTION ──────────────────────────────────────────── */}
-      <section className="pb-12">
+      <section className="py-8 md:py-12 ">
         <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="pt-8 border-t border-[#001e2d]/10 text-center">
             <Link

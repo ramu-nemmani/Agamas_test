@@ -131,7 +131,7 @@ function Lessons() {
                     By {bookAuthor}
                   </p>
 
-                  <p className="mb-4 text-[#555] text-[15px] leading-relaxed">
+                  <p className="mb-4 text-[#555] text-[16px] leading-relaxed">
                     {description || "Authentic ancient scriptures translated with care and devotion."}
                   </p>
 

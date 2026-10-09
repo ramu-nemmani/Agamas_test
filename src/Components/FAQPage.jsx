@@ -27,7 +27,7 @@ export default function FAQPage() {
       />
 
       {/* Hero Section */}
-      <section className="relative pt-8 md:pt-10 pb-8 md:pb-10 overflow-hidden border-b border-[#e8e0d8]/40">
+      <section className="py-8 md:py-12 relative overflow-hidden border-b border-[#e8e0d8]/40">
         <div className="absolute inset-0 bg-gradient-to-br from-[#fdf3ec] via-[#fdf8f4] to-[#f5ede4] pointer-events-none" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[450px] bg-[#cd5c3d0d] rounded-full blur-3xl pointer-events-none" />
 
@@ -47,7 +47,7 @@ export default function FAQPage() {
       </section>
 
       {/* FAQ content */}
-      <section className="py-16 md:py-20 border-b border-[#e8e0d8]/40 bg-[#fdfdfd]/50">
+      <section className="py-8 md:py-12 border-b border-[#e8e0d8]/40 bg-[#fdfdfd]/50">
         <div className="max-w-screen-md mx-auto px-6">
           <div className="bg-white/45 border border-[#001e2d]/5 rounded-[32px] divide-y divide-[#001e2d]/5 overflow-hidden">
             {faqs.map((faq, idx) => {
@@ -94,7 +94,7 @@ export default function FAQPage() {
       </section>
 
       {/* Contact Banner */}
-      <section className="relative py-24 md:py-32 flex items-center justify-center text-center bg-[#050b10]">
+      <section className="py-8 md:py-12 relative flex items-center justify-center text-center bg-[#050b10]">
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50"
           style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1518182170546-076616fd4627?q=80&w=2000&auto=format&fit=crop")' }}

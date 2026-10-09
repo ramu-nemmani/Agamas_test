@@ -282,11 +282,11 @@ export default function VideosListPage() {
                 </>
               ) : hasVideos ? (
                 <>
-                  <h2 className="text-2xl font-semibold text-[#1e1e1e]">
+                  <h2 className="font-semibold text-[#1e1e1e]" style={{ fontSize: '20px' }}>
                     {selectedVideo?.title}
                   </h2>
                   {selectedVideo?.description && (
-                    <p className="mt-2 section-description">
+                    <p className="mt-2 text-[#555555] font-normal leading-[1.625] font-sans" style={{ fontSize: '18px' }}>
                       {selectedVideo.description}
                     </p>
                   )}

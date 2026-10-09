@@ -100,7 +100,7 @@ function Navbar() {
               className="w-10 h-10 rounded-lg object-cover group-hover:scale-105 transition-transform duration-200"
               alt="The Agamas Logo"
             />
-            <span className="relative inline-block text-[22px] md:text-[30px] leading-[28px] md:leading-[36px] font-normal font-agamas-title">
+            <span className="relative inline-block text-[26px] md:text-[30px] leading-[30px] md:leading-[36px] font-normal font-agamas-title">
               <span className="text-[#1e1e1e]">The </span>
               <span className="text-[#cd5c3d] font-normal">Agamas</span>
             </span>
@@ -156,7 +156,7 @@ function Navbar() {
                   } : undefined}
                   className={`px-4 py-2.5 ${link.label === "Reading Room" ? "rounded-full" : "rounded-lg"} text-sm font-medium font-serif-display transition-all duration-150 ${
                     link.label === "Reading Room" 
-                      ? "bg-[#cd5c3d] text-white hover:bg-[#b8503a] shadow-sm"
+                      ? "bg-[rgb(205,92,61)] text-white hover:opacity-90 shadow-sm"
                       : (link.to === "/#chapters" && location.pathname === "/" && location.hash === "#chapters") || (link.to !== "/#chapters" && isActive(link.to))
                         ? "text-[#cd5c3d]"
                         : "text-black hover:text-[#cd5c3d]"
@@ -278,7 +278,7 @@ function Navbar() {
                     } : () => setMenuOpen(false)}
                     className={`block px-4 py-2.5 text-sm font-medium ${link.label === "Reading Room" ? "rounded-full text-center mt-2 mb-1" : "rounded-lg"} transition ${
                       link.label === "Reading Room"
-                        ? "bg-[#cd5c3d] text-white shadow-sm"
+                        ? "bg-[rgb(205,92,61)] text-white shadow-sm"
                         : (link.to === "/#chapters" && location.pathname === "/" && location.hash === "#chapters") || (link.to !== "/#chapters" && isActive(link.to))
                           ? "text-[#111B33] bg-slate-200/40"
                           : "text-[#5F6F87] hover:bg-slate-200/40 hover:text-[#111B33]"

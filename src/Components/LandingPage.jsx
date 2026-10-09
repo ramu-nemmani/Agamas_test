@@ -156,7 +156,7 @@ export default function LandingPage() {
             />
 
             {/* ── 1. HERO SECTION ── */}
-            <section className="sticky top-[76px] z-0 min-h-[calc(100vh-76px)] lg:h-[calc(100vh-76px)] flex flex-col justify-between bg-white text-white overflow-hidden">
+            <section className="py-8 md:py-12 sticky top-[76px] z-0 min-h-[calc(100vh-76px)] lg:h-[calc(100vh-76px)] flex flex-col justify-between bg-white text-white overflow-hidden">
                 {/* Background Image with Overlay */}
                 <div className="absolute inset-0 z-0">
                     <img
@@ -299,7 +299,7 @@ export default function LandingPage() {
             <main className="relative z-10 bg-[#f3ede5] rounded-t-[32px] md:rounded-t-[48px] border-t border-[#001e2d]/5">
 
                 {/* ── LESSONS ──────────────────────────────────────────────────── */}
-                <section id="chapters" className="pt-4 md:pt-8 pb-0 text-[#001e2d]">
+                <section id="chapters" className="py-8 md:py-12 text-[#001e2d]">
                     <Lessons />
                 </section>
 
@@ -311,16 +311,15 @@ export default function LandingPage() {
 
 
                 {/* ── TALKS & VIDEOS ───────────────────────────────────────────── */}
-                <section className="pt-16 md:pt-20 pb-0 text-[#001e2d]">
-                    <div className="max-w-screen-xl mx-auto px-6 md:px-10 text-center mb-5 flex flex-col items-center gap-4">
-                        <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans block">
+                <section className="py-8 md:py-12 text-[#001e2d]">
+                    <div className="text-center max-w-[800px] mx-auto mb-8 space-y-2">
+                        <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans block text-center">
                             MEDIA LIBRARY
                         </span>
                         <h2 className="text-[#001e2d]" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: 'clamp(40px, 6vw, 52px)', fontWeight: 400 }}>
-                            Talks & <span className="font-serif-display italic text-[#cd5c3d] font-normal">Videos</span>
+                            Talks & <span className="italic" style={{ color: '#cd5c3d' }}>Videos</span>
                         </h2>
-                        <p
-                            className="section-description mx-auto max-w-2xl">
+                        <p className="section-description text-center mx-auto max-w-2xl">
                             Discourses, interviews, and study sessions by teachers and speakers.
                         </p>
                     </div>
@@ -328,28 +327,14 @@ export default function LandingPage() {
                 </section>
 
                 {/* ── WHERE TO BEGIN ──────────────────────────────────────── */}
-                <section className="pt-16 pb-8 md:pt-28 md:pb-12 text-[#001e2d]">
+                <section className="py-8 md:py-12 text-[#001e2d]">
                     <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row gap-8 md:gap-16 items-start md:items-center">
-                        <div className="flex-1 space-y-4">
+                        <div className="flex-1 space-y-2">
                             <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans block">
                                 WHERE TO BEGIN
                             </span>
-                            <h2
-                                className="text-[#001e2d] tracking-tight leading-[1.1] text-[38px] sm:text-[46px] md:text-[52px]"
-                                style={{
-                                    fontFamily: '"PP Fragment Glare Regular", Georgia, serif',
-                                    fontWeight: 400,
-                                    fontStyle: 'normal'
-                                }}
-                            >
-                                Every <span
-                                    className="text-[#cd5c3d] text-[42px] sm:text-[50px] md:text-[52px]"
-                                    style={{
-                                        fontFamily: '"PP Fragment Glare Regular", Georgia, serif',
-                                        fontStyle: 'italic',
-                                        fontWeight: 400
-                                    }}
-                                >Journey</span><br />is Unique
+                            <h2 className="text-[#001e2d] leading-[1.1]" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: 'clamp(40px, 6vw, 52px)', fontWeight: 400 }}>
+                                Every <span className="italic" style={{ color: '#cd5c3d' }}>Journey</span><br />is Unique
                             </h2>
                         </div>
                         <div className="flex-1 space-y-6">
@@ -470,7 +455,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* ── VISION, MISSION, IMPORTANCE ──────────────────────────────────────── */}
-                <section id="vision-mission" className="relative py-24 text-[#001e2d] bg-[#fffdf8] z-20">
+                <section id="vision-mission" className="py-8 md:py-12 relative text-[#001e2d] bg-[#fffdf8] z-20">
                     {/* Curved Transition Divider */}
                     <div className="absolute top-0 left-0 w-full overflow-hidden leading-[0] transform -translate-y-[99%] z-20 pointer-events-none">
                         <svg
@@ -486,12 +471,12 @@ export default function LandingPage() {
                     </div>
 
                     <div className="mx-auto max-w-[1360px] px-4 sm:px-6 lg:px-8">
-                        <div className="text-center max-w-[900px] mx-auto mb-20 space-y-4">
-                            <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans block mb-6 text-center">
+                        <div className="text-center max-w-[900px] mx-auto mb-8 space-y-2">
+                            <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans block text-center">
                                 VISION · MISSION · IMPORTANCE
                             </span>
                             <h2 className="text-[#001e2d] text-center" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: 'clamp(40px, 6vw, 52px)', lineHeight: 1.2, fontWeight: 400 }}>
-                                Why Sunyatee International<br className="hidden sm:block" /> Foundation is<br className="hidden sm:block" /> building this <span style={{ fontStyle: 'italic', color: 'rgb(205, 92, 61)', fontSize: 'clamp(40px, 6vw, 52px)', fontWeight: 400 }}>library.</span>
+                                Why Sunyatee International<br className="hidden sm:block" /> Foundation is<br className="hidden sm:block" /> building this <span style={{ fontStyle: 'italic', color: 'rgb(205, 92, 61)' }}>library.</span>
                             </h2>
                             <p
                                 className="max-w-[760px] mx-auto text-center mt-6 section-description"
@@ -599,7 +584,7 @@ export default function LandingPage() {
                             </div>
                         </div>
 
-                        <div className="pt-20 w-full flex justify-center">
+                        <div className="pt-10 w-full flex justify-center">
                             <Link
                                 className="relative inline-flex items-center justify-center py-4 px-10 text-center font-bold text-[#001e2d] hover:opacity-80 transition-opacity"
                                 to="/#chapters"
@@ -637,9 +622,9 @@ export default function LandingPage() {
                 </div>
 
                 {/* ── OUR TEACHERS ───────────────────────────────────────────── */}
-                <div id="leadership" className="pt-12 pb-8 md:pt-16 md:pb-12 text-[#001e2d]">
+                <div id="leadership" className="py-8 md:py-12 text-[#001e2d]">
                     <div className="mx-auto max-w-[1360px] px-4 sm:px-6 lg:px-8">
-                        <div className="text-left mb-16">
+                        <div className="text-left mb-8">
                             <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans">
                                 OUR TEACHERS
                             </span>
@@ -779,7 +764,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* ── TESTIMONIALS ──────────────────────────────────────────────── */}
-                <section className="pt-12 pb-16 md:pt-20 md:pb-28 text-[#001e2d]" id="testimonials">
+                <section className="py-8 md:py-12 text-[#001e2d]" id="testimonials">
                     <div className="mx-auto max-w-[1360px] px-4 sm:px-6 lg:px-8">
                         <div className="text-center max-w-[800px] mx-auto mb-16 space-y-2">
                             <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans block text-center">
@@ -854,14 +839,14 @@ export default function LandingPage() {
                 </section>
 
                 {/* ── FAQ ──────────────────────────────────────────────────────── */}
-                <section className="pt-10 pb-20" id="faq">
+                <section className="py-8 md:py-12 " id="faq">
                     <div className="max-w-screen-md mx-auto px-4 sm:px-6">
-                        <div className="text-center mb-12 flex flex-col items-center gap-2 md:gap-3">
-                            <p className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans">
+                        <div className="text-center max-w-[800px] mx-auto mb-8 space-y-2">
+                            <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans block text-center">
                                 FREQUENTLY ASKED QUESTIONS
-                            </p>
-                            <h2 className="text-[52px] text-[#001e2d] font-agamas-faq font-normal">
-                                You Ask? We <span className="text-[#cd5c3d] italic font-normal">Answer</span>
+                            </span>
+                            <h2 className="text-[#001e2d]" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: 'clamp(40px, 6vw, 52px)', fontWeight: 400 }}>
+                                You Ask? We <span className="italic" style={{ color: '#cd5c3d' }}>Answer</span>
                             </h2>
                         </div>
 
@@ -939,7 +924,7 @@ export default function LandingPage() {
                 </section>
 
                 {/* Contact Banner */}
-                <section className="relative py-24 md:py-32 flex items-center justify-center text-center bg-[#050b10]">
+                <section className="py-8 md:py-12 relative flex items-center justify-center text-center bg-[#050b10]">
                     <div
                         className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50"
                         style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1518182170546-076616fd4627?q=80&w=2000&auto=format&fit=crop")' }}

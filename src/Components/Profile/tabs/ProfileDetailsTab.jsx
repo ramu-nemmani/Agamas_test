@@ -45,7 +45,7 @@ export default function ProfileDetailsTab({ onProfileUpdate }) {
           <button
             onClick={() => setIsEditing(true)}
             className="flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-700 rounded-full text-sm font-medium hover:bg-amber-200 transition-colors"
-            style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}
+            style={{ fontFamily: 'ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"' }}
           >
             <Pen className="w-4 h-4" />
             Edit
@@ -55,7 +55,7 @@ export default function ProfileDetailsTab({ onProfileUpdate }) {
             <button
               onClick={handleCancel}
               className="flex items-center gap-1.5 px-4 py-2 bg-slate-100 text-slate-600 rounded-full text-sm font-medium hover:bg-slate-200 transition-colors"
-              style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}
+              style={{ fontFamily: 'ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"' }}
             >
               <X className="w-4 h-4" />
               Cancel
@@ -64,7 +64,7 @@ export default function ProfileDetailsTab({ onProfileUpdate }) {
               onClick={handleSave}
               disabled={isSaving}
               className="flex items-center gap-1.5 px-4 py-2 text-white rounded-full text-sm font-medium disabled:opacity-50"
-              style={{ backgroundColor: 'rgb(184, 80, 58)', fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}
+              style={{ backgroundColor: 'rgb(205, 92, 61)', fontFamily: 'ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"' }}
             >
               <Save className="w-4 h-4" />
               {isSaving ? "Saving..." : "Save"}
@@ -73,7 +73,7 @@ export default function ProfileDetailsTab({ onProfileUpdate }) {
         )}
       </div>
 
-      <div className="bg-white border border-[#001e2d]/10 rounded-3xl p-6 sm:p-8 space-y-6" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}>
+      <div className="bg-white border border-[#001e2d]/10 rounded-3xl p-6 sm:p-8 space-y-6" style={{ fontFamily: 'ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"' }}>
         <div>
           <label className="block text-sm font-medium text-[#001e2d]/70 mb-1">Full Name</label>
           {isEditing ? (

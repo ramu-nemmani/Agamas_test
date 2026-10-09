@@ -40,7 +40,7 @@ export default function GoodFriendsPage() {
       />
 
       {/* Hero Section */}
-      <section className="relative pt-8 md:pt-10 pb-8 md:pb-10 overflow-hidden border-b border-[#e8e0d8]/40">
+      <section className="py-8 md:py-12 relative overflow-hidden border-b border-[#e8e0d8]/40">
         <div className="absolute inset-0 bg-gradient-to-br from-[#fdf3ec] via-[#fdf8f4] to-[#f5ede4] pointer-events-none" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[450px] bg-[#cd5c3d0d] rounded-full blur-3xl pointer-events-none" />
 
@@ -64,7 +64,7 @@ export default function GoodFriendsPage() {
       </section>
 
       {/* Intro section */}
-      <section className="py-16 md:py-20 border-b border-[#e8e0d8]/40 bg-[#fdfdfd]/50">
+      <section className="py-8 md:py-12 border-b border-[#e8e0d8]/40 bg-[#fdfdfd]/50">
         <div className="max-w-screen-md mx-auto px-6">
           <h2 className="text-2xl md:text-3xl font-light text-[#1e1e1e] font-serif-display text-center mb-6">
             The Importance of a <span className="text-[#cd5c3d] font-semibold">Good Companion (Kalyāṇa-mitra)</span>
@@ -79,7 +79,7 @@ export default function GoodFriendsPage() {
       </section>
 
       {/* Qualities Grid */}
-      <section className="bg-[#f5ede4] py-20 border-b border-[#e8e0d8]/60">
+      <section className="py-8 md:py-12 bg-[#f5ede4] border-b border-[#e8e0d8]/60">
         <div className="max-w-screen-xl mx-auto px-6 md:px-10">
           <div className="text-center mb-16">
             <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans block mb-1">Kalyāṇa-mitra</span>
@@ -107,7 +107,7 @@ export default function GoodFriendsPage() {
       </section>
 
       {/* Call to Action */}
-      <section className="max-w-screen-xl mx-auto px-6 md:px-10 mt-12">
+      <section className="py-8 md:py-12 max-w-screen-xl mx-auto px-6 md:px-10 mt-12">
         <div className="bg-[#cd5c3d] rounded-3xl p-10 md:p-14 text-white text-center shadow-xl shadow-[#cd5c3d30] relative overflow-hidden">
           <div className="absolute inset-0 opacity-5 bg-radial-glow select-none pointer-events-none" />
           <h2 className="text-3xl md:text-4xl font-light tracking-tight mb-4 font-serif-display text-white">
