@@ -82,7 +82,7 @@ export default function FAQPage() {
                   <div
                     className={`transition-all duration-300 ease-in-out ${isOpen ? "max-h-60" : "max-h-0"} overflow-hidden`}
                   >
-                    <div className="px-6 md:px-8 pb-6 bg-transparent section-description">
+                    <div className="px-6 md:px-8 pb-6 bg-transparent text-[16px] sm:text-[18px] md:text-[14px] lg:text-[14px] text-[#555555] font-sans font-normal leading-relaxed">
                       {faq.a}
                     </div>
                   </div>

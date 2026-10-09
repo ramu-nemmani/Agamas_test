@@ -174,20 +174,20 @@ export default function LandingPage() {
                         animate="visible"
                         className="max-w-[900px] text-left"
                     >
-                            <motion.h1
-                                variants={fadeInUp}
-                                custom={1}
-                                className="font-light leading-[1.15] tracking-tight text-left"
-                                style={{
-                                    color: "#EEE5DA",
-                                    fontFamily: "'PP Fragment Glare Regular', 'Playfair Display', Georgia, serif",
-                                    fontSize: "clamp(44px, 8.5vw, 62px)",
-                                    fontWeight: "400",
-                                    backgroundColor: "transparent",
-                                }}
-                            >
-                                You Don't Need to <br className="md:hidden" />Have <br />it All Figured Out.
-                            </motion.h1>
+                        <motion.h1
+                            variants={fadeInUp}
+                            custom={1}
+                            className="font-light leading-[1.15] tracking-tight text-left"
+                            style={{
+                                color: "#EEE5DA",
+                                fontFamily: "'PP Fragment Glare Regular', 'Playfair Display', Georgia, serif",
+                                fontSize: "clamp(44px, 8.5vw, 62px)",
+                                fontWeight: "400",
+                                backgroundColor: "transparent",
+                            }}
+                        >
+                            You Don't Need to <br className="md:hidden" />Have <br />it All Figured Out.
+                        </motion.h1>
                         <motion.h2
                             variants={fadeInUp}
                             custom={2.2}
@@ -735,7 +735,7 @@ export default function LandingPage() {
                                 <p
                                     style={{
                                         fontFamily: '"Open Sans", Helvetica, Arial, Lucida, sans-serif',
-                                        fontSize: "17px",
+                                        fontSize: "16px",
                                         lineHeight: "1.65",
                                         color: "#001E2D",
                                         opacity: 0.8,
@@ -927,7 +927,7 @@ export default function LandingPage() {
                                         <div
                                             className={`transition-all duration-300 ease-in-out ${isOpen ? "max-h-60" : "max-h-0"} overflow-hidden`}
                                         >
-                                            <div className="px-6 md:px-8 pb-6 bg-transparent section-description">
+                                            <div className="px-6 md:px-8 pb-6 bg-transparent text-[16px] sm:text-[18px] md:text-[14px] lg:text-[14px] text-[#555555] font-sans font-normal leading-relaxed">
                                                 {faq.a}
                                             </div>
                                         </div>
