@@ -649,10 +649,10 @@ export default function LandingPage() {
                                 <h3 className="leading-tight text-[#001e2d]" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: 'clamp(28px, 5vw, 36px)', fontWeight: 400 }}>
                                     Datuk Dr Lim Siow Jin
                                 </h3>
-                                <p style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '24px', color: 'rgb(216, 117, 25)' }}>
+                                <p style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '24px', color: 'rgb(205, 92, 61)' }}>
                                     (Acharya Nagajiva)
                                 </p>
-                                <p style={{ color: 'rgb(18, 18, 18)', fontFamily: '"Open Sans", Helvetica, Arial, Lucida, sans-serif', fontSize: '16px', fontWeight: 400, lineHeight: 1.75 }}>
+                                <p style={{ color: '#001E2D', fontFamily: '"Open Sans", Helvetica, Arial, Lucida, sans-serif', fontSize: '16px', fontWeight: 400, lineHeight: 1.75 }}>
                                     Founder of DXN and Sunyatee International Foundation, Datuk Dr Lim Siow Jin (Acharya Nagajiva) has devoted decades of his life to studying, preserving, and translating the teachings of the Buddha and India's ancient seers. Through his deep research, personal compassion, and dedication, he established The Agamas project as a digital sanctuary. Under his guidance, the foundation continues to curate and translate these classical scriptures, ensuring they remain alive, readable, and freely accessible to scholars, practitioners, and seekers across the globe.
                                 </p>
                             </div>
@@ -673,10 +673,10 @@ export default function LandingPage() {
                                 <h3 className="leading-tight text-[#001e2d]" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: 'clamp(28px, 5vw, 36px)', fontWeight: 400 }}>
                                     Dr. Rajesh Savera
                                 </h3>
-                                <p style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '24px', color: 'rgb(216, 117, 25)' }}>
+                                <p style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '24px', color: 'rgb(205, 92, 61)' }}>
                                     (Teacher & Contributor)
                                 </p>
-                                <p style={{ color: 'rgb(18, 18, 18)', fontFamily: '"Open Sans", Helvetica, Arial, Lucida, sans-serif', fontSize: '16px', fontWeight: 400, lineHeight: 1.75 }}>
+                                <p style={{ color: '#001E2D', fontFamily: '"Open Sans", Helvetica, Arial, Lucida, sans-serif', fontSize: '16px', fontWeight: 400, lineHeight: 1.75 }}>
                                     Dr. Rajesh Savera is an instrumental part of The Agamas project. His dedication to traditional teachings and translation efforts ensures that ancient scriptures are accurately and respectfully presented for modern readers.
                                 </p>
                             </div>

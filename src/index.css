@@ -564,7 +564,7 @@ img.vmi-icon {
 
 .vmi-card-heading {
   font-family: "Playfair Display", Georgia, serif;
-  font-size: 17px;
+  font-size: 20px;
   font-weight: 600;
   line-height: 1.4;
   color: #17243D;
@@ -601,12 +601,12 @@ img.vmi-icon {
   font-weight: bold;
   line-height: 1;
   flex-shrink: 0;
-  margin-top: 2px;
+  margin-top: 4px;
 }
 
 .vmi-bullet-text {
   font-family: sans-serif;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 400;
   line-height: 1.55;
   color: #53627A;
@@ -670,6 +670,18 @@ img.vmi-icon {
 
   .vmi-subtitle {
     font-size: 15px;
+  }
+
+  .vmi-card-heading {
+    font-size: 18px;
+  }
+
+  .vmi-bullet-text {
+    font-size: 14px;
+  }
+
+  .vmi-check-circle {
+    margin-top: 3px;
   }
 
   .vmi-btn {
@@ -1953,14 +1965,17 @@ button:hover .draw-path {
     opacity: 0;
     transform: translate3d(0, 0, 0) scale(0.5);
   }
+
   20% {
     opacity: 1;
     transform: translate3d(var(--end-x), var(--end-y), 0) rotate(var(--end-rotate)) scale(1);
   }
+
   80% {
     opacity: 1;
     transform: translate3d(var(--end-x), var(--end-y), 0) rotate(var(--end-rotate)) scale(1);
   }
+
   100% {
     opacity: 0;
     transform: translate3d(0, 0, 0) scale(0.5);
@@ -1980,11 +1995,33 @@ button:hover .draw-path {
     transform: translate3d(var(--end-x), var(--end-y), 0) rotate(var(--end-rotate)) scale(1);
   }
 }
+
 @layer components {
   .section-description {
-    @apply !text-[16px] sm:!text-[18px] md:!text-[20px] !text-[#555555] !font-sans !font-normal !leading-relaxed;
+    font-size: 16px !important;
+    color: #555555 !important;
+    font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
+    font-weight: 400 !important;
+    line-height: 1.625 !important;
   }
+  @media (min-width: 640px) {
+    .section-description { font-size: 18px !important; }
+  }
+  @media (min-width: 768px) {
+    .section-description { font-size: 20px !important; }
+  }
+
   .section-description-light {
-    @apply !text-[16px] sm:!text-[18px] md:!text-[20px] !text-[#fdf8f4] !font-sans !font-normal !leading-relaxed;
+    font-size: 16px !important;
+    color: #fdf8f4 !important;
+    font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
+    font-weight: 400 !important;
+    line-height: 1.625 !important;
+  }
+  @media (min-width: 640px) {
+    .section-description-light { font-size: 18px !important; }
+  }
+  @media (min-width: 768px) {
+    .section-description-light { font-size: 20px !important; }
   }
 }

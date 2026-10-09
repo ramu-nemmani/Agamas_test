@@ -107,7 +107,7 @@ function Navbar() {
           </Link>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 md:gap-8">
           {/* Desktop Nav Links */}
           <nav className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => (
