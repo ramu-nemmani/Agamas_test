@@ -652,7 +652,7 @@ export default function LandingPage() {
                                 <p style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '24px', color: 'rgb(205, 92, 61)' }}>
                                     (Acharya Nagajiva)
                                 </p>
-                                <p style={{ color: '#001E2D', fontFamily: '"Open Sans", Helvetica, Arial, Lucida, sans-serif', fontSize: '16px', fontWeight: 400, lineHeight: 1.75 }}>
+                                <p style={{ color: '#001E2D', fontFamily: 'ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"', fontSize: '16px', fontWeight: 400, lineHeight: 1.75 }}>
                                     Founder of DXN and Sunyatee International Foundation, Datuk Dr Lim Siow Jin (Acharya Nagajiva) has devoted decades of his life to studying, preserving, and translating the teachings of the Buddha and India's ancient seers. Through his deep research, personal compassion, and dedication, he established The Agamas project as a digital sanctuary. Under his guidance, the foundation continues to curate and translate these classical scriptures, ensuring they remain alive, readable, and freely accessible to scholars, practitioners, and seekers across the globe.
                                 </p>
                             </div>
@@ -662,7 +662,7 @@ export default function LandingPage() {
                                 </div>
                             </div>
                             <div className="space-y-6 lg:pl-6 border-t border-[#001e2d]/10 lg:border-t-0 lg:border-l lg:border-[#001e2d]/15 pt-8 lg:pt-0">
-                                <blockquote className="normal text-left section-description" style={{ fontFamily: '"PP Fragment Glare Regular", Helvetica, Arial, Lucida, sans-serif', fontSize: '26px', color: 'rgb(18, 18, 18)' }}>
+                                <blockquote className="normal text-left" style={{ fontFamily: 'ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"', fontSize: '20px', color: '#001e2d', fontWeight: 400, lineHeight: 1.625 }}>
                                     "By preserving these ancient Agama scriptures, we keep the eternal flame of the Buddha's wisdom alive for the generations yet to come."
                                 </blockquote>
                             </div>
@@ -676,7 +676,7 @@ export default function LandingPage() {
                                 <p style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif', fontSize: '24px', color: 'rgb(205, 92, 61)' }}>
                                     (Teacher & Contributor)
                                 </p>
-                                <p style={{ color: '#001E2D', fontFamily: '"Open Sans", Helvetica, Arial, Lucida, sans-serif', fontSize: '16px', fontWeight: 400, lineHeight: 1.75 }}>
+                                <p style={{ color: '#001E2D', fontFamily: 'ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"', fontSize: '16px', fontWeight: 400, lineHeight: 1.75 }}>
                                     Dr. Rajesh Savera is an instrumental part of The Agamas project. His dedication to traditional teachings and translation efforts ensures that ancient scriptures are accurately and respectfully presented for modern readers.
                                 </p>
                             </div>
@@ -686,7 +686,7 @@ export default function LandingPage() {
                                 </div>
                             </div>
                             <div className="space-y-6 lg:pl-6 border-t border-[#001e2d]/10 lg:border-t-0 lg:border-l lg:border-[#001e2d]/15 pt-8 lg:pt-0">
-                                <blockquote className="normal text-left section-description" style={{ fontFamily: '"PP Fragment Glare Regular", Helvetica, Arial, Lucida, sans-serif', fontSize: '26px', color: 'rgb(18, 18, 18)' }}>
+                                <blockquote className="normal text-left" style={{ fontFamily: 'ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"', fontSize: '20px', color: '#001e2d', fontWeight: 400, lineHeight: 1.625 }}>
                                     "Translation is more than converting words; it is the sacred act of carrying ancient spiritual light into the modern mind."
                                 </blockquote>
                             </div>
@@ -734,7 +734,7 @@ export default function LandingPage() {
                                 </p>
                                 <p
                                     style={{
-                                        fontFamily: '"Open Sans", Helvetica, Arial, Lucida, sans-serif',
+                                        fontFamily: 'ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
                                         fontSize: "16px",
                                         lineHeight: "1.65",
                                         color: "#001E2D",
