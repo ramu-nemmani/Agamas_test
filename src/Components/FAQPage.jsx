@@ -111,7 +111,7 @@ export default function FAQPage() {
           </p>
           <Link 
             to="/contact-us" 
-            className="relative inline-flex items-center justify-center py-4 px-10 text-center font-bold transition-opacity hover:opacity-80 group"
+            className="inline-flex items-center justify-center py-4 px-10 text-center font-bold transition-colors hover:text-[#cd5c3d] group"
             style={{ 
               color: "#EEE5DA", 
               fontFamily: '"Open Sans", Helvetica, Arial, Lucida, sans-serif',
@@ -121,9 +121,6 @@ export default function FAQPage() {
             }}
           >
             Contact Us<ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
-            <svg className="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none" viewBox="0 0 245 62" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path className="draw-path" d="M221.454 1.05992C209.233 1.05992 196.967 0.844056 184.758 1.23176C152.169 2.26666 119.695 6.1216 87.9185 11.0694C62.8697 14.9696 32.0837 18.8916 11.2304 30.315C6.18539 33.0786 1.43096 36.7352 1.03015 41.4414C0.265972 50.4143 14.1888 53.7299 24.416 55.5319C61.6914 62.0998 101.664 61.6475 139.728 59.8278C160.389 58.8402 181.344 57.1035 201.302 53.1262C212.268 50.9411 223.078 48.2177 232.898 44.1478C236.243 42.7616 243.25 40.0257 243.783 36.7159C243.94 35.74 244.181 34.1569 243.783 33.1933C243.336 32.1125 238.317 30.4143 237.128 30.0143C229.872 27.5744 221.408 25.6031 213.617 24.2578" stroke="#EEE5DA" strokeWidth="1.5" strokeLinecap="round"></path>
-            </svg>
           </Link>
         </div>
       </section>

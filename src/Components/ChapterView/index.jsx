@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom"
 import { collection, doc, getDoc, getDocs, orderBy, query, where, setDoc, addDoc } from "firebase/firestore";
 import DOMPurify from "dompurify";
 import { Panel, Group as PanelGroup, Separator as PanelResizeHandle } from "react-resizable-panels";
-import { ArrowLeft, ArrowRight, Bookmark, Check, Maximize2, X, ChevronDown, List, PanelLeft, PanelRight, Search, Glasses, LibraryBig, ChevronsUpDown, ChevronRight, FileType, FileText, Headphones, Share2, Menu } from "lucide-react";
+import { ArrowLeft, ArrowRight, Bookmark, Check, Maximize2, X, ChevronDown, List, PanelLeft, PanelRight, Search, Glasses, LibraryBig, ChevronsUpDown, ChevronRight, FileType, FileText, Headphones, Share2, Menu, Play, Pause, RotateCcw } from "lucide-react";
 
 import { db, auth } from "../../firebase";
 import { useLanguages } from "../../context/LanguageContext";
@@ -50,13 +50,52 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
   const [showLeftPanel, setShowLeftPanel] = useState(window.innerWidth >= 1024);
   const [showRightPanel, setShowRightPanel] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("Translation");
+  const initialTab = searchParams.get("tab") || "Translation";
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [showLangMenu, setShowLangMenu] = useState(false);
   const [parallelLang, setParallelLang] = useState(lang);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
+  const [showFontMenu, setShowFontMenu] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isStopScroll, setIsStopScroll] = useState(true);
+
   const containerRef = useRef(null);
   const langMenuRef = useRef(null);
+  const fontMenuRef = useRef(null);
+
+  // Auto-scroll in full screen
+  useEffect(() => {
+    if (!isFullScreen || isStopScroll) return;
+    const scrollContainer = document.getElementById("main-scroll-container");
+    if (!scrollContainer) return;
+
+    let scrollY = scrollContainer.scrollTop;
+    const scrollSpeed = 0.5;
+    const interval = 60;
+    let scrollInterval = null;
+    let delayTimeout = null;
+
+    delayTimeout = setTimeout(() => {
+      scrollInterval = setInterval(() => {
+        if (
+          scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight ||
+          isStopScroll
+        ) {
+          clearInterval(scrollInterval);
+          setIsStopScroll(true);
+          return;
+        }
+        scrollY += scrollSpeed;
+        scrollContainer.scrollTop += scrollSpeed;
+      }, interval);
+    }, 4000); // Wait 4 seconds before starting auto-scroll
+
+    return () => {
+      clearTimeout(delayTimeout);
+      clearInterval(scrollInterval);
+    };
+  }, [isFullScreen, isStopScroll]);
 
   // Synchronize fullscreen state with global state if provided
   useEffect(() => {
@@ -82,19 +121,32 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
       if (langMenuRef.current && !langMenuRef.current.contains(event.target)) {
         setShowLangMenu(false);
       }
+      if (fontMenuRef.current && !fontMenuRef.current.contains(event.target)) {
+        setShowFontMenu(false);
+      }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [langMenuRef]);
+  }, [langMenuRef, fontMenuRef]);
+
+  const activeChapter = chapters.find(c => c.id === visibleChapterId) || currentChapter;
+  const currentLangCode = activeTab === "Language" ? parallelLang : (activeTab === "Source" ? "CN" : lang);
+  const currentLangObj = languages.find(l => l.shortForm === currentLangCode);
+  const currentLangName = currentLangObj?.name || currentLangCode;
 
   useSaveProgress({
     bookId: lessonId,
     bookTitle: lesson?.name,
     coverUrl: lesson?.image || null,
-    lastUrl: `/chapter-view/${lessonId}/${visibleChapterId}?lang=${lang}`,
-    dependencies: [lessonId, visibleChapterId, lang, lesson]
+    chapterId: visibleChapterId,
+    chapterName: activeChapter?.name || (visibleChapterId ? `Chapter ${activeChapter?.position || ''}` : null),
+    activeTab,
+    selectedLanguage: currentLangCode,
+    languageName: currentLangName,
+    lastUrl: `/chapter-view/${lessonId}/${visibleChapterId}?lang=${currentLangCode}&tab=${activeTab}`,
+    dependencies: [lessonId, visibleChapterId, lang, parallelLang, activeTab, lesson, activeChapter]
   });
 
   useEffect(() => {
@@ -107,7 +159,8 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
           const cid = entry.target.id.replace('chapter-', '');
           if (cid) {
             setVisibleChapterId(cid);
-            window.history.replaceState(null, '', `/chapter-view/${lessonId}/${cid}?lang=${lang}`);
+            const currentLangParam = activeTab === "Language" ? parallelLang : (activeTab === "Source" ? "CN" : lang);
+            window.history.replaceState(null, '', `/chapter-view/${lessonId}/${cid}?lang=${currentLangParam}&tab=${activeTab}`);
           }
         }
       });
@@ -128,7 +181,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
       clearTimeout(timer);
       observer.disconnect();
     };
-  }, [chapters, lessonId, lang, activeTab]);
+  }, [chapters, lessonId, lang, parallelLang, activeTab]);
 
   const fontSizes = [
     { label: "12", value: "12" },
@@ -321,7 +374,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
   }
 
   return (
-    <div className={`overflow-hidden flex flex-col ${isFullScreen ? "fixed inset-0 h-screen z-[100] bg-white" : "h-[calc(100vh)] bg-white"}`} ref={containerRef}>
+    <div className={`overflow-hidden flex flex-col ${isFullScreen ? "fixed inset-0 h-screen z-[100] bg-white" : "h-[calc(100vh)] bg-[#f0f4f6]"}`} ref={containerRef}>
       <SEO 
         title={`${currentChapter?.name || 'Chapter View'} - ${lesson?.name || 'Agamas'}`} 
         description={`Read ${currentChapter?.name} from ${lesson?.name}`}
@@ -474,14 +527,14 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
       
       {/* Full Screen Banner */}
       {!isFullScreen && (
-        <div className="sticky z-30 w-full flex justify-center bg-white">
+        <div className="sticky z-30 w-full flex justify-center bg-[#f0f4f6]">
           <div className="w-full max-w-[1336px] bg-[#f0f4f6]">
             <button 
               onClick={() => setIsFullScreen(true)}
-              className="w-full flex items-center justify-center gap-2 py-1.5 text-xs text-[#155370]/70 hover:text-[#155370] hover:bg-black/5 transition-colors cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 py-1.5 text-xs text-[#155370]/70 cursor-pointer group"
             >
-              <ChevronsUpDown className="w-3.5 h-3.5" />
-              <span className="font-medium">Full Screen</span>
+              <ChevronsUpDown className="w-3.5 h-3.5 text-[#155370]/70 group-hover:text-[#155370] transition-colors" />
+              <span className="font-medium group-hover:text-[#155370] transition-colors">Full Screen</span>
             </button>
           </div>
         </div>
@@ -591,23 +644,19 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                             setActiveTab("Language");
                             setShowLangMenu(!showLangMenu);
                           }}
-                          className={`inline-flex items-center justify-center whitespace-nowrap px-1.5 py-2 sm:px-3 sm:py-1.5 text-[13px] sm:text-sm transition-all border-b-2 ${
+                          className={`inline-flex items-center justify-center whitespace-nowrap px-1.5 py-2 sm:px-3 sm:py-1.5 text-[13px] sm:text-sm transition-all border-b-2 cursor-pointer ${
                             activeTab === "Language"
                               ? "font-semibold text-[#cd5c3d] border-[#cd5c3d]" 
                               : "text-gray-500 hover:text-gray-800 hover:border-gray-200 border-transparent"
                           }`}
                         >
-                          Language <ChevronDown className="ml-1 w-3 h-3" />
+                          Language <ChevronDown className={`ml-1 w-3 h-3 transition-transform duration-200 ${showLangMenu ? "rotate-180" : ""}`} />
                         </button>
                         {showLangMenu && (
-                          <div className="absolute top-full left-0 mt-[1px] w-48 bg-white border border-gray-100 rounded-b-lg shadow-lg overflow-hidden z-50">
+                          <div className="absolute top-full left-0 mt-[1px] w-52 bg-white border border-gray-100 rounded-b-lg shadow-lg overflow-hidden z-50">
                             <div className="py-1 flex flex-col">
                               {languages.filter(l => {
-                                if (!l.shortForm || l.shortForm === 'EN') return false;
-                                const lowerName = (l.name || "").toLowerCase();
-                                const exclude = ["chinese to english", "english to hindi", "english to spanish"];
-                                if (exclude.some(ex => lowerName.includes(ex))) return false;
-                                if (["CN-EN", "EN-HI", "EN-ES"].includes(l.shortForm)) return false;
+                                if (!l.shortForm || l.shortForm === 'EN' || l.shortForm === 'CN') return false;
                                 return true;
                               }).map((l) => (
                                 <button
@@ -647,7 +696,45 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                     </div>
                  </div>
 
-                  <div className="flex items-center shrink-0 w-auto md:w-[110px] justify-end bg-white pl-1 sm:pl-2">
+                  <div className="flex items-center shrink-0 w-auto justify-end bg-white pl-1 sm:pl-2 gap-1 sm:gap-1.5">
+                    {/* Font Size Dropdown */}
+                    <div className="relative inline-flex items-center" ref={fontMenuRef}>
+                      <button
+                        onClick={() => setShowFontMenu(!showFontMenu)}
+                        className="flex items-center gap-1 px-2 py-1.5 text-xs sm:text-sm font-medium text-gray-600 hover:text-gray-900 rounded-md hover:bg-gray-100 transition-colors border border-gray-200"
+                        title="Change Font Size"
+                      >
+                        <span className="font-serif font-bold text-xs">A</span>
+                        <span className="text-[11px] sm:text-xs text-gray-500">{fontSize}px</span>
+                        <ChevronDown className={`w-3 h-3 text-gray-500 transition-transform duration-200 ${showFontMenu ? "rotate-180" : ""}`} />
+                      </button>
+
+                      {showFontMenu && (
+                        <div className="absolute top-full right-0 mt-1 w-28 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-50 animate-in fade-in zoom-in-95 duration-100">
+                          <div className="px-3 py-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                            Font Size
+                          </div>
+                          {fontSizes.map((f) => (
+                            <button
+                              key={f.value}
+                              onClick={() => {
+                                setFontSize(f.value);
+                                setShowFontMenu(false);
+                              }}
+                              className={`w-full text-left px-3 py-1.5 text-xs sm:text-sm flex items-center justify-between transition-colors ${
+                                fontSize === f.value
+                                  ? "text-[#cd5c3d] font-semibold bg-[#cd5c3d]/10"
+                                  : "text-gray-700 hover:bg-gray-50"
+                              }`}
+                            >
+                              <span>{f.label}px</span>
+                              {fontSize === f.value && <Check className="w-3.5 h-3.5 text-[#cd5c3d]" />}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
                     <button 
                       onClick={() => setIsSearchOpen(true)} 
                       className="p-2 text-gray-500 hover:text-gray-800 rounded-md hover:bg-gray-100 transition-colors"
@@ -660,16 +747,72 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
              )}
              
              {isFullScreen && (
-               <div className="fixed top-4 right-6 z-50">
-                 <button
-                   onClick={() => setIsFullScreen(false)}
-                   className="p-3 bg-white/80 backdrop-blur border border-gray-200 rounded-full text-gray-700 hover:bg-gray-50 transition-colors"
-                   title="Exit Distraction Free"
-                 >
-                   <X className="w-5 h-5 stroke-1" />
-                 </button>
-               </div>
-             )}
+                <>
+                  {/* Top-right controls overlay */}
+                  <div className="fixed top-5 right-5 z-50 flex items-center">
+                    <button
+                      onClick={() => {
+                        const exit =
+                          document?.exitFullscreen ||
+                          document?.webkitExitFullscreen ||
+                          document?.mozCancelFullScreen ||
+                          document?.msExitFullscreen;
+                        if (exit && document.fullscreenElement) {
+                          try { exit.call(document); } catch (e) {}
+                        }
+                        setIsFullScreen(false);
+                      }}
+                      className="p-2.5 rounded-full bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-700 hover:text-gray-900 transition-colors cursor-pointer shadow-sm"
+                      title="Exit distraction free"
+                    >
+                      <X className="w-5 h-5 stroke-2" />
+                    </button>
+                  </div>
+
+                  {/* Font size + auto scroll controls pill */}
+                  <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-gray-100 hover:bg-gray-200/90 border border-gray-300 rounded-full px-5 py-2.5 text-gray-700 shadow-sm transition-colors">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-gray-500 uppercase tracking-wider font-semibold">
+                        Size
+                      </span>
+                      <select
+                        className="bg-transparent text-gray-700 hover:text-gray-900 text-sm outline-none cursor-pointer pr-1 font-medium"
+                        value={fontSize}
+                        onChange={(e) => setFontSize(e.target.value)}
+                      >
+                        {fontSizes.map((item) => (
+                          <option
+                            key={item.value}
+                            value={item.value}
+                            className="bg-white text-gray-800"
+                          >
+                            {item.label}px
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="w-px h-5 bg-gray-300" />
+
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-gray-500 uppercase tracking-wider font-semibold">
+                        Scroll
+                      </span>
+                      <button
+                        onClick={() => setIsStopScroll((p) => !p)}
+                        className="p-1.5 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-700 hover:text-gray-900 transition-colors flex items-center justify-center cursor-pointer"
+                        title={isStopScroll ? "Resume auto-scroll" : "Pause auto-scroll"}
+                      >
+                        {!isStopScroll ? (
+                          <Pause className="w-4 h-4 fill-current" />
+                        ) : (
+                          <Play className="w-4 h-4 fill-current ml-0.5" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
 
              <div id="main-scroll-container" className="flex-1 overflow-y-auto bg-white">
 

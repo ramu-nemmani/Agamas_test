@@ -76,13 +76,15 @@ export default function MyBooksTab() {
               <div className="mt-4 flex flex-col gap-1 px-1">
                 <h4
                   style={{ fontFamily: "'PP Fragment Glare Regular', Georgia, serif" }}
-                  className="text-[16px] font-normal text-[#001e2d] group-hover:text-[rgb(216,117,25)] transition-colors"
+                  className="text-[16px] font-normal text-[#001e2d] group-hover:text-[rgb(216,117,25)] transition-colors truncate"
+                  title={item.bookTitle}
                 >
                   {item.bookTitle}
                 </h4>
+
                 {item.timestamp && (
-                  <p className="text-[11px] font-normal text-[rgb(216,117,25)] font-sans" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}>
-                    Last read: {new Date(item.timestamp?.toDate()).toLocaleDateString()}
+                  <p className="text-[11px] font-normal text-[#888] mt-1 font-sans">
+                    Last read: {new Date(item.timestamp?.toDate ? item.timestamp.toDate() : item.timestamp).toLocaleDateString()}
                   </p>
                 )}
               </div>

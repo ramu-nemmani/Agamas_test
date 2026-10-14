@@ -44,20 +44,48 @@ export default function Categories() {
   const [pendingAction, setPendingAction] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const executeDownload = async () => {
-    if (pendingAction?.pdfLink) {
-      window.open(pendingAction.pdfLink, "_blank");
+  const triggerDownload = async (url, filename) => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = filename || "download.pdf";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => window.URL.revokeObjectURL(blobUrl), 1000);
+    } catch {
+      // Fallback if CORS prevents fetch
+      const link = document.createElement("a");
+      link.href = url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.download = filename || "download.pdf";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
+  const executeDownload = async (actionToRun) => {
+    const action = actionToRun || pendingAction;
+    if (action?.pdfLink) {
+      const filename = `${action.cat?.name || "chapter"}_${lang || "en"}.pdf`;
+      await triggerDownload(action.pdfLink, filename);
+
       const currentUser = auth.currentUser || user;
-      if (currentUser && pendingAction.cat) {
+      if (currentUser && action.cat) {
         try {
           await setDoc(doc(collection(db, "downloads")), {
             userId: currentUser.uid,
-            chapterId: pendingAction.cat.id,
-            chapterName: pendingAction.cat.name || "",
+            chapterId: action.cat.id,
+            chapterName: action.cat.name || "",
             lessonId: id,
             lessonName: lesson?.name || "",
             language: lang || "",
-            pdfLink: pendingAction.pdfLink,
+            pdfLink: action.pdfLink,
             timestamp: new Date().toISOString()
           });
         } catch (err) {
@@ -71,28 +99,15 @@ export default function Categories() {
 
   const handleDownload = async (cat) => {
     const link = cat.pdfLink ? cat.pdfLink[langMap[lang]] : "";
-    setPendingAction({ type: 'download', pdfLink: link, cat });
+    const action = { type: 'download', pdfLink: link, cat };
+    setPendingAction(action);
     const currentUser = auth.currentUser || user;
     if (!currentUser) {
       setAuthModalOpen(true);
       return;
     }
     if (link) {
-      window.open(link, "_blank");
-      try {
-        await setDoc(doc(collection(db, "downloads")), {
-          userId: currentUser.uid,
-          chapterId: cat.id,
-          chapterName: cat.name || "",
-          lessonId: id,
-          lessonName: lesson?.name || "",
-          language: lang || "",
-          pdfLink: link,
-          timestamp: new Date().toISOString()
-        });
-      } catch (err) {
-        console.error("Error saving download history:", err);
-      }
+      await executeDownload(action);
     } else {
       alert("PDF not available for the selected language.");
     }
@@ -100,7 +115,7 @@ export default function Categories() {
 
   const executePendingAction = () => {
     if (pendingAction?.type === 'download') {
-      executeDownload();
+      executeDownload(pendingAction);
     }
     setPendingAction(null);
   };
@@ -185,7 +200,7 @@ export default function Categories() {
   }, []);
 
   return (
-    <div className="bg-[#fffdf8] min-h-screen text-[#2c2c2c]">
+    <div className="min-h-screen bg-[#fffdf8] pt-12 pb-24 text-[#2c2c2c]">
       <SEO
         title={
           lesson?.name
@@ -201,22 +216,46 @@ export default function Categories() {
         type="website"
       />
 
-      {/* ── Page Header ──────────────────────────────────────────────── */}
-      <div className="max-w-screen-xl mx-auto px-6 md:px-10 pt-6 relative">
-        <button
-          onClick={() => navigate(`/#chapters`)}
-          className="inline-flex items-center gap-2 text-[13px] font-bold text-[#cd5c3d] hover:text-[#b35235] transition-colors tracking-widest uppercase mb-10 md:absolute md:top-10 md:left-0"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back
-        </button>
+      <div className="mx-auto max-w-[1360px] px-4 sm:px-6 lg:px-8">
+        {/* Back Link */}
+        <div className="mb-8 -ml-1">
+          <button
+            onClick={() => navigate(`/#chapters`)}
+            style={{
+              color: "#CD5C3D",
+              backgroundColor: "transparent",
+              fontFamily: 'ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+              fontSize: "12px",
+              lineHeight: "16px",
+              verticalAlign: "baseline",
+              letterSpacing: "0.6px",
+              wordSpacing: "0px",
+              margin: "0px",
+              padding: "0px",
+              fontWeight: 700,
+              fontStyle: "normal",
+              fontVariant: "normal",
+              textTransform: "uppercase",
+              textDecoration: "none",
+              textAlign: "start",
+              textIndent: "0px",
+            }}
+            className="inline-flex items-center gap-2 hover:opacity-85 transition-opacity cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            BACK
+          </button>
+        </div>
 
-        <div className="flex flex-col items-center justify-center gap-6 mt-4 md:mt-16 mb-12">
+        {/* ── Page Header / Title & Controls ──────────────────────────────────────────────── */}
+        <div className="relative mb-12">
+          {/* Title in center */}
+          <div className="flex flex-col items-center justify-center gap-6 mt-4 md:mt-2">
           <h1 className="text-center text-[#001e2d] mb-1">
             <span
               style={{
                 fontFamily: '"PP Fragment Glare Regular", Georgia, serif',
-                fontSize: "30px",
+                fontSize: "clamp(30px, 4vw, 48px)",
                 fontStyle: "normal",
                 fontVariantCaps: "normal",
                 fontVariantEastAsian: "normal",
@@ -227,16 +266,30 @@ export default function Categories() {
             >
               {lesson.name || "Loading…"}
             </span>
-            <span className="mx-3 text-[#cd5c3d] font-light text-[30px]">·</span>
-            <span className="text-[#cd5c3d] italic text-[30px]" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}>All Chapters</span>
+            <span 
+              className="mx-3 text-[#cd5c3d] font-light"
+              style={{ fontSize: "clamp(30px, 4vw, 48px)" }}
+            >
+              ·
+            </span>
+            <span 
+              className="text-[#cd5c3d] italic" 
+              style={{ 
+                fontFamily: '"PP Fragment Glare Regular", Georgia, serif',
+                fontSize: "clamp(30px, 4vw, 48px)"
+              }}
+            >
+              All Chapters
+            </span>
           </h1>
+        </div>
 
           {/* Controls */}
           <div className="flex flex-wrap justify-center items-center gap-3 md:absolute md:top-8 md:right-0 z-10">
             {/* Language selector */}
             <div className="relative">
               <select
-                style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}
+                style={{ fontFamily: 'ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"' }}
                 className="appearance-none bg-white border border-[#e8e0d8] text-[#2c2c2c] text-sm font-medium rounded-full px-4 py-2.5 pr-9 outline-none focus:border-[#cd5c3d] focus:ring-2 focus:ring-[#cd5c3d20] transition cursor-pointer"
                 value={lang || ""}
                 onChange={(e) => navigate("?lang=" + e.target.value)}
@@ -251,11 +304,10 @@ export default function Categories() {
             </div>
           </div>
         </div>
-      </div>
 
-      {/* ── Controls ─────────────────────────────────────────────────── */}
-      <div className="max-w-screen-xl mx-auto px-6 md:px-10 pt-2 pb-24">
-        <div className="mb-8">
+        {/* ── Search & Controls ─────────────────────────────────────────────────── */}
+        <div className="pt-2">
+          <div className="mb-8">
           <p className="text-[#888] text-sm mb-3 ml-1">Select a chapter to view all verses or search below</p>
           <div className="relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#aaa]" />
@@ -292,7 +344,7 @@ export default function Categories() {
                       <h3
                         style={{
                           color: "#3B270E",
-                          fontFamily: "Inter, system-ui, -apple-system, sans-serif",
+                          fontFamily: 'ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
                           fontSize: "16px",
                           lineHeight: "24px",
                           fontWeight: 400,
@@ -315,7 +367,8 @@ export default function Categories() {
 
                   <div className="flex items-center gap-4">
                     <button
-                      className={`inline-flex items-center gap-1.5 text-xs font-semibold border rounded-full px-3 py-1.5 transition-colors border-[#e8e0d8] text-[#666] bg-white hover:border-[#cd5c3d] hover:text-[#cd5c3d]`}
+                      style={{ fontFamily: 'ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"' }}
+                      className={`inline-flex items-center gap-1.5 text-xs font-semibold border rounded-full px-3 py-1.5 transition-colors border-[#e8e0d8] text-[#666] bg-white hover:border-[#cd5c3d] hover:text-[#cd5c3d] cursor-pointer`}
                       onClick={(e) => {
                         e.stopPropagation();
                         handleDownload(cat);
@@ -348,6 +401,7 @@ export default function Categories() {
               </p>
             </div>
           )}
+        </div>
         </div>
 
         <AuthModal

@@ -8,15 +8,13 @@ const stripInlineStyles = (htmlString) => {
 };
 
 function LanguageChapterRenderer({ chapter, langMap, lang, fontSize, isFirst }) {
-  const [enPosts, setEnPosts] = useState([]);
-  const [langPosts, setLangPosts] = useState([]);
-  const [enLoading, setEnLoading] = useState(true);
-  const [langLoading, setLangLoading] = useState(true);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
   const chapterRef = useRef(null);
 
-  const enLangId = langMap["EN"];
-  const selectedLangId = langMap[lang];
+  // Find the Firestore language ID for the chosen language
+  const targetLangId = langMap[lang] || langMap[`${lang}-EN`] || langMap[`EN-${lang}`] || lang;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -36,59 +34,35 @@ function LanguageChapterRenderer({ chapter, langMap, lang, fontSize, isFirst }) 
 
   useEffect(() => {
     if (!isVisible) return;
-    if (!enLangId) {
-      setEnLoading(false);
+    if (!targetLangId) {
+      setPosts([]);
+      setLoading(false);
       return;
     }
-    const fetchEnPosts = async () => {
+    const fetchPosts = async () => {
       try {
+        setLoading(true);
         const postQuery = query(
           collection(db, "posts"),
           where("chapterId", "==", chapter.id),
-          where("language", "==", enLangId),
+          where("language", "==", targetLangId),
           orderBy("position")
         );
         const snapshot = await getDocs(postQuery);
-        setEnPosts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        setPosts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
       } catch (e) {
         console.error(e);
       } finally {
-        setEnLoading(false);
+        setLoading(false);
       }
     };
-    fetchEnPosts();
-  }, [chapter.id, enLangId, isVisible]);
-
-  useEffect(() => {
-    if (!isVisible) return;
-    if (!selectedLangId) {
-      setLangPosts([]);
-      setLangLoading(false);
-      return;
-    }
-    const fetchLangPosts = async () => {
-      try {
-        const postQuery = query(
-          collection(db, "posts"),
-          where("chapterId", "==", chapter.id),
-          where("language", "==", selectedLangId),
-          orderBy("position")
-        );
-        const snapshot = await getDocs(postQuery);
-        setLangPosts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLangLoading(false);
-      }
-    };
-    fetchLangPosts();
-  }, [chapter.id, selectedLangId, isVisible]);
+    fetchPosts();
+  }, [chapter.id, targetLangId, isVisible]);
 
   const renderSinglePost = (post) => {
     if (!post) return null;
     return (
-      <div className="relative group">
+      <div key={post.id} id={`post-${post.id}`} className="relative group mb-8">
         {post.post_title && post.post_title !== chapter.name && (
           <h4 
             className="font-semibold mb-4 text-[#001e2d] text-lg"
@@ -122,8 +96,8 @@ function LanguageChapterRenderer({ chapter, langMap, lang, fontSize, isFirst }) 
     );
   };
 
-  const renderParallelPosts = () => {
-    if (enLoading || langLoading) {
+  const renderContent = () => {
+    if (loading) {
       return (
         <div className="flex justify-center py-16 w-full">
           <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#cd5c3d] border-t-transparent"></div>
@@ -131,29 +105,17 @@ function LanguageChapterRenderer({ chapter, langMap, lang, fontSize, isFirst }) 
       );
     }
     
-    if (enPosts.length === 0 && langPosts.length === 0) {
+    if (posts.length === 0) {
       return (
-        <div className="text-center py-16 text-gray-500 italic bg-white rounded-lg border border-gray-200 w-full">
-          No content available.
-        </div>
+        <div className="py-8 invisible w-full" aria-hidden="true" />
       );
     }
 
-    const maxLength = Math.max(enPosts.length, langPosts.length);
-    return Array.from({ length: maxLength }).map((_, i) => (
-      <div key={i} className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start border-b border-gray-100 last:border-b-0 pb-8 last:pb-0 mb-8 last:mb-0">
-        <div>
-          {enPosts[i] ? renderSinglePost(enPosts[i]) : (
-            <div className="text-center py-4 text-gray-400 italic">No English translation for this section</div>
-          )}
-        </div>
-        <div>
-          {langPosts[i] ? renderSinglePost(langPosts[i]) : (
-            <div className="text-center py-4 text-gray-400 italic">No content available in this language</div>
-          )}
-        </div>
+    return (
+      <div className="space-y-6">
+        {posts.map((post) => renderSinglePost(post))}
       </div>
-    ));
+    );
   };
 
   return (
@@ -191,7 +153,7 @@ function LanguageChapterRenderer({ chapter, langMap, lang, fontSize, isFirst }) 
 
       {isVisible ? (
         <div className="flex flex-col" style={{ fontSize: `${fontSize}px` }}>
-          {renderParallelPosts()}
+          {renderContent()}
         </div>
       ) : (
         <div className="py-32 flex justify-center">

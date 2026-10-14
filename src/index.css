@@ -1703,17 +1703,6 @@ html {
   animation: pulse-slow 4s ease-in-out infinite;
 }
 
-/* SVG draw-path hover animation */
-.draw-path {
-  stroke-dasharray: 800;
-  stroke-dashoffset: 800;
-  transition: stroke-dashoffset 0.6s ease;
-}
-
-a:hover .draw-path,
-button:hover .draw-path {
-  stroke-dashoffset: 0;
-}
 
 /* Force standard font in specific pages */
 .page-standard-font,

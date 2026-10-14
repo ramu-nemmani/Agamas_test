@@ -85,11 +85,11 @@ function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-[60] transition-all duration-300 border-b border-[#E5DEC9]/60 bg-[#f3ede5] py-3">
-      <div className="mx-auto flex max-w-[1360px] items-center justify-between px-4 sm:px-6 lg:px-8 py-3">
+    <header className="sticky top-0 z-[60] transition-all duration-300 border-b border-transparent bg-[#f3ede5] py-3">
+      <div className="mx-auto flex max-w-[1360px] items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
 
         {/* Logo */}
-        <div className="flex items-center gap-3 cursor-pointer -ml-1">
+        <div className="flex items-center gap-3 cursor-pointer">
           <Link 
             to="/" 
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
@@ -97,53 +97,51 @@ function Navbar() {
           >
             <img
               src={logo}
-              className="w-10 h-10 rounded-lg object-cover group-hover:scale-105 transition-transform duration-200"
+              className="h-9 sm:h-14 w-auto object-contain rounded-lg group-hover:scale-105 transition-transform duration-200"
               alt="The Agamas Logo"
             />
-            <span className="relative inline-block text-[26px] md:text-[30px] leading-[30px] md:leading-[36px] font-normal font-agamas-title">
+            <span className="relative inline-block text-[28px] sm:text-[34px] md:text-[38px] leading-[32px] sm:leading-[38px] md:leading-[42px] font-normal font-agamas-title">
               <span className="text-[#1e1e1e]">The </span>
               <span className="text-[#cd5c3d] font-normal">Agamas</span>
             </span>
           </Link>
         </div>
 
-        <div className="flex items-center gap-4 md:gap-8">
+        <div className="flex items-center gap-4">
           {/* Desktop Nav Links */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden sm:flex items-center gap-5">
             {navLinks.map((link) => (
               link.dropdown ? (
                 <div key={link.label} className="relative group">
                   <button
-                    className={`px-4 py-2.5 rounded-lg text-sm font-medium font-serif-display transition-all duration-150 flex items-center gap-1 ${
+                    className={`nav-link flex items-center gap-1 focus:outline-none cursor-pointer font-serif-display transition-colors duration-200 ${
                       link.dropdown.some(d => isActive(d.to))
                         ? "text-[#cd5c3d]"
-                        : "text-black hover:text-[#cd5c3d]"
+                        : "text-[#5D554D] hover:text-[#cd5c3d]"
                     }`}
                   >
                     {link.label}
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                    <ChevronDown className="w-3.5 h-3.5 group-hover:rotate-180 transition-transform duration-200" />
                   </button>
                   {/* Dropdown Menu */}
-                  <div className="absolute left-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                    <div className="w-48 bg-[#f3ede5]/95 backdrop-blur border border-[#E9E4DA] rounded-xl shadow-lg py-2 flex flex-col">
-                      {link.dropdown.map((subItem) => (
-                        <Link
-                          key={subItem.to}
-                          to={subItem.to}
-                          onClick={subItem.to.startsWith("/#") ? (e) => {
-                            e.preventDefault();
-                            handleHashLinkClick(subItem.to);
-                          } : undefined}
-                          className={`px-4 py-2 text-sm font-medium transition-colors ${
-                            isActive(subItem.to)
-                              ? "text-[#cd5c3d] bg-white/50"
-                              : "text-black hover:text-[#cd5c3d] hover:bg-white/50"
-                          }`}
-                        >
-                          {subItem.label}
-                        </Link>
-                      ))}
-                    </div>
+                  <div className="absolute top-full left-0 mt-2 w-48 bg-[#f3ede5] border border-[#E9E4DA] rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 flex flex-col py-2 z-50 shadow-lg">
+                    {link.dropdown.map((subItem) => (
+                      <Link
+                        key={subItem.to}
+                        to={subItem.to}
+                        onClick={subItem.to.startsWith("/#") ? (e) => {
+                          e.preventDefault();
+                          handleHashLinkClick(subItem.to);
+                        } : undefined}
+                        className={`px-4 py-2 text-sm font-medium transition ${
+                          isActive(subItem.to)
+                            ? "text-[#cd5c3d] bg-amber-500/10"
+                            : "text-[#5D554D] hover:bg-amber-500/10 hover:text-[#cd5c3d]"
+                        }`}
+                      >
+                        {subItem.label}
+                      </Link>
+                    ))}
                   </div>
                 </div>
               ) : (
@@ -154,13 +152,15 @@ function Navbar() {
                     e.preventDefault();
                     handleHashLinkClick(link.to);
                   } : undefined}
-                  className={`px-4 py-2.5 ${link.label === "Reading Room" ? "rounded-full" : "rounded-lg"} text-sm font-medium font-serif-display transition-all duration-150 ${
-                    link.label === "Reading Room" 
-                      ? "bg-[rgb(205,92,61)] text-white hover:opacity-90 shadow-sm"
-                      : (link.to === "/#chapters" && location.pathname === "/" && location.hash === "#chapters") || (link.to !== "/#chapters" && isActive(link.to))
-                        ? "text-[#cd5c3d]"
-                        : "text-black hover:text-[#cd5c3d]"
-                  }`}
+                  className={
+                    link.label === "Reading Room"
+                      ? "inline-flex items-center justify-center px-5 py-2 text-sm font-medium text-white bg-[#cd5c3d] rounded-full hover:opacity-90 transition font-serif-display"
+                      : `nav-link font-serif-display transition-colors duration-200 ${
+                          (link.to === "/#chapters" && location.pathname === "/" && location.hash === "#chapters") || (link.to !== "/#chapters" && isActive(link.to))
+                            ? "text-[#cd5c3d]"
+                            : "text-[#5D554D] hover:text-[#cd5c3d]"
+                        }`
+                  }
                 >
                   {link.label}
                 </Link>
@@ -174,7 +174,7 @@ function Navbar() {
               <div className="relative">
                 <button
                   onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                  className="flex items-center justify-center w-9 h-9 rounded-full bg-amber-100 text-[#cd5c3d] hover:bg-amber-200 focus:outline-none transition-colors font-medium text-lg uppercase overflow-hidden ml-2"
+                  className="flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-amber-100 text-[#cd5c3d] hover:bg-amber-200 focus:outline-none transition-colors font-medium text-lg uppercase overflow-hidden"
                 >
                   {user.photoURL ? (
                     <img src={user.photoURL} alt={user.name || "Profile"} className="w-full h-full object-cover" />
@@ -223,7 +223,7 @@ function Navbar() {
             ) : (
               <button
                 onClick={() => setAuthModalOpen(true)}
-                className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-slate-900 rounded-full hover:bg-slate-800 transition ml-2"
+                className="inline-flex items-center justify-center whitespace-nowrap px-3 py-1.5 text-xs sm:px-5 sm:py-2 sm:text-sm font-medium text-white bg-slate-900 rounded-full hover:bg-slate-800 transition"
               >
                 Sign In
               </button>
@@ -278,7 +278,7 @@ function Navbar() {
                     } : () => setMenuOpen(false)}
                     className={`block px-4 py-2.5 text-sm font-medium ${link.label === "Reading Room" ? "rounded-full text-center mt-2 mb-1" : "rounded-lg"} transition ${
                       link.label === "Reading Room"
-                        ? "bg-[rgb(205,92,61)] text-white shadow-sm"
+                        ? "bg-[#cd5c3d] text-white shadow-sm"
                         : (link.to === "/#chapters" && location.pathname === "/" && location.hash === "#chapters") || (link.to !== "/#chapters" && isActive(link.to))
                           ? "text-[#111B33] bg-slate-200/40"
                           : "text-[#5F6F87] hover:bg-slate-200/40 hover:text-[#111B33]"

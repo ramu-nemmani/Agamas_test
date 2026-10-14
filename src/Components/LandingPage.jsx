@@ -156,7 +156,7 @@ export default function LandingPage() {
             />
 
             {/* ── 1. HERO SECTION ── */}
-            <section className="py-8 md:py-12 sticky top-[76px] z-0 min-h-[calc(100vh-76px)] lg:h-[calc(100vh-76px)] flex flex-col justify-between bg-white text-white overflow-hidden">
+            <section className="sticky top-[76px] z-0 min-h-[calc(100dvh-76px)] lg:h-[calc(100dvh-76px)] flex flex-col justify-between bg-white text-white overflow-hidden">
                 {/* Background Image with Overlay */}
                 <div className="absolute inset-0 z-0">
                     <img
@@ -186,12 +186,12 @@ export default function LandingPage() {
                                 backgroundColor: "transparent",
                             }}
                         >
-                            You Don't Need to <br className="md:hidden" />Have <br />it All Figured Out.
+                            You Don't Need to Have<br />it All Figured Out.
                         </motion.h1>
                         <motion.h2
                             variants={fadeInUp}
                             custom={2.2}
-                            className="mt-2 md:mt-4 text-left"
+                            className="mt-4 text-left"
                             style={{
                                 fontSize: "clamp(44px, 8.5vw, 62px)",
                                 color: "RGB(238, 229, 218)",
@@ -200,13 +200,13 @@ export default function LandingPage() {
                                 lineHeight: "1.1",
                             }}
                         >
-                            Just a Place to <br className="md:hidden" />Start
+                            Just a Place to Start
                         </motion.h2>
                     </motion.div>
                 </div>
 
                 {/* Hero Bottom Content (Three-Column Strip) */}
-                <div className="relative z-10 mx-auto w-full max-w-[1360px] px-4 sm:px-6 lg:px-8 pb-12 md:pb-8">
+                <div className="relative z-10 mx-auto w-full max-w-[1360px] px-4 sm:px-6 lg:px-8 pb-4">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -215,7 +215,7 @@ export default function LandingPage() {
                     >
                         <div className="flex w-full flex-col md:flex-row">
                             {/* What You'll Learn */}
-                            <div className="flex min-w-0 flex-1 flex-col pt-5 pb-7 text-left">
+                            <div className="flex min-w-0 flex-1 flex-col pt-3 pb-3 md:pt-5 md:pb-7 text-left">
                                 <h3
                                     className="m-0"
                                     style={{
@@ -223,7 +223,7 @@ export default function LandingPage() {
                                         fontStyle: "italic",
                                         color: "#eee5da",
                                         fontSize: "clamp(1.188rem, 1.077rem + 0.469vw, 1.5rem)",
-                                        lineHeight: "1.6",
+                                        lineHeight: "1.4",
                                         fontWeight: "normal",
                                     }}
                                 >
@@ -240,7 +240,7 @@ export default function LandingPage() {
                             </div>
 
                             {/* What You'll Gain */}
-                            <div className="relative flex min-w-0 flex-1 flex-col pt-5 pb-7 md:pl-6 text-left before:absolute before:left-0 before:top-0 before:h-px before:w-full md:before:h-[94px] md:before:w-px before:bg-white before:content-['']">
+                            <div className="relative flex min-w-0 flex-1 flex-col pt-3 pb-3 md:pt-5 md:pb-7 md:pl-6 text-left before:absolute before:left-0 before:top-0 before:h-px before:w-full md:before:h-[94px] md:before:w-px before:bg-white before:content-['']">
                                 <h3
                                     className="m-0"
                                     style={{
@@ -248,7 +248,7 @@ export default function LandingPage() {
                                         fontStyle: "italic",
                                         color: "#eee5da",
                                         fontSize: "clamp(1.188rem, 1.077rem + 0.469vw, 1.5rem)",
-                                        lineHeight: "1.6",
+                                        lineHeight: "1.4",
                                         fontWeight: "normal",
                                     }}
                                 >
@@ -265,7 +265,7 @@ export default function LandingPage() {
                             </div>
 
                             {/* Who Should Attend */}
-                            <div className="relative flex min-w-0 flex-1 flex-col pt-5 pb-7 md:pl-6 text-left before:absolute before:left-0 before:top-0 before:h-px before:w-full md:before:h-[94px] md:before:w-px before:bg-white before:content-['']">
+                            <div className="relative flex min-w-0 flex-1 flex-col pt-3 pb-3 md:pt-5 md:pb-7 md:pl-6 text-left before:absolute before:left-0 before:top-0 before:h-px before:w-full md:before:h-[94px] md:before:w-px before:bg-white before:content-['']">
                                 <h3
                                     className="m-0"
                                     style={{
@@ -273,7 +273,7 @@ export default function LandingPage() {
                                         fontStyle: "italic",
                                         color: "#eee5da",
                                         fontSize: "clamp(1.188rem, 1.077rem + 0.469vw, 1.5rem)",
-                                        lineHeight: "1.6",
+                                        lineHeight: "1.4",
                                         fontWeight: "normal",
                                     }}
                                 >
@@ -586,7 +586,7 @@ export default function LandingPage() {
 
                         <div className="pt-10 w-full flex justify-center">
                             <Link
-                                className="relative inline-flex items-center justify-center py-4 px-10 text-center font-bold text-[#001e2d] hover:opacity-80 transition-opacity"
+                                className="inline-flex items-center justify-center py-4 px-10 text-center font-bold text-[#001e2d] group"
                                 to="/#chapters"
                                 onClick={(e) => {
                                     if (location.pathname === "/") {
@@ -599,9 +599,6 @@ export default function LandingPage() {
                                 style={{ fontFamily: '"Open Sans", Helvetica, Arial, Lucida, sans-serif', fontSize: '18px', lineHeight: '18px', fontWeight: 700 }}
                             >
                                 Learn More About The Agamas<ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
-                                <svg className="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none" viewBox="0 0 245 62" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path className="draw-path" d="M221.454 1.05992C209.233 1.05992 196.967 0.844056 184.758 1.23176C152.169 2.26666 119.695 6.1216 87.9185 11.0694C62.8697 14.9696 32.0837 18.8916 11.2304 30.315C6.18539 33.0786 1.43096 36.7352 1.03015 41.4414C0.265972 50.4143 14.1888 53.7299 24.416 55.5319C61.6914 62.0998 101.664 61.6475 139.728 59.8278C160.389 58.8402 181.344 57.1035 201.302 53.1262C212.268 50.9411 223.078 48.2177 232.898 44.1478C236.243 42.7616 243.25 40.0257 243.783 36.7159C243.94 35.74 244.181 34.1569 243.783 33.1933C243.336 32.1125 238.317 30.4143 237.128 30.0143C229.872 27.5744 221.408 25.6031 213.617 24.2578" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" />
-                                </svg>
                             </Link>
                         </div>
                     </div>
@@ -733,7 +730,7 @@ export default function LandingPage() {
                             <div className="pt-2 flex justify-center lg:justify-start">
                                 <a
                                     href="#chapters"
-                                    className="relative inline-flex items-center justify-center py-3 px-8 text-center font-bold text-[#001e2d] hover:opacity-80 transition-opacity group"
+                                    className="inline-flex items-center justify-center py-3 px-8 text-center font-bold text-[#001e2d] group"
                                     style={{
                                         fontFamily: '"Open Sans", Helvetica, Arial, Lucida, sans-serif',
                                         fontSize: '18px',
@@ -741,21 +738,7 @@ export default function LandingPage() {
                                     }}
                                 >
                                     <span>Ready to Explore</span>
-                                    <svg
-                                        className="absolute inset-0 w-full h-full pointer-events-none transition-transform duration-300 group-hover:scale-105"
-                                        preserveAspectRatio="none"
-                                        viewBox="0 0 245 62"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            className="draw-path"
-                                            d="M221.454 1.05992C209.233 1.05992 196.967 0.844056 184.758 1.23176C152.169 2.26666 119.695 6.1216 87.9185 11.0694C62.8697 14.9696 32.0837 18.8916 11.2304 30.315C6.18539 33.0786 1.43096 36.7352 1.03015 41.4414C0.265972 50.4143 14.1888 53.7299 24.416 55.5319C61.6914 62.0998 101.664 61.6475 139.728 59.8278C160.389 58.8402 181.344 57.1035 201.302 53.1262C212.268 50.9411 223.078 48.2177 232.898 44.1478C236.243 42.7616 243.25 40.0257 243.783 36.7159C243.94 35.74 244.181 34.1569 243.783 33.1933C243.336 32.1125 238.317 30.4143 237.128 30.0143C229.872 27.5744 221.408 25.6031 213.617 24.2578"
-                                            stroke="#002031"
-                                            strokeWidth="1.5"
-                                            strokeLinecap="round"
-                                        />
-                                    </svg>
+                                    <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
                                 </a>
                             </div>
                         </div>
@@ -941,7 +924,7 @@ export default function LandingPage() {
                         </p>
                         <Link
                             to="/contact-us"
-                            className="relative inline-flex items-center justify-center py-4 px-10 text-center font-bold transition-opacity hover:opacity-80 group"
+                            className="inline-flex items-center justify-center py-4 px-10 text-center font-bold transition-colors hover:text-[#cd5c3d] group"
                             style={{
                                 color: "#EEE5DA",
                                 fontFamily: '"Open Sans", Helvetica, Arial, Lucida, sans-serif',
@@ -951,9 +934,6 @@ export default function LandingPage() {
                             }}
                         >
                             Contact Us<ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
-                            <svg className="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none" viewBox="0 0 245 62" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path className="draw-path" d="M221.454 1.05992C209.233 1.05992 196.967 0.844056 184.758 1.23176C152.169 2.26666 119.695 6.1216 87.9185 11.0694C62.8697 14.9696 32.0837 18.8916 11.2304 30.315C6.18539 33.0786 1.43096 36.7352 1.03015 41.4414C0.265972 50.4143 14.1888 53.7299 24.416 55.5319C61.6914 62.0998 101.664 61.6475 139.728 59.8278C160.389 58.8402 181.344 57.1035 201.302 53.1262C212.268 50.9411 223.078 48.2177 232.898 44.1478C236.243 42.7616 243.25 40.0257 243.783 36.7159C243.94 35.74 244.181 34.1569 243.783 33.1933C243.336 32.1125 238.317 30.4143 237.128 30.0143C229.872 27.5744 221.408 25.6031 213.617 24.2578" stroke="#EEE5DA" strokeWidth="1.5" strokeLinecap="round"></path>
-                            </svg>
                         </Link>
                     </div>
                 </section>

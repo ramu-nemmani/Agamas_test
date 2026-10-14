@@ -98,9 +98,13 @@ function Lessons() {
             const bookAuthor = author || "Datuk Dr Lim Siow Jin (Acharya Nagajiva)";
 
             return (
-              <div key={id || i} className="flex flex-col sm:flex-row items-center sm:items-center gap-6 sm:gap-8">
-                {/* Book Cover Container - Responsive size & non-clickable */}
-                <div className="relative aspect-[2/3] w-full max-w-[220px] sm:w-[180px] md:w-[210px] lg:w-[240px] shrink-0 rounded-xl overflow-hidden border border-[#e8e0d8] shadow-sm pointer-events-none select-none">
+              <div
+                key={id || i}
+                onClick={() => navigate("/chapters/" + id)}
+                className="flex flex-col sm:flex-row items-center sm:items-center gap-6 sm:gap-8 group cursor-pointer"
+              >
+                {/* Book Cover Container - Responsive size */}
+                <div className="relative aspect-[2/3] w-full max-w-[220px] sm:w-[180px] md:w-[210px] lg:w-[240px] shrink-0 rounded-xl overflow-hidden border border-[#e8e0d8] shadow-sm select-none transition-transform duration-300 group-hover:scale-[1.02] group-hover:shadow-md">
                   <BookCover
                     imageUrl={imageUrl}
                     title={name}
@@ -136,9 +140,8 @@ function Lessons() {
                   </p>
 
                   <div className="flex justify-center sm:justify-start">
-                    <Link
-                      to={"/chapters/" + id}
-                      className="relative inline-flex items-center justify-center py-3 px-6 text-center font-bold text-[#001e2d] hover:opacity-80 transition-opacity group"
+                    <span
+                      className="inline-flex items-center justify-center py-2.5 px-6 text-center font-bold text-[#001e2d]"
                       style={{
                         fontFamily: '"Open Sans", Helvetica, Arial, Lucida, sans-serif',
                         fontSize: '18px',
@@ -154,22 +157,7 @@ function Lessons() {
                       }}
                     >
                       <span>Read Book</span>
-                      <svg
-                        className="absolute inset-0 w-full h-full pointer-events-none transition-transform duration-300 group-hover:scale-105"
-                        preserveAspectRatio="none"
-                        viewBox="0 0 245 62"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          className="draw-path"
-                          d="M221.454 1.05992C209.233 1.05992 196.967 0.844056 184.758 1.23176C152.169 2.26666 119.695 6.1216 87.9185 11.0694C62.8697 14.9696 32.0837 18.8916 11.2304 30.315C6.18539 33.0786 1.43096 36.7352 1.03015 41.4414C0.265972 50.4143 14.1888 53.7299 24.416 55.5319C61.6914 62.0998 101.664 61.6475 139.728 59.8278C160.389 58.8402 181.344 57.1035 201.302 53.1262C212.268 50.9411 223.078 48.2177 232.898 44.1478C236.243 42.7616 243.25 40.0257 243.783 36.7159C243.94 35.74 244.181 34.1569 243.783 33.1933C243.336 32.1125 238.317 30.4143 237.128 30.0143C229.872 27.5744 221.408 25.6031 213.617 24.2578"
-                          stroke="#002031"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                        />
-                      </svg>
-                    </Link>
+                    </span>
                   </div>
                 </div>
               </div>

@@ -119,9 +119,7 @@ function ChapterContentRenderer({ chapter, langMap, lang, fontSize, isFirst }) {
               </div>
             ))
           ) : (
-            <div className="text-center py-16 text-gray-500 italic bg-white rounded-lg border border-gray-200">
-              No text available in this translation.
-            </div>
+            <div className="py-8 invisible" aria-hidden="true" />
           )}
         </div>
       ) : (
