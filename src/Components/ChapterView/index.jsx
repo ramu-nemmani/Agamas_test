@@ -55,13 +55,17 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
   const [showLangMenu, setShowLangMenu] = useState(false);
   const [parallelLang, setParallelLang] = useState(lang);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [targetChapterId, setTargetChapterId] = useState(chapterId);
+  const pendingSearchRef = useRef(null);
 
   const [showFontMenu, setShowFontMenu] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isStopScroll, setIsStopScroll] = useState(true);
+  const [langMenuPos, setLangMenuPos] = useState({ top: 0, left: 0 });
 
   const containerRef = useRef(null);
   const langMenuRef = useRef(null);
+  const langBtnRef = useRef(null);
   const fontMenuRef = useRef(null);
 
   // Auto-scroll in full screen
@@ -227,8 +231,12 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
     if (chapters.length > 0) {
       const current = chapters.find(c => c.id === chapterId);
       setCurrentChapter(current || null);
+      setTargetChapterId(chapterId);
 
       setTimeout(() => {
+        // If search navigation is in progress, skip default chapter top scroll
+        if (pendingSearchRef.current) return;
+
         const el = document.getElementById(`chapter-${chapterId}`);
         const container = document.getElementById('main-scroll-container');
         if (el && container) {
@@ -345,23 +353,168 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
   const nextChapter = currentChapterIndex < chapters.length - 1 ? chapters[currentChapterIndex + 1] : null;
 
   const handleSearchResultClick = (result) => {
+    // If post belongs to another language, switch tab or parallelLang
+    const postLangId = result.post?.language;
+    if (postLangId) {
+      const matchedLang = languages.find(l => l.id === postLangId);
+      if (matchedLang) {
+        const shortForm = matchedLang.shortForm;
+        if (shortForm === "EN") {
+          setActiveTab("Translation");
+        } else if (shortForm === "CN") {
+          setActiveTab("Source");
+        } else {
+          setActiveTab("Language");
+          setParallelLang(shortForm);
+        }
+      }
+    }
+
+    // Force target chapter to load immediately
+    setTargetChapterId(result.chapterId);
+    pendingSearchRef.current = result.post.id;
+
     // navigate to chapter if different
     if (result.chapterId !== chapterId) {
       navigate(`/chapter-view/${lessonId}/${result.chapterId}?lang=${lang}`);
     }
     
     setIsSearchOpen(false);
-    
-    // wait for render then scroll
-    setTimeout(() => {
-      const el = document.getElementById(`post-${result.post.id}`);
-      const container = document.getElementById('main-scroll-container');
-      if (el && container) {
-        const elTop = el.getBoundingClientRect().top;
-        const containerTop = container.getBoundingClientRect().top;
-        container.scrollTop += (elTop - containerTop) - 60; // 60px offset for header
+
+    // Helper to highlight only the searched text in text nodes
+    const highlightWordInElement = (element, query, isRegex) => {
+      if (!element || !query) return null;
+
+      // Clear any prior search highlights
+      document.querySelectorAll(".search-matched-word").forEach((mark) => {
+        const parent = mark.parentNode;
+        if (parent) {
+          parent.replaceChild(document.createTextNode(mark.textContent), mark);
+          parent.normalize();
+        }
+      });
+
+      let regex;
+      try {
+        if (isRegex) {
+          regex = new RegExp(query, "gi");
+        } else {
+          const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+          regex = new RegExp(escaped, "gi");
+        }
+      } catch {
+        return null;
       }
-    }, 500);
+
+      // Collect all text nodes
+      const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null, false);
+      const textNodes = [];
+      let currentNode;
+      while ((currentNode = walker.nextNode())) {
+        if (currentNode.nodeValue && currentNode.nodeValue.trim().length > 0) {
+          regex.lastIndex = 0;
+          if (regex.test(currentNode.nodeValue)) {
+            textNodes.push(currentNode);
+          }
+        }
+      }
+
+      let firstMark = null;
+      textNodes.forEach((node) => {
+        const parent = node.parentNode;
+        if (!parent || parent.nodeName === "SCRIPT" || parent.nodeName === "STYLE") return;
+
+        regex.lastIndex = 0;
+        const text = node.nodeValue;
+        const matches = [...text.matchAll(regex)];
+        if (matches.length === 0) return;
+
+        const fragment = document.createDocumentFragment();
+        let lastIdx = 0;
+
+        matches.forEach((m) => {
+          const matchIdx = m.index;
+          const matchStr = m[0];
+
+          if (matchIdx > lastIdx) {
+            fragment.appendChild(document.createTextNode(text.substring(lastIdx, matchIdx)));
+          }
+
+          const mark = document.createElement("mark");
+          mark.className = "search-matched-word";
+          mark.textContent = matchStr;
+          fragment.appendChild(mark);
+
+          if (!firstMark) {
+            firstMark = mark;
+          }
+
+          lastIdx = matchIdx + matchStr.length;
+        });
+
+        if (lastIdx < text.length) {
+          fragment.appendChild(document.createTextNode(text.substring(lastIdx)));
+        }
+
+        parent.replaceChild(fragment, node);
+      });
+
+      return firstMark;
+    };
+
+    // Scroll directly to the found post
+    const executeDirectScroll = () => {
+      let attempts = 0;
+      const maxAttempts = 120; // 3.6 seconds max wait to accommodate mobile Firestore latency
+      const scrollInterval = setInterval(() => {
+        attempts++;
+        const el = document.getElementById(`post-${result.post.id}`);
+        const container = document.getElementById("main-scroll-container");
+
+        // Ensure post element is rendered and has actual text content
+        const hasContent = el && (el.innerText || el.textContent || "").trim().length > 0;
+
+        if (el && container && hasContent) {
+          clearInterval(scrollInterval);
+          pendingSearchRef.current = null;
+
+          // Highlight the searched word inside the targeted post
+          const firstMark = highlightWordInElement(el, result.searchQuery, result.isRegex);
+
+          const targetEl = firstMark || el;
+          const targetRect = targetEl.getBoundingClientRect();
+          const containerRect = container.getBoundingClientRect();
+
+          const offsetTop = targetRect.top - containerRect.top + container.scrollTop - 70;
+          container.scrollTop = Math.max(0, offsetTop);
+
+          // Multiple re-checks after mobile browser reflow & fonts settle
+          [60, 180, 350].forEach((delay) => {
+            setTimeout(() => {
+              // If mark wasn't created initially, try highlighting again once fonts/elements settle
+              let currentTarget = firstMark;
+              if (!currentTarget || !document.body.contains(currentTarget)) {
+                currentTarget = highlightWordInElement(el, result.searchQuery, result.isRegex) || el;
+              }
+              const reTargetRect = currentTarget.getBoundingClientRect();
+              const reContainerRect = container.getBoundingClientRect();
+              if (Math.abs(reTargetRect.top - reContainerRect.top - 70) > 25) {
+                container.scrollTop = Math.max(0, reTargetRect.top - reContainerRect.top + container.scrollTop - 70);
+              }
+            }, delay);
+          });
+        } else if (attempts >= maxAttempts) {
+          clearInterval(scrollInterval);
+          pendingSearchRef.current = null;
+          // Fallback attempt to highlight if element exists even without detected content
+          if (el) {
+            highlightWordInElement(el, result.searchQuery, result.isRegex);
+          }
+        }
+      }, 30);
+    };
+
+    executeDirectScroll();
   };
 
   if (loading) {
@@ -609,7 +762,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
              {/* Sticky Toolbar */}
              {!isFullScreen && (
                <div className="sticky top-0 w-full flex items-center justify-between py-1 px-1 sm:px-4 bg-white z-20 min-h-[48px] border-b border-gray-100">
-                 <div className="flex w-auto lg:w-[110px]">
+                 <div className="flex shrink-0 w-auto lg:w-[110px]">
                    <button 
                      onClick={() => setShowLeftPanel(!showLeftPanel)}
                      className="p-2 text-gray-500 hover:text-gray-800 rounded-md hover:bg-gray-100 transition-colors"
@@ -619,15 +772,15 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                    </button>
                  </div>
                  
-                 <div className="flex-1 flex justify-center pointer-events-auto min-w-0">
-                    <div className="flex items-center justify-center gap-0.5 sm:gap-3 bg-white px-0.5 sm:px-2 flex-nowrap w-full">
+                 <div className="flex-1 min-w-0 overflow-x-auto tabs-mobile-scroll sm:overflow-visible py-1 mx-1">
+                    <div className="flex items-center sm:justify-center gap-2 sm:gap-4 bg-white px-1 sm:px-2 flex-nowrap w-max sm:w-full min-w-full">
                       {["Front", "Translation"].map(tab => (
                         <button 
                           key={tab}
                           onClick={() => {
                             setActiveTab(tab);
                           }}
-                          className={`inline-flex items-center justify-center whitespace-nowrap px-1.5 py-2 sm:px-3 sm:py-1.5 text-[13px] sm:text-sm transition-all border-b-2 ${
+                          className={`inline-flex items-center justify-center whitespace-nowrap px-2.5 py-1.5 sm:px-3 text-xs sm:text-sm transition-all border-b-2 shrink-0 ${
                             activeTab === tab 
                               ? "font-semibold text-[#cd5c3d] border-[#cd5c3d]" 
                               : "text-gray-500 hover:text-gray-800 hover:border-gray-200 border-transparent"
@@ -638,13 +791,21 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                       ))}
 
                       {/* Language Dropdown Tab */}
-                      <div className="relative inline-flex items-center h-full" ref={langMenuRef}>
+                      <div className="relative inline-flex items-center h-full shrink-0" ref={langMenuRef}>
                         <button 
+                          ref={langBtnRef}
                           onClick={() => {
                             setActiveTab("Language");
+                            if (!showLangMenu && langBtnRef.current) {
+                              const rect = langBtnRef.current.getBoundingClientRect();
+                              setLangMenuPos({
+                                top: rect.bottom + 4,
+                                left: Math.max(8, Math.min(rect.left + rect.width / 2 - 88, window.innerWidth - 184))
+                              });
+                            }
                             setShowLangMenu(!showLangMenu);
                           }}
-                          className={`inline-flex items-center justify-center whitespace-nowrap px-1.5 py-2 sm:px-3 sm:py-1.5 text-[13px] sm:text-sm transition-all border-b-2 cursor-pointer ${
+                          className={`inline-flex items-center justify-center whitespace-nowrap px-2.5 py-1.5 sm:px-3 text-xs sm:text-sm transition-all border-b-2 cursor-pointer shrink-0 ${
                             activeTab === "Language"
                               ? "font-semibold text-[#cd5c3d] border-[#cd5c3d]" 
                               : "text-gray-500 hover:text-gray-800 hover:border-gray-200 border-transparent"
@@ -653,10 +814,13 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                           Language <ChevronDown className={`ml-1 w-3 h-3 transition-transform duration-200 ${showLangMenu ? "rotate-180" : ""}`} />
                         </button>
                         {showLangMenu && (
-                          <div className="absolute top-full left-0 mt-[1px] w-52 bg-white border border-gray-100 rounded-b-lg shadow-lg overflow-hidden z-50">
+                          <div 
+                            style={typeof window !== 'undefined' && window.innerWidth < 640 ? { top: `${langMenuPos.top}px`, left: `${langMenuPos.left}px` } : undefined}
+                            className="fixed sm:absolute sm:top-full sm:left-0 sm:translate-x-0 mt-0 sm:mt-1 w-44 sm:w-52 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden z-50 max-h-64 overflow-y-auto"
+                          >
                             <div className="py-1 flex flex-col">
                               {languages.filter(l => {
-                                if (!l.shortForm || l.shortForm === 'EN' || l.shortForm === 'CN') return false;
+                                const sf = (l.shortForm || '').trim().toUpperCase(); if (!sf || sf === 'CN') return false;
                                 return true;
                               }).map((l) => (
                                 <button
@@ -684,7 +848,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                           onClick={() => {
                             setActiveTab(tab);
                           }}
-                          className={`inline-flex items-center justify-center whitespace-nowrap px-1.5 py-2 sm:px-3 sm:py-1.5 text-[13px] sm:text-sm transition-all border-b-2 ${
+                          className={`inline-flex items-center justify-center whitespace-nowrap px-2.5 py-1.5 sm:px-3 text-xs sm:text-sm transition-all border-b-2 shrink-0 ${
                             activeTab === tab 
                               ? "font-semibold text-[#cd5c3d] border-[#cd5c3d]" 
                               : "text-gray-500 hover:text-gray-800 hover:border-gray-200 border-transparent"
@@ -827,6 +991,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                      langMap={langMap}
                      lang={parallelLang}
                      fontSize={fontSize}
+                     targetChapterId={targetChapterId}
                    />
                  )}
 
@@ -842,6 +1007,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                      langMap={langMap} 
                      lang="EN" 
                      fontSize={fontSize} 
+                     targetChapterId={targetChapterId}
                    />
                  )}
 
@@ -851,6 +1017,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                      chapters={chapters} 
                      langMap={langMap} 
                      fontSize={fontSize} 
+                     targetChapterId={targetChapterId}
                    />
                  )}
 
@@ -906,7 +1073,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
         lessonId={lessonId}
         chapters={chapters}
         languages={languages}
-        currentLang={lang}
+        currentLang={currentLangCode}
         langMap={langMap}
         onResultClick={handleSearchResultClick}
       />

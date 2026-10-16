@@ -7,14 +7,20 @@ const stripInlineStyles = (htmlString) => {
   return DOMPurify.sanitize(htmlString, { FORBID_ATTR: ["style"] });
 };
 
-function LanguageChapterRenderer({ chapter, langMap, lang, fontSize, isFirst }) {
+function LanguageChapterRenderer({ chapter, langMap, lang, fontSize, isFirst, targetChapterId }) {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(chapter.id === targetChapterId);
   const chapterRef = useRef(null);
 
   // Find the Firestore language ID for the chosen language
   const targetLangId = langMap[lang] || langMap[`${lang}-EN`] || langMap[`EN-${lang}`] || lang;
+
+  useEffect(() => {
+    if (chapter.id === targetChapterId) {
+      setIsVisible(true);
+    }
+  }, [chapter.id, targetChapterId]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -164,7 +170,7 @@ function LanguageChapterRenderer({ chapter, langMap, lang, fontSize, isFirst }) 
   );
 }
 
-export default function LanguageTab({ chapters, langMap, lang, fontSize }) {
+export default function LanguageTab({ chapters, langMap, lang, fontSize, targetChapterId }) {
   return (
     <div className="pb-24">
       {chapters.map((chapter, index) => (
@@ -175,6 +181,7 @@ export default function LanguageTab({ chapters, langMap, lang, fontSize }) {
             lang={lang}
             fontSize={fontSize}
             isFirst={index === 0}
+            targetChapterId={targetChapterId}
           />
         </div>
       ))}

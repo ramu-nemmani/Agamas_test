@@ -292,6 +292,7 @@
   scrollbar-width: none;
 }
 
+
 .slide-up {
   animation: slideUp 0.35s ease forwards;
 }
@@ -2012,5 +2013,39 @@ html {
   }
   @media (min-width: 768px) {
     .section-description-light { font-size: 20px !important; }
+  }
+
+  /* Custom visible scrollbar for tabs on small screens */
+  @media (max-width: 639px) {
+    .tabs-mobile-scroll {
+      scrollbar-width: thin;
+      scrollbar-color: #d1d5db transparent;
+      padding-bottom: 4px;
+    }
+    .tabs-mobile-scroll::-webkit-scrollbar {
+      height: 4px;
+      display: block;
+    }
+    .tabs-mobile-scroll::-webkit-scrollbar-track {
+      background: #f3f4f6;
+      border-radius: 9999px;
+    }
+    .tabs-mobile-scroll::-webkit-scrollbar-thumb {
+      background-color: #d1d5db;
+      border-radius: 9999px;
+    }
+    .tabs-mobile-scroll::-webkit-scrollbar-thumb:hover {
+      background-color: #9ca3af;
+    }
+  }
+
+  /* Search word highlight - clean normal text highlight */
+  .search-matched-word {
+    background-color: #fef08a !important; /* soft natural yellow highlight (yellow-200) */
+    color: inherit !important;
+    font-weight: 600 !important;
+    padding: 0 2px !important;
+    border-radius: 2px !important;
+    display: inline !important;
   }
 }

@@ -18,35 +18,54 @@ function Lessons() {
       setLoading(true);
       const q = query(collection(db, "lessons"), orderBy("position"));
       const snapshot = await getDocs(q);
-    
-    // Fetch chapter counts concurrently
-    const lessonsData = await Promise.all(snapshot.docs.map(async (docSnap) => {
-      const data = docSnap.data();
-      const chaptersQuery = query(collection(db, "chapters"), where("lessonId", "==", docSnap.id));
-      const chaptersSnap = await getDocs(chaptersQuery);
       
-      // Filter out non-numbered chapters like Preface or Introduction if they exist
-      let count = chaptersSnap.docs.filter(d => {
-        const name = (d.data().name || "").toLowerCase();
-        return !name.includes("preface") && !name.includes("introduction") && !name.includes("intro");
-      }).length;
-      
-      // Hard fallback if they specifically want Ekotara Agama to show 52
-      if (data.name === "The Ekotara Agama" && chaptersSnap.size === 53) {
-        count = 52;
-      }
-
-      return {
+      const initialLessons = snapshot.docs.map((docSnap) => ({
         id: docSnap.id,
-        ...data,
-        chapterCount: count,
-      };
-    }));
-    
-      setLessons(lessonsData);
+        ...docSnap.data(),
+        chapterCount: 0,
+      }));
+
+      // Render book covers immediately without waiting for chapter queries
+      setLessons(initialLessons);
+      setLoading(false);
+
+      // Fetch chapter counts concurrently in the background
+      Promise.all(
+        snapshot.docs.map(async (docSnap) => {
+          try {
+            const data = docSnap.data();
+            const chaptersQuery = query(collection(db, "chapters"), where("lessonId", "==", docSnap.id));
+            const chaptersSnap = await getDocs(chaptersQuery);
+
+            let count = chaptersSnap.docs.filter((d) => {
+              const name = (d.data().name || "").toLowerCase();
+              return !name.includes("preface") && !name.includes("introduction") && !name.includes("intro");
+            }).length;
+
+            if (data.name === "The Ekotara Agama" && chaptersSnap.size === 53) {
+              count = 52;
+            }
+
+            return { id: docSnap.id, chapterCount: count };
+          } catch {
+            return { id: docSnap.id, chapterCount: 0 };
+          }
+        })
+      ).then((counts) => {
+        const countsMap = {};
+        counts.forEach((c) => {
+          countsMap[c.id] = c.chapterCount;
+        });
+
+        setLessons((prev) =>
+          prev.map((l) => ({
+            ...l,
+            chapterCount: countsMap[l.id] ?? l.chapterCount,
+          }))
+        );
+      });
     } catch (error) {
       console.error("Error fetching lessons:", error);
-    } finally {
       setLoading(false);
     }
   };

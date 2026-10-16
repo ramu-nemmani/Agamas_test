@@ -18,12 +18,13 @@ export default function SearchOverlay({
   const [isRegex, setIsRegex] = useState(false);
   const [loading, setLoading] = useState(false);
   const [allPosts, setAllPosts] = useState([]);
-  const [hasFetched, setHasFetched] = useState(false);
+  const [isFetchingPosts, setIsFetchingPosts] = useState(false);
   const [activeCategory, setActiveCategory] = useState("translation");
   const [results, setResults] = useState({ translation: [], other: [] });
   const [errorMsg, setErrorMsg] = useState("");
   
   const inputRef = useRef(null);
+  const fetchedLessonRef = useRef(null);
   
   // Focus input when opened
   useEffect(() => {
@@ -32,38 +33,51 @@ export default function SearchOverlay({
     }
   }, [isOpen]);
 
-  // Fetch all data for the current lesson once when opened
+  // Fetch all data for the current lesson when opened or when chapters change
   useEffect(() => {
-    if (isOpen && !hasFetched && chapters.length > 0) {
+    if (isOpen && chapters.length > 0) {
+      const chapterKey = chapters.map(c => c.id).sort().join(",");
+      if (fetchedLessonRef.current === chapterKey) return;
+
       const loadData = async () => {
         try {
+          setIsFetchingPosts(true);
           const posts = await fetchSearchData(db, chapters);
           setAllPosts(posts);
-          setHasFetched(true);
+          fetchedLessonRef.current = chapterKey;
         } catch (e) {
           console.error("Failed to fetch search data:", e);
+        } finally {
+          setIsFetchingPosts(false);
         }
       };
       loadData();
     }
-  }, [isOpen, hasFetched, chapters]);
+  }, [isOpen, chapters]);
 
   // Debounced search effect
   useEffect(() => {
     if (!isOpen) return;
     
     setErrorMsg("");
-    if (!query || query.trim() === "") {
+    const trimmedQuery = query.trim();
+    if (!trimmedQuery) {
       setResults({ translation: [], other: [] });
+      setLoading(false);
       return;
     }
 
-    const timer = setTimeout(() => {
+    if (isFetchingPosts) {
       setLoading(true);
-      
+      return;
+    }
+
+    setLoading(true);
+
+    const timer = setTimeout(() => {
       const currentLangId = langMap[currentLang];
       
-      const searchResults = performSearch(allPosts, query, isRegex);
+      const searchResults = performSearch(allPosts, trimmedQuery, isRegex);
       
       if (searchResults.error) {
         setErrorMsg(searchResults.message);
@@ -71,6 +85,24 @@ export default function SearchOverlay({
         setLoading(false);
         return;
       }
+
+      // Build a map of chapterId -> chapter position for stable sorting
+      const chapterPosMap = {};
+      chapters.forEach(c => {
+        chapterPosMap[c.id] = c.position ?? 999999;
+      });
+
+      // Sort search results strictly by chapter position first, then post position
+      searchResults.sort((a, b) => {
+        const chapPosA = chapterPosMap[a.chapterId] ?? 999999;
+        const chapPosB = chapterPosMap[b.chapterId] ?? 999999;
+        if (chapPosA !== chapPosB) {
+          return chapPosA - chapPosB;
+        }
+        const postPosA = a.post?.position ?? 0;
+        const postPosB = b.post?.position ?? 0;
+        return postPosA - postPosB;
+      });
 
       // Categorize
       const translationResults = [];
@@ -89,10 +121,10 @@ export default function SearchOverlay({
         other: otherResults
       });
       setLoading(false);
-    }, 500);
+    }, 300);
 
     return () => clearTimeout(timer);
-  }, [query, isRegex, allPosts, currentLang, langMap, isOpen]);
+  }, [query, isRegex, allPosts, isFetchingPosts, currentLang, langMap, isOpen, chapters]);
 
   // Handle escape key to close
   useEffect(() => {
@@ -202,7 +234,7 @@ export default function SearchOverlay({
                 languages={languages}
                 searchQuery={query}
                 isRegex={isRegex}
-                onClick={onResultClick}
+                onClick={(res) => onResultClick({ ...res, searchQuery: query, isRegex })}
               />
             ))}
           </div>

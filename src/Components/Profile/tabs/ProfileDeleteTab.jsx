@@ -148,8 +148,8 @@ export default function ProfileDeleteTab() {
             <Trash2 className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-lg font-medium text-red-900 mb-2">Warning: This action is irreversible.</h3>
-            <p className="text-sm text-red-700/80 mb-6 leading-relaxed">
+            <h3 className="text-[20px] font-medium text-red-900 mb-2">Warning: This action is irreversible.</h3>
+            <p className="text-[16px] text-red-700/80 mb-6 leading-relaxed">
               Deleting your account will permanently erase your profile, reading progress, downloaded sutras, and authentication details. You will be able to sign up again with the same email as a new user, but your old data cannot be recovered.
             </p>
 

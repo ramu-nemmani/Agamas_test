@@ -3,15 +3,20 @@ import { Feather } from "lucide-react";
 
 export default function BookCover({ imageUrl, title, author, className = "", innerClassName = "", variant = "normal" }) {
   const [imgError, setImgError] = useState(false);
+  const [imgLoaded, setImgLoaded] = useState(false);
 
   if (imageUrl && !imgError) {
     if (variant === "large") {
       return (
-        <div className={`rmsp-book-cover relative h-full w-full rounded-2xl overflow-hidden shadow-[0_8px_20px_rgba(0,0,0,0.15)] aspect-[2/3] max-w-[400px] ${className}`}>
+        <div className={`rmsp-book-cover relative h-full w-full rounded-2xl overflow-hidden shadow-[0_8px_20px_rgba(0,0,0,0.15)] aspect-[2/3] max-w-[400px] bg-[#f5efe6] ${className}`}>
            <img
              src={imageUrl}
              alt={title}
-             className={`h-full w-full object-cover ${innerClassName}`}
+             loading="eager"
+             decoding="async"
+             fetchPriority="high"
+             onLoad={() => setImgLoaded(true)}
+             className={`h-full w-full object-cover transition-opacity duration-300 ${imgLoaded ? "opacity-100" : "opacity-0"} ${innerClassName}`}
              onError={() => setImgError(true)}
            />
         </div>
@@ -19,12 +24,18 @@ export default function BookCover({ imageUrl, title, author, className = "", inn
     }
     
     return (
-      <img
-        src={imageUrl}
-        alt={title}
-        className={`h-full w-full object-cover aspect-[2/3] ${className} ${innerClassName}`}
-        onError={() => setImgError(true)}
-      />
+      <div className={`relative h-full w-full bg-[#f5efe6] overflow-hidden ${className}`}>
+        <img
+          src={imageUrl}
+          alt={title}
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
+          onLoad={() => setImgLoaded(true)}
+          className={`h-full w-full object-cover aspect-[2/3] transition-opacity duration-300 ${imgLoaded ? "opacity-100" : "opacity-0"} ${innerClassName}`}
+          onError={() => setImgError(true)}
+        />
+      </div>
     );
   }
 

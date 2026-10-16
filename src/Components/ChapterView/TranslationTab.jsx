@@ -7,12 +7,18 @@ const stripInlineStyles = (htmlString) => {
   return DOMPurify.sanitize(htmlString, { FORBID_ATTR: ["style"] });
 };
 
-function ChapterContentRenderer({ chapter, langMap, lang, fontSize, isFirst }) {
+function ChapterContentRenderer({ chapter, langMap, lang, fontSize, isFirst, targetChapterId }) {
   const [posts, setPosts] = useState([]);
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(chapter.id === targetChapterId);
   const chapterRef = useRef(null);
 
   const langId = langMap[lang];
+
+  useEffect(() => {
+    if (chapter.id === targetChapterId) {
+      setIsVisible(true);
+    }
+  }, [chapter.id, targetChapterId]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -131,7 +137,7 @@ function ChapterContentRenderer({ chapter, langMap, lang, fontSize, isFirst }) {
   );
 }
 
-export default function TranslationTab({ chapters, langMap, lang, fontSize }) {
+export default function TranslationTab({ chapters, langMap, lang, fontSize, targetChapterId }) {
   return (
     <div className="pb-24">
       {chapters.map((c, index) => (
@@ -142,6 +148,7 @@ export default function TranslationTab({ chapters, langMap, lang, fontSize }) {
             lang={lang}
             fontSize={fontSize}
             isFirst={index === 0}
+            targetChapterId={targetChapterId}
           />
         </div>
       ))}

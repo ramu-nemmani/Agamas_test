@@ -174,12 +174,12 @@ function Navbar() {
               <div className="relative">
                 <button
                   onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                  className="flex items-center justify-center w-[36px] h-[36px] min-w-[36px] min-h-[36px] rounded-full bg-amber-100 text-[#cd5c3d] hover:bg-amber-200 focus:outline-none transition-colors font-medium text-base uppercase overflow-hidden"
+                  className="flex items-center justify-center w-[36px] h-[36px] min-w-[36px] min-h-[36px] rounded-full bg-amber-100 text-[#cd5c3d] hover:bg-amber-200 focus:outline-none transition-colors font-bold text-base uppercase overflow-hidden"
                 >
                   {user.photoURL ? (
                     <img src={user.photoURL} alt={user.name || "Profile"} className="w-full h-full object-cover" />
                   ) : (
-                    <span>
+                    <span className="font-bold">
                       {user.name ? user.name.charAt(0) : user.email?.charAt(0) || "?"}
                     </span>
                   )}

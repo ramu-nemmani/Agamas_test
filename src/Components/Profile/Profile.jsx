@@ -36,7 +36,8 @@ export default function Profile() {
           <p className="text-[#001e2d]/70 mb-6">Please sign in to view your profile.</p>
           <button
             onClick={() => navigate("/")}
-            className="px-6 py-2.5 bg-amber-600 text-white rounded-xl font-semibold hover:bg-amber-700 transition-all"
+            className="px-6 py-2.5 text-white rounded-xl font-semibold hover:opacity-90 transition-all shadow-sm"
+            style={{ backgroundColor: "#CD5C3D" }}
           >
             Go Home
           </button>
@@ -96,13 +97,13 @@ export default function Profile() {
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 sm:gap-8 mb-10 mt-4 w-full">
             <div className="flex flex-col items-center gap-3">
               <div
-                className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-amber-100 text-[#cd5c3d] flex items-center justify-center text-6xl sm:text-7xl font-medium shrink-0 group cursor-pointer overflow-hidden shadow-sm"
+                className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-amber-100 text-[#cd5c3d] flex items-center justify-center text-6xl sm:text-7xl font-bold shrink-0 group cursor-pointer overflow-hidden shadow-sm"
                 onClick={() => fileInputRef.current?.click()}
               >
                 {activeUser?.photoURL || contextUser?.photoURL ? (
                   <img src={activeUser.photoURL || contextUser.photoURL} alt={displayName} className="w-full h-full object-cover" />
                 ) : (
-                  <span>{initial}</span>
+                  <span className="font-bold">{initial}</span>
                 )}
 
                 <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">

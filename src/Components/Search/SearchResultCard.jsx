@@ -40,18 +40,24 @@ export default function SearchResultCard({ result, chapters, languages, searchQu
       className="bg-white border border-gray-200 shadow-sm rounded p-0 mb-0 hover:shadow-md cursor-pointer transition-shadow flex flex-col md:flex-row overflow-hidden"
       onClick={() => onClick(result)}
     >
-      {/* Left Column */}
-      <div className="w-full md:w-40 bg-gray-50/50 p-4 border-b md:border-b-0 md:border-r border-gray-100 flex flex-col gap-1 text-xs text-[#8c9ca9] font-medium text-right items-end justify-start">
+      {/* Left Column (Desktop & Tablet) */}
+      <div className="hidden md:flex w-40 bg-gray-50/50 p-4 border-r border-gray-100 flex-col gap-1 text-xs text-[#8c9ca9] font-medium text-right items-end justify-start shrink-0">
         <span>Alignment</span>
         <span>Translation</span>
       </div>
-      
+
       {/* Right Column */}
-      <div className="flex-1 p-5 pl-6">
-        <div className="flex items-center gap-2 mb-3 text-xs uppercase tracking-wider text-[#8c9ca9] font-medium">
-          <span className="text-[#cd5c3d]">{chapter ? chapter.name.replace(/^Chapter\s+[0-9]+:/i, '').trim() : "Unknown Chapter"}</span>
-          <span>&bull;</span>
-          <span>{langName}</span>
+      <div className="flex-1 p-4 md:p-5 md:pl-6">
+        <div className="flex items-center justify-between md:justify-start gap-2 mb-3 text-xs uppercase tracking-wider text-[#8c9ca9] font-medium">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-[#cd5c3d]">{chapter ? chapter.name.replace(/^Chapter\s+[0-9]+:/i, '').trim() : "Unknown Chapter"}</span>
+            <span>&bull;</span>
+            <span>{langName}</span>
+          </div>
+          {/* Mobile Alignment badges */}
+          <div className="md:hidden flex items-center gap-1 text-[11px] text-[#8c9ca9] shrink-0">
+            <span className="bg-gray-100 px-1.5 py-0.5 rounded text-[10px]">Alignment</span>
+          </div>
         </div>
         
         {result.post.post_title && (
