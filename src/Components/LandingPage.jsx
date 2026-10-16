@@ -730,7 +730,7 @@ export default function LandingPage() {
                             <div className="pt-2 flex justify-center lg:justify-start">
                                 <a
                                     href="#chapters"
-                                    className="inline-flex items-center justify-center py-3 px-8 text-center font-bold text-[#001e2d] group"
+                                    className="inline-flex items-center justify-center py-3 px-8 lg:px-0 text-center font-bold text-[#001e2d] group"
                                     style={{
                                         fontFamily: '"Open Sans", Helvetica, Arial, Lucida, sans-serif',
                                         fontSize: '18px',

@@ -135,13 +135,13 @@ function Lessons() {
                     By {bookAuthor}
                   </p>
 
-                  <p className="mb-4 text-[#555] text-[16px] leading-relaxed">
+                  <p className="mb-6 text-[#555] text-[16px] leading-relaxed">
                     {description || "Authentic ancient scriptures translated with care and devotion."}
                   </p>
 
                   <div className="flex justify-center sm:justify-start">
                     <span
-                      className="inline-flex items-center justify-center py-2.5 px-6 text-center font-bold text-[#001e2d]"
+                      className="inline-flex items-center justify-center py-2.5 px-6 sm:px-0 text-center font-bold text-[#001e2d]"
                       style={{
                         fontFamily: '"Open Sans", Helvetica, Arial, Lucida, sans-serif',
                         fontSize: '18px',
