@@ -1,6 +1,6 @@
 import SEO from "./SEO";
 import { Link } from "react-router-dom";
-import drLimImg from "../assets/DRLim.webp";
+import drLimImg from "../assets/dr_lim.webp";
 
 export default function AboutUsPage() {
   const handleScrollToChapters = () => {
