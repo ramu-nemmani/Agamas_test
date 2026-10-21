@@ -1,14 +1,18 @@
 import { Loader2, X, Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function AuthModal({ isOpen, onClose, onSuccess }) {
-  const { loginWithEmail, signUpWithEmail, loginWithGoogle, resetPassword } = useAuth();
+  const { loginWithEmail, signUpWithEmail, loginWithGoogle, resetPassword, resendVerificationEmail } = useAuth();
 
   const [isLogin, setIsLogin] = useState(true); // true = Login, false = Sign Up
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isResending, setIsResending] = useState(false);
+  const [resendTimer, setResendTimer] = useState(60);
+  const [canResend, setCanResend] = useState(false);
+  const [resendSuccessMessage, setResendSuccessMessage] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
@@ -23,6 +27,32 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
 
   const [isVerificationMode, setIsVerificationMode] = useState(false);
 
+  const startResendCountdown = (seconds = 60) => {
+    setResendTimer(seconds);
+    setCanResend(false);
+  };
+
+  useEffect(() => {
+    let interval = null;
+    if (isVerificationMode && resendTimer > 0) {
+      interval = setInterval(() => {
+        setResendTimer((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            setCanResend(true);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } else if (resendTimer === 0) {
+      setCanResend(true);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isVerificationMode, resendTimer]);
+
   if (!isOpen) return null;
 
   const resetForm = () => {
@@ -32,7 +62,9 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
     setPhone("");
     setError("");
     setMessage("");
+    setResendSuccessMessage("");
     setIsLoading(false);
+    setIsResending(false);
     setIsVerificationMode(false);
     setIsForgotPassword(false);
   };
@@ -67,6 +99,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
 
   const handleVerifyClick = async () => {
     setError("");
+    setResendSuccessMessage("");
     setIsLoading(true);
     try {
       await loginWithEmail(email, password);
@@ -85,9 +118,35 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
     }
   };
 
+  const handleResendClick = async () => {
+    if (!canResend || isResending) return;
+    setError("");
+    setResendSuccessMessage("");
+    setIsResending(true);
+    try {
+      if (resendVerificationEmail) {
+        await resendVerificationEmail(email, password);
+      }
+      setResendSuccessMessage("Verification email resent successfully!");
+      startResendCountdown(60);
+    } catch (err) {
+      console.error(err);
+      setError(err.message || "Failed to resend verification email. Please try again.");
+    } finally {
+      setIsResending(false);
+    }
+  };
+
+  const formatTimer = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setResendSuccessMessage("");
     setIsLoading(true);
 
     try {
@@ -103,11 +162,15 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
         }
         await signUpWithEmail(name, email, password, phone);
         setIsVerificationMode(true);
+        startResendCountdown(60);
       }
     } catch (err) {
       console.error(err);
       if (err.code === "auth/unverified-email") {
-        setError(err.message);
+        // Instead of showing the plain error message in login form, switch to verification card
+        setIsVerificationMode(true);
+        startResendCountdown(60);
+        setError("");
       } else if (err.code === "auth/invalid-credential" || err.code === "auth/wrong-password" || err.code === "auth/user-not-found") {
         setError("Invalid email or password. Please check your credentials.");
       } else if (err.code === "auth/email-already-in-use") {
@@ -170,6 +233,11 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
                 {error}
               </div>
             )}
+            {resendSuccessMessage && (
+              <div className="mb-4 p-3 rounded-xl bg-green-50 border border-green-100 text-sm text-green-600 text-center">
+                {resendSuccessMessage}
+              </div>
+            )}
             <div className="space-y-3">
               <button
                 onClick={handleVerifyClick}
@@ -180,13 +248,27 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
                 Verify
               </button>
               <button
+                type="button"
+                onClick={handleResendClick}
+                disabled={!canResend || isResending}
+                className="w-full flex justify-center items-center gap-2 rounded-full bg-white border border-[#E5DEC9] px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isResending ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : null}
+                {canResend
+                  ? "Resend Email"
+                  : `Resend email in ${formatTimer(resendTimer)}`}
+              </button>
+              <button
                 onClick={() => {
                   setIsVerificationMode(false);
                   setIsLogin(true);
                   setError("");
+                  setResendSuccessMessage("");
                 }}
                 disabled={isLoading}
-                className="w-full flex justify-center items-center gap-2 rounded-full bg-white border border-[#E5DEC9] px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                className="w-full flex justify-center items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-800 transition-colors py-1 disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 Back to Login
               </button>

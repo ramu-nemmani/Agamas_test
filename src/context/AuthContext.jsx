@@ -91,10 +91,20 @@ export const AuthProvider = ({ children }) => {
       createdAt: new Date().toISOString(),
     });
 
+    // Determine continue redirect URL (localhost for local dev, or https://theagamas.com in production)
+    const continueUrl = window.location.origin.includes("localhost")
+      ? window.location.origin
+      : "https://theagamas.com";
+
+    const actionCodeSettings = {
+      url: continueUrl,
+      handleCodeInApp: false,
+    };
+
     // Send email verification using the deployed cloud function
     try {
       const sendVerificationEmail = httpsCallable(functions, "sendVerificationEmailFn");
-      const result = await sendVerificationEmail();
+      const result = await sendVerificationEmail({ continueUrl });
       if (result.data && result.data.error) {
         console.error("Cloud function returned an error:", result.data.error);
         console.error("Stack trace:", result.data.stack);
@@ -103,11 +113,16 @@ export const AuthProvider = ({ children }) => {
       // Fallback to client-side Firebase Auth email when SES is not configured
       if (result.data && result.data.method === 'none' && !result.data.alreadyVerified) {
         console.warn("SES not configured or failed, falling back to Firebase client SDK");
-        await sendEmailVerification(userCredential.user);
+        await sendEmailVerification(userCredential.user, actionCodeSettings);
       }
     } catch (emailError) {
       console.error("Failed to call verification email function:", emailError);
-      // We don't re-throw because the account was successfully created.
+      // Fallback to client SDK
+      try {
+        await sendEmailVerification(userCredential.user, actionCodeSettings);
+      } catch (fallbackErr) {
+        console.error("Client SDK email verification also failed:", fallbackErr);
+      }
     }
 
     await signOut(auth);
@@ -147,6 +162,60 @@ export const AuthProvider = ({ children }) => {
     setUser((prev) => ({ ...prev, ...updates }));
   };
 
+  const resendVerificationEmail = async (emailToResend, passwordToResend) => {
+    // If credentials are provided, sign in first to obtain user credential
+    let currentUser = auth.currentUser;
+    let signedInTemporarily = false;
+
+    if ((!currentUser || currentUser.email !== emailToResend) && emailToResend && passwordToResend) {
+      const userCredential = await signInWithEmailAndPassword(auth, emailToResend, passwordToResend);
+      currentUser = userCredential.user;
+      signedInTemporarily = true;
+    }
+
+    if (!currentUser) {
+      throw new Error("Unable to identify account to resend verification email.");
+    }
+
+    const continueUrl = window.location.origin.includes("localhost")
+      ? window.location.origin
+      : "https://theagamas.com";
+
+    const actionCodeSettings = {
+      url: continueUrl,
+      handleCodeInApp: false,
+    };
+
+    try {
+      const sendVerificationEmail = httpsCallable(functions, "sendVerificationEmailFn");
+      const result = await sendVerificationEmail({ continueUrl });
+      if (result.data && result.data.error) {
+        console.error("Cloud function returned an error:", result.data.error);
+        console.error("Stack trace:", result.data.stack);
+      }
+
+      // Fallback to client-side Firebase Auth email when SES is not configured
+      if (result.data && result.data.method === 'none' && !result.data.alreadyVerified) {
+        console.warn("SES not configured or failed, falling back to Firebase client SDK");
+        await sendEmailVerification(currentUser, actionCodeSettings);
+      }
+      return result;
+    } catch (emailError) {
+      console.error("Failed to call verification email function:", emailError);
+      // Fallback directly to client SDK
+      try {
+        await sendEmailVerification(currentUser, actionCodeSettings);
+      } catch (fallbackErr) {
+        console.error("Client SDK email verification also failed:", fallbackErr);
+        throw fallbackErr;
+      }
+    } finally {
+      if (signedInTemporarily || !currentUser.emailVerified) {
+        await signOut(auth);
+      }
+    }
+  };
+
   const logout = async () => {
     localStorage.clear();
     await signOut(auth);
@@ -171,6 +240,7 @@ export const AuthProvider = ({ children }) => {
         loginWithGoogle,
         updateUserProfile,
         resetPassword,
+        resendVerificationEmail,
       }}
     >
       {children}

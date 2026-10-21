@@ -188,10 +188,10 @@ function isSesConfigured() {
   }
 }
 
-function buildActionCodeSettings() {
+function buildActionCodeSettings(continueUrl) {
   return {
-    url: AUTH_CONTINUE_URL,
-    handleCodeInApp: true,
+    url: continueUrl || AUTH_CONTINUE_URL,
+    handleCodeInApp: false,
   };
 }
 
@@ -223,9 +223,10 @@ exports.sendVerificationEmailFn = onCall(
         return { sent: false, alreadyVerified: false, method: 'none' };
       }
 
+      const continueUrl = request.data?.continueUrl;
       const verificationUrl = await getAuth().generateEmailVerificationLink(
         userRecord.email,
-        buildActionCodeSettings(),
+        buildActionCodeSettings(continueUrl),
       );
 
       const displayName = userRecord.displayName || userRecord.email.split('@')[0] || 'there';
