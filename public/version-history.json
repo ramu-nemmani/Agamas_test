@@ -1,5 +1,41 @@
 [
     {
+        "version": "v1.3.0",
+        "type": "minor",
+        "date": "2026-10-21",
+        "changes": [
+            {
+                "category": "New Features",
+                "icon": "✨",
+                "items": [
+                    "Introduced unified ChapterView with seamless Translation, Source, and Language tabs.",
+                    "Added live search overlay with category filtering and interactive search result cards.",
+                    "Added Google Account SSO support with hidden password fields for OAuth users.",
+                    "Added sitemap.xml and meta configuration for enhanced SEO optimization."
+                ]
+            },
+            {
+                "category": "Improvements & UI Polish",
+                "icon": "🎨",
+                "items": [
+                    "Updated teachers section with modern assets and refined layout on About Us and Landing Page.",
+                    "Improved Profile Security tab with streamlined current-password confirmation.",
+                    "Optimized scripture reading room view with scroll progress tracking and tab lazy loading.",
+                    "Refined global typography, eyebrow headings, and content points readability across screens."
+                ]
+            },
+            {
+                "category": "Bug Fixes",
+                "icon": "🐛",
+                "items": [
+                    "Resolved mobile navigation and responsive layout issues across ChapterView and lessons.",
+                    "Fixed language dropdown selection behavior in scripture views.",
+                    "Cleaned up redundant media files and legacy reading view routes."
+                ]
+            }
+        ]
+    },
+    {
         "version": "v1.2.0",
         "type": "minor",
         "date": "2026-09-07",
