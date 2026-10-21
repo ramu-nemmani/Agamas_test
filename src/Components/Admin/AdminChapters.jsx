@@ -524,7 +524,7 @@ export default function AdminChapters({
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   navigate(
-                                    `/admin/editPost/${chapter.id}/${chapter.position}?lesson=${lesson.id}`
+                                    `/admin/editPost/${chapter.id}/${sub.position}?lesson=${lesson.id}`
                                   );
                                 }}
                                 className="rounded-2xl text-base"
