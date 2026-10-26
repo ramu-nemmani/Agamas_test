@@ -86,20 +86,22 @@ export default function ProfileDownloadsTab() {
           {downloads.map((item) => (
             <div 
               key={item.docId} 
-              className={`flex items-center justify-between bg-white rounded-2xl border border-[#001e2d]/5 p-4 transition cursor-pointer ${openingId === item.docId ? 'opacity-70 pointer-events-none' : ''}`}
+              className={`flex items-start sm:items-center justify-between gap-3 bg-white rounded-2xl border border-[#001e2d]/5 p-4 transition cursor-pointer hover:shadow-sm ${openingId === item.docId ? 'opacity-70 pointer-events-none' : ''}`}
               onClick={() => handleOpenPdf(item)}
             >
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 bg-[#f3edd7]/50 rounded-xl flex items-center justify-center text-[#cd5c3d] shrink-0">
+              <div className="flex items-start sm:items-center gap-3.5 min-w-0 flex-1">
+                <div className="w-10 h-10 bg-[#f3edd7]/60 rounded-xl flex items-center justify-center text-[#cd5c3d] shrink-0 mt-0.5 sm:mt-0">
                   {openingId === item.docId ? (
                     <div className="w-4 h-4 animate-spin rounded-full border-2 border-[#cd5c3d] border-t-transparent" />
                   ) : (
                     <FileText className="w-5 h-5" />
                   )}
                 </div>
-                <div>
-                  <h4 className="text-[#001e2d] font-semibold text-base" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}>{item.lessonName}</h4>
-                  <p className="text-[#001e2d]/50 text-xs flex flex-wrap items-center gap-1.5 mt-0.5">
+                <div className="min-w-0 flex-1">
+                  <h4 className="text-[#001e2d] font-semibold text-base leading-snug truncate" style={{ fontFamily: '"PP Fragment Glare Regular", Georgia, serif' }}>
+                    {item.lessonName}
+                  </h4>
+                  <p className="text-[#001e2d]/60 text-xs flex flex-wrap items-center gap-1.5 mt-1 line-clamp-2 sm:line-clamp-1">
                     <span>{item.chapterName}</span>
                     {item.language && (
                       <span className="bg-[#cd5c3d]/10 text-[#cd5c3d] px-1.5 py-0.5 rounded text-[10px] font-bold tracking-wider">
@@ -107,10 +109,13 @@ export default function ProfileDownloadsTab() {
                       </span>
                     )}
                   </p>
+                  <p className="text-[11px] text-[#001e2d]/45 font-medium mt-1.5 sm:hidden">
+                    {formatDate(item.timestamp)}
+                  </p>
                 </div>
               </div>
-              <div className="flex items-center gap-4">
-                <span className="text-[10px] sm:text-xs text-[#001e2d]/40 font-medium">
+              <div className="flex items-center gap-2 sm:gap-4 shrink-0 self-center">
+                <span className="hidden sm:inline text-xs text-[#001e2d]/40 font-medium whitespace-nowrap">
                   {formatDate(item.timestamp)}
                 </span>
                 <button
@@ -118,7 +123,8 @@ export default function ProfileDownloadsTab() {
                     e.stopPropagation();
                     handleDelete(item.docId);
                   }}
-                  className="p-2 text-[#001e2d]/30 hover:text-red-500 hover:bg-red-50 rounded-lg transition"
+                  title="Delete download"
+                  className="p-2 text-rose-500 bg-rose-50 hover:bg-rose-100 rounded-xl transition"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>

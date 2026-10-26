@@ -36,7 +36,7 @@ export default function MyBooksTab() {
           <Feather className="h-8 w-8 text-[#001e2d]/30 mx-auto mb-4" />
           <p className="text-[#001e2d]/60 text-sm mb-6">You haven't opened any books recently.</p>
           <button
-            onClick={() => navigate("/agama-sutras")}
+            onClick={() => navigate("/#chapters")}
             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#CD5C3D] text-white text-sm font-semibold hover:opacity-90 transition shadow-sm"
           >
             Explore Reading Room

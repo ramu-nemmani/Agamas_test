@@ -44,17 +44,17 @@ export default function ProfileDetailsTab({ onProfileUpdate }) {
         {!isEditing ? (
           <button
             onClick={() => setIsEditing(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-700 rounded-full text-sm font-medium hover:bg-amber-200 transition-colors"
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-amber-100 text-amber-700 rounded-full text-sm font-medium hover:bg-amber-200 transition-colors w-full sm:w-auto"
             style={{ fontFamily: 'ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"' }}
           >
             <Pen className="w-4 h-4" />
             Edit
           </button>
         ) : (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-center sm:justify-start gap-2 w-full sm:w-auto">
             <button
               onClick={handleCancel}
-              className="flex items-center gap-1.5 px-4 py-2 bg-slate-100 text-slate-600 rounded-full text-sm font-medium hover:bg-slate-200 transition-colors"
+              className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-4 py-2 bg-slate-100 text-slate-600 rounded-full text-sm font-medium hover:bg-slate-200 transition-colors"
               style={{ fontFamily: 'ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"' }}
             >
               <X className="w-4 h-4" />
@@ -63,7 +63,7 @@ export default function ProfileDetailsTab({ onProfileUpdate }) {
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="flex items-center gap-1.5 px-4 py-2 text-white rounded-full text-sm font-medium disabled:opacity-50"
+              className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-4 py-2 text-white rounded-full text-sm font-medium disabled:opacity-50"
               style={{ backgroundColor: 'rgb(205, 92, 61)', fontFamily: 'ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"' }}
             >
               <Save className="w-4 h-4" />

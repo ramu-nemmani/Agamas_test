@@ -11,10 +11,12 @@ import VersionHistory from "./Components/VersionHistory";
 import { ToastContainer } from "react-toastify";
 
 const App = () => {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    if (!hash) {
+      window.scrollTo(0, 0);
+    }
+  }, [pathname, hash]);
   return (
     <div className="">
       <LoadingProvider>
