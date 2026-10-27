@@ -1,5 +1,39 @@
 [
     {
+        "version": "v1.4.0",
+        "type": "minor",
+        "date": "2026-10-27",
+        "changes": [
+            {
+                "category": "New Features",
+                "icon": "✨",
+                "items": [
+                    "Enhanced AuthModal with OTP verification resend functionality and countdown timer.",
+                    "Implemented responsive Contact Page with international phone input and country selector dropdown.",
+                    "Redesigned OTP verification email templates with branded HTML styling and social links."
+                ]
+            },
+            {
+                "category": "Improvements & UI Polish",
+                "icon": "🎨",
+                "items": [
+                    "Enhanced Profile Downloads tab with responsive layout, better date formatting, and styled delete action.",
+                    "Optimized Profile Details tab with responsive action buttons for mobile and desktop screens.",
+                    "Updated MyBooks reading room navigation link to direct to chapters section."
+                ]
+            },
+            {
+                "category": "Bug Fixes",
+                "icon": "🐛",
+                "items": [
+                    "Fixed account deletion to clean up both user UID document and any duplicate records by email.",
+                    "Improved authentication error handling to detect existing Google SSO accounts and show contextual guidance.",
+                    "Restricted phone number input in Contact Page to 10 numeric digits."
+                ]
+            }
+        ]
+    },
+    {
         "version": "v1.3.0",
         "type": "minor",
         "date": "2026-10-21",
