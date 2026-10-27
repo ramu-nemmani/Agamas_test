@@ -1,5 +1,6 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const { getAuth } = require("firebase-admin/auth");
+const { getFirestore } = require("firebase-admin/firestore");
 const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses");
 const { defineSecret } = require("firebase-functions/params");
 
@@ -322,12 +323,34 @@ exports.sendVerificationEmailFn = onCall(
       }
 
       const continueUrl = request.data?.continueUrl;
-      const verificationUrl = await getAuth().generateEmailVerificationLink(
-        userRecord.email,
-        buildActionCodeSettings(continueUrl),
-      );
+      let verificationUrl;
+      try {
+        verificationUrl = await getAuth().generateEmailVerificationLink(
+          userRecord.email,
+          buildActionCodeSettings(continueUrl),
+        );
+      } catch (linkErr) {
+        if (linkErr.code === 'auth/unauthorized-continue-uri') {
+          console.warn("continueUrl domain not allowlisted, generating verification link with default settings");
+          verificationUrl = await getAuth().generateEmailVerificationLink(userRecord.email);
+        } else {
+          throw linkErr;
+        }
+      }
 
-      const displayName = userRecord.displayName || userRecord.email.split('@')[0] || 'there';
+      // Retrieve the user's actual registered name from Firestore if displayName is not in Auth
+      let displayName = userRecord.displayName;
+      if (!displayName) {
+        try {
+          const userDoc = await getFirestore().collection("users").doc(uid).get();
+          if (userDoc.exists && userDoc.data().name) {
+            displayName = userDoc.data().name;
+          }
+        } catch (dbErr) {
+          console.warn("Could not fetch user name from Firestore:", dbErr);
+        }
+      }
+      displayName = displayName || "there";
 
       await sendEmail({
         to: userRecord.email,
@@ -379,12 +402,34 @@ exports.sendPasswordResetEmailFn = onCall(
       }
 
       const continueUrl = request.data?.continueUrl;
-      const resetUrl = await getAuth().generatePasswordResetLink(
-        userRecord.email,
-        buildActionCodeSettings(continueUrl),
-      );
+      let resetUrl;
+      try {
+        resetUrl = await getAuth().generatePasswordResetLink(
+          userRecord.email,
+          buildActionCodeSettings(continueUrl),
+        );
+      } catch (linkErr) {
+        if (linkErr.code === 'auth/unauthorized-continue-uri') {
+          console.warn("continueUrl domain not allowlisted, generating reset link with default settings");
+          resetUrl = await getAuth().generatePasswordResetLink(userRecord.email);
+        } else {
+          throw linkErr;
+        }
+      }
 
-      const displayName = userRecord.displayName || userRecord.email.split('@')[0] || 'there';
+      // Retrieve the user's actual registered name from Firestore if displayName is not in Auth
+      let displayName = userRecord.displayName;
+      if (!displayName) {
+        try {
+          const userDoc = await getFirestore().collection("users").doc(userRecord.uid).get();
+          if (userDoc.exists && userDoc.data().name) {
+            displayName = userDoc.data().name;
+          }
+        } catch (dbErr) {
+          console.warn("Could not fetch user name from Firestore:", dbErr);
+        }
+      }
+      displayName = displayName || "there";
 
       const htmlContent = authEmailLayout(
         `

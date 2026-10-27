@@ -7,6 +7,7 @@ import {
   signOut,
   sendEmailVerification,
   sendPasswordResetEmail,
+  updateProfile,
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { createContext, useContext, useEffect, useState } from "react";
@@ -83,6 +84,15 @@ export const AuthProvider = ({ children }) => {
 
   const signUpWithEmail = async (name, email, password, phone = "") => {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    // Update Firebase Auth profile displayName
+    if (name) {
+      try {
+        await updateProfile(userCredential.user, { displayName: name.trim() });
+      } catch (profileErr) {
+        console.warn("Could not set displayName on auth user:", profileErr);
+      }
+    }
+
     // Create user document
     await setDoc(doc(db, "users", userCredential.user.uid), {
       name,
