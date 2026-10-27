@@ -67,8 +67,14 @@ export default function ProfileDeleteTab() {
     );
     await Promise.all(progressDeletePromises);
 
-    // 3. Delete user document
+    // 3. Delete user document by uid and any duplicate records by email
     await deleteDoc(doc(db, "users", uid));
+    if (auth.currentUser.email) {
+      const emailQuery = query(collection(db, "users"), where("email", "==", auth.currentUser.email.trim().toLowerCase()));
+      const emailSnapshot = await getDocs(emailQuery);
+      const emailDeletePromises = emailSnapshot.docs.map(d => deleteDoc(doc(db, "users", d.id)));
+      await Promise.all(emailDeletePromises);
+    }
 
     // 4. Delete profile picture from storage
     if (auth.currentUser.photoURL && auth.currentUser.photoURL.includes('firebasestorage')) {

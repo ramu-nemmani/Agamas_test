@@ -2,9 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
-import { getFunctions } from "firebase/functions";
-// import { connectFunctionsEmulator } from "firebase/functions";
-
+import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -36,9 +34,10 @@ const functions = getFunctions(app);
 
 const dbVideos = getFirestore(appVideos);
 
-// Point to local functions emulator when running in localhost
-// if (window.location.hostname === "localhost") {
-//   connectFunctionsEmulator(functions, "127.0.0.1", 5001);
-// }
+// Automatically connect to local functions emulator on localhost / 127.0.0.1
+if (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) {
+  connectFunctionsEmulator(functions, "127.0.0.1", 5001);
+  console.log("⚡ Connected to local Firebase Functions emulator on port 5001");
+}
 
 export { app, auth, db, dbVideos, storage, functions };

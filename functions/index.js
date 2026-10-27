@@ -86,25 +86,133 @@ exports.sendOtp = functions.https.onRequest(
 
         await db.collection("otps").doc(email).set({ otp, expiresAt });
 
+        const emailHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verification Code</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f8fafc;font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;color:#0f172a;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f8fafc;padding:36px 16px 48px 16px;">
+    <tr>
+      <td align="center">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:540px;width:100%;">
+          
+          <!-- Brand Header -->
+          <tr>
+            <td style="padding:0 4px 20px 4px;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td align="left" style="vertical-align:middle;">
+                    <a href="https://theagamas.com" style="text-decoration:none;display:inline-block;">
+                      <table cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          <td style="vertical-align:middle;">
+                            <img
+                              src="https://theagamas.com/favicon.webp"
+                              alt="The Agamas Logo"
+                              width="40"
+                              height="40"
+                              style="display:block;width:40px;height:40px;border-radius:10px;object-fit:contain;border:0;outline:none;"
+                            />
+                          </td>
+                          <td style="padding-left:12px;vertical-align:middle;">
+                            <span style="font-size:24px;line-height:28px;color:#1e1e1e;font-family:Georgia,'Times New Roman',serif;font-weight:normal;letter-spacing:0;">
+                              The <span style="color:#cd5c3d;">Agamas</span>
+                            </span>
+                          </td>
+                        </tr>
+                      </table>
+                    </a>
+                  </td>
+                  <td align="right" style="vertical-align:middle;">
+                    <a href="https://theagamas.com" style="display:inline-block;padding:6px 14px;border:1px solid #e2e8f0;border-radius:9999px;font-size:12px;font-weight:600;color:#64748b;text-decoration:none;background:#ffffff;">
+                      Website &#8599;
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Main White Card -->
+          <tr>
+            <td>
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#ffffff;border-radius:24px;border:1px solid #e2e8f0;box-shadow:0 4px 20px -2px rgba(0,0,0,0.03);overflow:hidden;">
+                <tr>
+                  <td style="padding:40px 36px 36px 36px;">
+                    <p style="margin:0 0 16px 0;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#94a3b8;">
+                      SECURITY VERIFICATION
+                    </p>
+                    <h1 style="margin:0 0 24px 0;font-size:30px;line-height:1.25;font-weight:700;color:#0f172a;letter-spacing:-0.5px;">
+                      Your verification code.
+                    </h1>
+                    <p style="margin:0 0 14px 0;font-size:15px;color:#475569;line-height:1.6;">
+                      Use the 6-digit one-time code below to verify your email address:
+                    </p>
+                    <div style="margin:28px 0;padding:18px 24px;background-color:#f8fafc;border:1px dashed #cbd5e1;border-radius:16px;text-align:center;">
+                      <span style="font-size:34px;font-weight:700;letter-spacing:8px;color:#0f172a;font-family:monospace;">
+                        ${otp}
+                      </span>
+                    </div>
+                    <p style="margin:0 0 8px 0;font-size:13px;color:#64748b;line-height:1.5;">
+                      This code will expire in <strong>15 minutes</strong>.
+                    </p>
+                    <p style="margin:0;font-size:12px;color:#94a3b8;line-height:1.5;">
+                      If you did not request this verification code, you can safely ignore this email.
+                    </p>
+                    <div style="margin-top:32px;padding-top:20px;border-top:1px solid #f1f5f9;">
+                      <p style="margin:0;font-size:13px;color:#64748b;">
+                        Warm regards, <strong style="color:#0f172a;">The Agamas Team</strong>
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td align="center" style="padding-top:28px;">
+              <p style="margin:0 0 14px 0;font-size:12px;color:#94a3b8;font-weight:500;">Stay connected</p>
+              <table cellpadding="0" cellspacing="0" border="0" style="margin:0 auto 20px auto;">
+                <tr>
+                  <td style="padding:0 12px;vertical-align:middle;">
+                    <a href="https://www.instagram.com/sunyatee/" target="_blank" title="Instagram" style="text-decoration:none;display:inline-block;">
+                      <img src="https://img.icons8.com/material-outlined/48/94a3b8/instagram-new.png" alt="Instagram" width="20" height="20" style="display:block;width:20px;height:20px;border:0;outline:none;" />
+                    </a>
+                  </td>
+                  <td style="padding:0 12px;vertical-align:middle;">
+                    <a href="https://www.facebook.com/dxnsunya" target="_blank" title="Facebook" style="text-decoration:none;display:inline-block;">
+                      <img src="https://img.icons8.com/material-outlined/48/94a3b8/facebook-f.png" alt="Facebook" width="20" height="20" style="display:block;width:20px;height:20px;border:0;outline:none;" />
+                    </a>
+                  </td>
+                  <td style="padding:0 12px;vertical-align:middle;">
+                    <a href="https://www.linkedin.com/company/sunyatee/posts/?feedView=all" target="_blank" title="LinkedIn" style="text-decoration:none;display:inline-block;">
+                      <img src="https://img.icons8.com/material-outlined/48/94a3b8/linkedin--v1.png" alt="LinkedIn" width="20" height="20" style="display:block;width:20px;height:20px;border:0;outline:none;" />
+                    </a>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:0;font-size:12px;color:#94a3b8;">&copy; ${new Date().getFullYear()} The Agamas. All rights reserved.</p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+
         await sendEmail({
-          from: "OTP Verification for Agamas <no-reply@theagamas.com>",
+          from: "The Agamas <no-reply@theagamas.com>",
           to: email,
-          subject: "Your OTP Code",
+          subject: "Your OTP Verification Code",
           emailType: "otp",
-          html: `
-  <div style="font-family: 'Segoe UI', sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 8px; background-color: #fafafa;">
-    <h2 style="color: #2c3e50;">Email Verification Code</h2>
-    <p>Hello,</p>
-    <p>Use the OTP below to verify your email address:</p>
-    <div style="font-size: 24px; font-weight: bold; background-color: #f0f0f0; padding: 10px 20px; width: fit-content; margin: 20px auto; border-radius: 6px; color: #333;">
-      ${otp}
-    </div>
-    <p>This code will expire in <strong>15 minutes</strong>.</p>
-    <p style="color: #888;">If you didn't request this code, you can ignore this email.</p>
-    <hr style="margin: 30px 0;">
-    <p style="font-size: 12px; color: #aaa;">&copy; ${new Date().getFullYear()} Agama Translations. All rights reserved.</p>
-  </div>
-`,
+          html: emailHtml,
         });
 
         return res.status(200).json({ success: true, message: "OTP sent" });

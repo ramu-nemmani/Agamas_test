@@ -2,6 +2,8 @@ import { Loader2, X, Eye, EyeOff } from "lucide-react";
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useAuth } from "../context/AuthContext";
+import { db } from "../firebase";
+import { collection, query, where, getDocs } from "firebase/firestore";
 
 export default function AuthModal({ isOpen, onClose, onSuccess }) {
   const { loginWithEmail, signUpWithEmail, loginWithGoogle, resetPassword, resendVerificationEmail } = useAuth();
@@ -151,6 +153,8 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
 
     try {
       if (isLogin) {
+        // Manual login: verify email screen must NEVER be shown here
+        setIsVerificationMode(false);
         await loginWithEmail(email, password);
         handleClose();
         if (onSuccess) onSuccess();
@@ -161,20 +165,55 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
           return;
         }
         await signUpWithEmail(name, email, password, phone);
+        // ONLY show the verify email screen for new registered users who register manually
         setIsVerificationMode(true);
         startResendCountdown(60);
       }
     } catch (err) {
       console.error(err);
+      // Ensure verification mode popup is NEVER triggered during login attempt
+      if (isLogin) {
+        setIsVerificationMode(false);
+      }
+
       if (err.code === "auth/unverified-email") {
-        // Instead of showing the plain error message in login form, switch to verification card
-        setIsVerificationMode(true);
-        startResendCountdown(60);
-        setError("");
+        if (!isLogin) {
+          setIsVerificationMode(true);
+          startResendCountdown(60);
+          setError("");
+        } else {
+          setError("Your email is not verified yet. Please verify your email before logging in.");
+        }
       } else if (err.code === "auth/invalid-credential" || err.code === "auth/wrong-password" || err.code === "auth/user-not-found") {
-        setError("Invalid email or password. Please check your credentials.");
+        try {
+          const cleanEmail = email.trim();
+          const cleanEmailLower = cleanEmail.toLowerCase();
+          
+          // Check if user exists in Firestore with this email
+          const usersRef = collection(db, "users");
+          const q1 = query(usersRef, where("email", "==", cleanEmailLower));
+          let querySnapshot = await getDocs(q1);
+
+          if (querySnapshot.empty && cleanEmail !== cleanEmailLower) {
+            const q2 = query(usersRef, where("email", "==", cleanEmail));
+            querySnapshot = await getDocs(q2);
+          }
+
+          console.log("🔍 [AuthModal] Checking email:", cleanEmailLower, "Found docs:", querySnapshot.size);
+
+          if (!querySnapshot.empty) {
+            // Existing user (signed up via Google)
+            setError("Invalid email or password. If you originally signed up with Google, please click 'Continue with Google'.");
+          } else {
+            // Completely new / unregistered user
+            setError("Invalid email or password. Please check your credentials or create a new account.");
+          }
+        } catch (checkErr) {
+          console.error("Error checking user existence in Firestore:", checkErr);
+          setError("Invalid email or password. Please check your credentials or create a new account.");
+        }
       } else if (err.code === "auth/email-already-in-use") {
-        setError("This email is already registered.");
+        setError("This email is already registered. If you signed in with Google, please use 'Continue with Google'.");
       } else if (err.code === "auth/weak-password") {
         setError("Password should be at least 6 characters.");
       } else {

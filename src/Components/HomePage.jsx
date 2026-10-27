@@ -43,6 +43,7 @@ const HomePage = () => {
         <Route path="/features" element={<FeaturesPage />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/video" element={<VideoListPage />} />
+        <Route path="/login" element={<LandingPage />} />
         {/* <Route path="/video" element={<CategoriesVideos />} /> */}
         {/* <Route path="/video/:id" element={<VideoPlayer />} /> */}
         <Route path="/chapter-view/:lessonId/:chapterId" element={<ChapterViewPage setIsFullScreen={setIsFullScreen} />} />

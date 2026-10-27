@@ -10,23 +10,43 @@ const awsRegion = defineSecret("AWS_REGION");
 const APP_URL = "https://theagamas.com";
 const AUTH_CONTINUE_URL =
   process.env.FIREBASE_AUTH_CONTINUE_URL ||
-  "https://agamatranslationsfordrlim.firebaseapp.com";
-const BRAND_PURPLE = "#2d2e7e";
+  "https://theagamas.com";
+const BRAND_TERRACOTTA = "#cd5c3d";
+const BRAND_TERRACOTTA_DARK = "#b84f33";
+const BRAND_DARK = "#001e2d";
+const TEXT_DARK = "#001e2d";
+const TEXT_MUTED = "#5D554D";
+const BG_PAGE = "#f8fafc";
+const CARD_BG = "#ffffff";
 const SUPPORT_EMAIL = "no-reply@theagamas.com";
-const LOGO_URL =
-  "https://firebasestorage.googleapis.com/v0/b/agamatranslationsfordrlim.firebasestorage.app/o/SifLogo.jpg?alt=media";
+const LOGO_URL = "https://theagamas.com/assets/favicon-DETFG3_X.jpg";
 const SES_CONFIGURATION_SET = "TheAgamas";
 
 function authCtaButton(url, text) {
   return `
-    <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:24px;">
+    <table cellpadding="0" cellspacing="0" border="0" style="margin:28px 0 24px 0;">
       <tr>
-        <td align="center">
+        <td align="center" style="background-color:#cd5c3d;border-radius:9999px;">
           <a
             href="${url}"
-            style="display:inline-block;background:${BRAND_PURPLE};color:#ffffff;text-decoration:none;padding:13px 30px;border-radius:8px;font-size:14px;font-weight:700;"
+            style="display:inline-block;background-color:#cd5c3d;color:#ffffff;text-decoration:none;padding:13px 30px;border-radius:9999px;font-size:14px;font-weight:600;font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;letter-spacing:0.2px;line-height:1;"
           >
-            ${text}
+            <table cellpadding="0" cellspacing="0" border="0" style="display:inline-table;vertical-align:middle;">
+              <tr>
+                <td style="color:#ffffff;font-size:14px;font-weight:600;font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;padding:0;vertical-align:middle;line-height:1;">
+                  ${text}
+                </td>
+                <td style="padding:0 0 0 8px;vertical-align:middle;line-height:1;">
+                  <img
+                    src="https://img.icons8.com/ios-glyphs/30/ffffff/arrow.png"
+                    alt="→"
+                    width="14"
+                    height="14"
+                    style="display:block;width:14px;height:14px;border:0;outline:none;"
+                  />
+                </td>
+              </tr>
+            </table>
           </a>
         </td>
       </tr>
@@ -34,54 +54,141 @@ function authCtaButton(url, text) {
   `;
 }
 
-function authEmailLayout(content, preheader, title = "Confirm your email") {
+function authEmailLayout(content, preheader, eyebrow = "A NOTE FROM OUR TEAM", heading = "") {
   const year = new Date().getFullYear();
   return `<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${heading || "The Agamas"}</title>
 </head>
-<body style="margin:0;padding:0;background:#f1f5f9;font-family:Arial,Helvetica,sans-serif;">
-  <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">
+<body style="margin:0;padding:0;background-color:${BG_PAGE};font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;color:${TEXT_DARK};">
+  <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;line-height:1px;">
     ${preheader}
   </div>
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;padding:40px 16px;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${BG_PAGE};padding:36px 16px 48px 16px;width:100% !important;">
     <tr>
       <td align="center">
-        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:14px;overflow:hidden;border:1px solid #e2e8f0;">
-          <!-- Header -->
+        <!-- Main Wrapper -->
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:540px;width:100%;">
+          
+          <!-- Top Brand Header -->
           <tr>
-            <td style="background:${BRAND_PURPLE};padding:32px 28px;text-align:center;">
-              <img
-                src="${LOGO_URL}"
-                alt="The Agamas Logo"
-                width="88"
-                height="88"
-                style="display:block;margin:0 auto 16px;width:88px;height:88px;border-radius:50%;border:0;outline:none;text-decoration:none;"
-              />
-              <h1 style="margin:0;color:#ffffff;font-size:22px;line-height:1.3;font-weight:700;">
-                ${title}
-              </h1>
+            <td style="padding:0 4px 20px 4px;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td align="left" style="vertical-align:middle;">
+                    <a href="${APP_URL}" style="text-decoration:none;display:inline-block;">
+                      <table cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          <td style="vertical-align:middle;">
+                            <img
+                              src="${LOGO_URL}"
+                              alt="The Agamas Logo"
+                              width="40"
+                              height="40"
+                              style="display:block;width:40px;height:40px;border-radius:10px;object-fit:contain;border:0;outline:none;"
+                            />
+                          </td>
+                          <td style="padding-left:12px;vertical-align:middle;">
+                            <span style="font-size:24px;line-height:28px;color:#1e1e1e;font-family:Georgia,'Times New Roman',serif;font-weight:normal;letter-spacing:0;">
+                              The <span style="color:#cd5c3d;">Agamas</span>
+                            </span>
+                          </td>
+                        </tr>
+                      </table>
+                    </a>
+                  </td>
+                  <td align="right" style="vertical-align:middle;">
+                    <a href="${APP_URL}" style="display:inline-block;padding:6px 14px;border:1px solid #e2e8f0;border-radius:9999px;font-size:12px;font-weight:600;color:#64748b;text-decoration:none;background:#ffffff;">
+                      Website &#8599;
+                    </a>
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
-          <!-- Body -->
+
+          <!-- Main White Card -->
           <tr>
-            <td style="padding:30px;">
-              ${content}
+            <td>
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${CARD_BG};border-radius:24px;border:1px solid #e2e8f0;box-shadow:0 4px 20px -2px rgba(0,0,0,0.03);overflow:hidden;">
+                <tr>
+                  <td style="padding:40px 36px 36px 36px;">
+                    
+                    <!-- Eyebrow -->
+                    <p style="margin:0 0 16px 0;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#94a3b8;font-family:'Segoe UI',Helvetica,Arial,sans-serif;">
+                      ${eyebrow}
+                    </p>
+
+                    <!-- Big Headline -->
+                    ${heading ? `
+                    <h1 style="margin:0 0 24px 0;font-size:30px;line-height:1.25;font-weight:700;color:#001e2d;letter-spacing:-0.5px;font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif;">
+                      ${heading}
+                    </h1>
+                    ` : ""}
+
+                    <!-- Body Content -->
+                    <div style="font-size:15px;line-height:1.65;color:#475569;">
+                      ${content}
+                    </div>
+
+                    <!-- Sign-off -->
+                    <div style="margin-top:32px;padding-top:20px;border-top:1px solid #f1f5f9;">
+                      <p style="margin:0;font-size:13px;color:#64748b;">
+                        Warm regards, <strong style="color:#001e2d;">The Agamas Team</strong>
+                      </p>
+                    </div>
+
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
-          <!-- Footer -->
+
+          <!-- Stay Connected & Footer Section -->
           <tr>
-            <td style="background:#f8fafc;border-top:1px solid #e2e8f0;padding:20px 24px;text-align:center;">
-              <p style="margin:0;color:#64748b;font-size:13px;">
-                © ${year} The Agamas
+            <td align="center" style="padding-top:28px;">
+              <p style="margin:0 0 14px 0;font-size:12px;color:#94a3b8;font-weight:500;">
+                Stay connected
               </p>
-              <p style="margin:6px 0 0;color:#94a3b8;font-size:12px;">
-                Need help? <a href="mailto:${SUPPORT_EMAIL}" style="color:${BRAND_PURPLE};text-decoration:none;">${SUPPORT_EMAIL}</a>
+              
+              <!-- Social Media Icons (matching website footer: Instagram, Facebook, LinkedIn) -->
+              <table cellpadding="0" cellspacing="0" border="0" style="margin:0 auto 20px auto;">
+                <tr>
+                  <!-- Instagram -->
+                  <td style="padding:0 12px;vertical-align:middle;">
+                    <a href="https://www.instagram.com/sunyatee/" target="_blank" title="Instagram" style="text-decoration:none;display:inline-block;">
+                      <img src="https://img.icons8.com/material-outlined/48/94a3b8/instagram-new.png" alt="Instagram" width="20" height="20" style="display:block;width:20px;height:20px;border:0;outline:none;" />
+                    </a>
+                  </td>
+                  <!-- Facebook -->
+                  <td style="padding:0 12px;vertical-align:middle;">
+                    <a href="https://www.facebook.com/dxnsunya" target="_blank" title="Facebook" style="text-decoration:none;display:inline-block;">
+                      <img src="https://img.icons8.com/material-outlined/48/94a3b8/facebook-f.png" alt="Facebook" width="20" height="20" style="display:block;width:20px;height:20px;border:0;outline:none;" />
+                    </a>
+                  </td>
+                  <!-- LinkedIn -->
+                  <td style="padding:0 12px;vertical-align:middle;">
+                    <a href="https://www.linkedin.com/company/sunyatee/posts/?feedView=all" target="_blank" title="LinkedIn" style="text-decoration:none;display:inline-block;">
+                      <img src="https://img.icons8.com/material-outlined/48/94a3b8/linkedin--v1.png" alt="LinkedIn" width="20" height="20" style="display:block;width:20px;height:20px;border:0;outline:none;" />
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Copyright & Links -->
+              <p style="margin:0 0 6px 0;font-size:12px;color:#94a3b8;">
+                &copy; ${year} The Agamas. All rights reserved.
+              </p>
+              <p style="margin:0;font-size:11px;color:#94a3b8;">
+                Questions? <a href="mailto:${SUPPORT_EMAIL}" style="color:#64748b;text-decoration:none;">${SUPPORT_EMAIL}</a>
               </p>
             </td>
           </tr>
+
         </table>
       </td>
     </tr>
@@ -95,34 +202,36 @@ function emailVerificationHtml({ name, verificationUrl }) {
 
   return authEmailLayout(
     `
-    <p style="margin:0 0 16px;font-size:15px;color:#111827;line-height:1.6;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;">
-      Hi ${firstName},
+    <p style="margin:0 0 14px 0;font-size:15px;color:#334155;line-height:1.6;">
+      Hello <strong>${firstName}</strong>,
     </p>
-    <p style="margin:0 0 4px;font-size:15px;color:#64748b;line-height:1.6;">
-      One quick step to finish creating your account.
+    <p style="margin:0 0 14px 0;font-size:15px;color:#475569;line-height:1.6;">
+      Welcome to The Agamas! We are delighted to have you join us on this journey of exploring sacred translations and ancient wisdom.
     </p>
-    <p style="margin:0;font-size:15px;color:#64748b;line-height:1.6;">
-      Click the button below to confirm this email address belongs to you.
+    <p style="margin:0;font-size:15px;color:#475569;line-height:1.6;">
+      Please confirm your email address by clicking the button below so you can access your reading progress, bookmarks, and chapters.
     </p>
-    ${authCtaButton(verificationUrl, "Confirm email address")}
-    <p style="margin:32px 0 0;font-size:13px;color:#94a3b8;line-height:1.6;text-align:center;">
-      This link expires in 24 hours.<br/>
-      If you didn&apos;t create a The Agamas account,
-      you can ignore this message.
+
+    ${authCtaButton(verificationUrl, "Verify email address")}
+
+    <p style="margin:20px 0 0 0;font-size:12px;color:#94a3b8;line-height:1.5;">
+      This verification link will expire in 24 hours. If you did not create a The Agamas account, you can safely ignore this email.
     </p>
-    <div style="margin-top:28px;padding-top:24px;border-top:1px solid #e5e7eb;">
-      <p style="margin:0 0 8px;font-size:12px;color:#94a3b8;text-align:center;">
-        Button not working? Copy this link:
+
+    <div style="margin-top:20px;padding-top:16px;border-top:1px dashed #e2e8f0;">
+      <p style="margin:0 0 6px 0;font-size:11px;color:#94a3b8;">
+        Button not working? Copy and paste this URL into your browser:
       </p>
-      <p style="margin:0;font-size:12px;color:${BRAND_PURPLE};word-break:break-all;text-align:center;line-height:1.5;">
-        <a href="${verificationUrl}" style="color:${BRAND_PURPLE};text-decoration:underline;">
+      <p style="margin:0;font-size:11px;color:${BRAND_TERRACOTTA};word-break:break-all;line-height:1.4;">
+        <a href="${verificationUrl}" style="color:${BRAND_TERRACOTTA};text-decoration:underline;">
           ${verificationUrl}
         </a>
       </p>
     </div>
     `,
-    `Confirm your The Agamas account — tap the link to finish signing up.`,
-    `Confirm your email`,
+    `Confirm your email address for The Agamas`,
+    `A NOTE FROM OUR TEAM`,
+    `Verify your email address.`
   );
 }
 
@@ -280,42 +389,46 @@ exports.sendPasswordResetEmailFn = onCall(
         return { sent: false, method: 'none' };
       }
 
+      const continueUrl = request.data?.continueUrl;
       const resetUrl = await getAuth().generatePasswordResetLink(
         userRecord.email,
-        buildActionCodeSettings(),
+        buildActionCodeSettings(continueUrl),
       );
 
       const displayName = userRecord.displayName || userRecord.email.split('@')[0] || 'there';
 
       const htmlContent = authEmailLayout(
         `
-        <p style="margin:0 0 16px;font-size:15px;color:#111827;line-height:1.6;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;">
-          Hi ${displayName},
+        <p style="margin:0 0 14px 0;font-size:15px;color:#334155;line-height:1.6;">
+          Hello <strong>${displayName}</strong>,
         </p>
-        <p style="margin:0 0 4px;font-size:15px;color:#64748b;line-height:1.6;">
-          Someone requested a password reset for your The Agamas account.
+        <p style="margin:0 0 14px 0;font-size:15px;color:#475569;line-height:1.6;">
+          We received a request to reset the password for your The Agamas account.
         </p>
-        <p style="margin:0;font-size:15px;color:#64748b;line-height:1.6;">
-          Click the button below to set a new password.
+        <p style="margin:0;font-size:15px;color:#475569;line-height:1.6;">
+          Click the button below to choose a new password. If you did not make this request, your account remains secure and you can disregard this email.
         </p>
+
         ${authCtaButton(resetUrl, "Reset password")}
-        <p style="margin:32px 0 0;font-size:13px;color:#94a3b8;line-height:1.6;text-align:center;">
-          If you didn&apos;t request this, you can safely ignore this email.<br/>
-          Your password will not change until you create a new one.
+
+        <p style="margin:20px 0 0 0;font-size:12px;color:#94a3b8;line-height:1.5;">
+          Your password will not change until you access the link above and create a new one.
         </p>
-        <div style="margin-top:28px;padding-top:24px;border-top:1px solid #e5e7eb;">
-          <p style="margin:0 0 8px;font-size:12px;color:#94a3b8;text-align:center;">
-            Button not working? Copy this link:
+
+        <div style="margin-top:20px;padding-top:16px;border-top:1px dashed #e2e8f0;">
+          <p style="margin:0 0 6px 0;font-size:11px;color:#94a3b8;">
+            Button not working? Copy and paste this URL into your browser:
           </p>
-          <p style="margin:0;font-size:12px;color:${BRAND_PURPLE};word-break:break-all;text-align:center;line-height:1.5;">
-            <a href="${resetUrl}" style="color:${BRAND_PURPLE};text-decoration:underline;">
+          <p style="margin:0;font-size:11px;color:${BRAND_TERRACOTTA};word-break:break-all;line-height:1.4;">
+            <a href="${resetUrl}" style="color:${BRAND_TERRACOTTA};text-decoration:underline;">
               ${resetUrl}
             </a>
           </p>
         </div>
         `,
         `Reset your password for The Agamas`,
-        `Reset your password`
+        `PASSWORD RESET REQUEST`,
+        `Reset your password.`
       );
 
       const textContent = `The Agamas — Reset your password
