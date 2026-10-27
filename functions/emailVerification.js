@@ -27,24 +27,18 @@ function authCtaButton(url, text) {
   return `
     <table cellpadding="0" cellspacing="0" border="0" style="margin:28px 0 24px 0;">
       <tr>
-        <td align="center" style="background-color:#cd5c3d;border-radius:9999px;">
+        <td align="center" style="background-color:#000000;border-radius:9999px;">
           <a
             href="${url}"
-            style="display:inline-block;background-color:#cd5c3d;color:#ffffff;text-decoration:none;padding:13px 30px;border-radius:9999px;font-size:14px;font-weight:600;font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;letter-spacing:0.2px;line-height:1;"
+            style="display:inline-block;background-color:#000000;color:#ffffff;text-decoration:none;padding:13px 30px;border-radius:9999px;font-size:14px;font-weight:400;font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;letter-spacing:0.2px;line-height:1;"
           >
             <table cellpadding="0" cellspacing="0" border="0" style="display:inline-table;vertical-align:middle;">
               <tr>
-                <td style="color:#ffffff;font-size:14px;font-weight:600;font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;padding:0;vertical-align:middle;line-height:1;">
+                <td style="color:#ffffff;font-size:14px;font-weight:400;font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;padding:0;vertical-align:middle;line-height:1;">
                   ${text}
                 </td>
-                <td style="padding:0 0 0 8px;vertical-align:middle;line-height:1;">
-                  <img
-                    src="https://img.icons8.com/ios-glyphs/30/ffffff/arrow.png"
-                    alt="→"
-                    width="14"
-                    height="14"
-                    style="display:block;width:14px;height:14px;border:0;outline:none;"
-                  />
+                <td style="padding:0 0 0 8px;vertical-align:middle;line-height:1;color:#ffffff;font-size:15px;font-weight:400;font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;">
+                  &rarr;
                 </td>
               </tr>
             </table>
@@ -94,8 +88,8 @@ function authEmailLayout(content, preheader, eyebrow = "A NOTE FROM OUR TEAM", h
                             />
                           </td>
                           <td style="padding-left:12px;vertical-align:middle;">
-                            <span style="font-size:24px;line-height:28px;color:#1e1e1e;font-family:Georgia,'Times New Roman',serif;font-weight:normal;letter-spacing:0;">
-                              The <span style="color:#cd5c3d;">Agamas</span>
+                            <span style="font-size:24px;line-height:28px;color:#000000;font-family:Georgia,'Times New Roman',serif;font-weight:normal;letter-spacing:0;">
+                              The Agamas
                             </span>
                           </td>
                         </tr>
@@ -103,7 +97,7 @@ function authEmailLayout(content, preheader, eyebrow = "A NOTE FROM OUR TEAM", h
                     </a>
                   </td>
                   <td align="right" style="vertical-align:middle;">
-                    <a href="${APP_URL}" style="display:inline-block;padding:6px 14px;border:1px solid #e2e8f0;border-radius:9999px;font-size:12px;font-weight:600;color:#64748b;text-decoration:none;background:#ffffff;">
+                    <a href="${APP_URL}" style="display:inline-block;padding:6px 14px;border:1px solid #e2e8f0;border-radius:9999px;font-size:12px;font-weight:400;color:#000000;text-decoration:none;background:#ffffff;">
                       Website &#8599;
                     </a>
                   </td>
@@ -204,7 +198,7 @@ function emailVerificationHtml({ name, verificationUrl }) {
   return authEmailLayout(
     `
     <p style="margin:0 0 14px 0;font-size:15px;color:#334155;line-height:1.6;">
-      Hello <strong>${firstName}</strong>,
+      Hello ${firstName},
     </p>
     <p style="margin:0 0 14px 0;font-size:15px;color:#475569;line-height:1.6;">
       Welcome to The Agamas! We are delighted to have you join us on this journey of exploring sacred translations and ancient wisdom.
@@ -434,7 +428,7 @@ exports.sendPasswordResetEmailFn = onCall(
       const htmlContent = authEmailLayout(
         `
         <p style="margin:0 0 14px 0;font-size:15px;color:#334155;line-height:1.6;">
-          Hello <strong>${displayName}</strong>,
+          Hello ${displayName},
         </p>
         <p style="margin:0 0 14px 0;font-size:15px;color:#475569;line-height:1.6;">
           We received a request to reset the password for your The Agamas account.

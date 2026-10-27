@@ -118,8 +118,8 @@ exports.sendOtp = functions.https.onRequest(
                             />
                           </td>
                           <td style="padding-left:12px;vertical-align:middle;">
-                            <span style="font-size:24px;line-height:28px;color:#1e1e1e;font-family:Georgia,'Times New Roman',serif;font-weight:normal;letter-spacing:0;">
-                              The <span style="color:#cd5c3d;">Agamas</span>
+                            <span style="font-size:24px;line-height:28px;color:#000000;font-family:Georgia,'Times New Roman',serif;font-weight:normal;letter-spacing:0;">
+                              The Agamas
                             </span>
                           </td>
                         </tr>
@@ -127,7 +127,7 @@ exports.sendOtp = functions.https.onRequest(
                     </a>
                   </td>
                   <td align="right" style="vertical-align:middle;">
-                    <a href="https://theagamas.com" style="display:inline-block;padding:6px 14px;border:1px solid #e2e8f0;border-radius:9999px;font-size:12px;font-weight:600;color:#64748b;text-decoration:none;background:#ffffff;">
+                    <a href="https://theagamas.com" style="display:inline-block;padding:6px 14px;border:1px solid #e2e8f0;border-radius:9999px;font-size:12px;font-weight:400;color:#000000;text-decoration:none;background:#ffffff;">
                       Website &#8599;
                     </a>
                   </td>
