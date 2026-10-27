@@ -217,17 +217,6 @@ function emailVerificationHtml({ name, verificationUrl }) {
     <p style="margin:20px 0 0 0;font-size:12px;color:#94a3b8;line-height:1.5;">
       This verification link will expire in 24 hours. If you did not create a The Agamas account, you can safely ignore this email.
     </p>
-
-    <div style="margin-top:20px;padding-top:16px;border-top:1px dashed #e2e8f0;">
-      <p style="margin:0 0 6px 0;font-size:11px;color:#94a3b8;">
-        Button not working? Copy and paste this URL into your browser:
-      </p>
-      <p style="margin:0;font-size:11px;color:${BRAND_TERRACOTTA};word-break:break-all;line-height:1.4;">
-        <a href="${verificationUrl}" style="color:${BRAND_TERRACOTTA};text-decoration:underline;">
-          ${verificationUrl}
-        </a>
-      </p>
-    </div>
     `,
     `Confirm your email address for The Agamas`,
     `A NOTE FROM OUR TEAM`,
@@ -414,17 +403,6 @@ exports.sendPasswordResetEmailFn = onCall(
         <p style="margin:20px 0 0 0;font-size:12px;color:#94a3b8;line-height:1.5;">
           Your password will not change until you access the link above and create a new one.
         </p>
-
-        <div style="margin-top:20px;padding-top:16px;border-top:1px dashed #e2e8f0;">
-          <p style="margin:0 0 6px 0;font-size:11px;color:#94a3b8;">
-            Button not working? Copy and paste this URL into your browser:
-          </p>
-          <p style="margin:0;font-size:11px;color:${BRAND_TERRACOTTA};word-break:break-all;line-height:1.4;">
-            <a href="${resetUrl}" style="color:${BRAND_TERRACOTTA};text-decoration:underline;">
-              ${resetUrl}
-            </a>
-          </p>
-        </div>
         `,
         `Reset your password for The Agamas`,
         `PASSWORD RESET REQUEST`,
