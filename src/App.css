@@ -21,3 +21,8 @@
         display: none !important;
     }
 }
+.tabs-mobile-scroll::-webkit-scrollbar { display: none; }
+.tabs-mobile-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* tabs scroll border touch */
+.tabs-mobile-scroll { height: calc(100% + 1px) !important; margin-bottom: -1px !important; }

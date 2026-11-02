@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
+import { createPortal } from "react-dom";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { collection, doc, getDoc, getDocs, orderBy, query, where, setDoc, addDoc } from "firebase/firestore";
 import DOMPurify from "dompurify";
 import { Panel, Group as PanelGroup, Separator as PanelResizeHandle } from "react-resizable-panels";
-import { ArrowLeft, ArrowRight, Bookmark, Check, Maximize2, X, ChevronDown, List, PanelLeft, PanelRight, Search, Glasses, LibraryBig, ChevronsUpDown, ChevronRight, FileType, FileText, Headphones, Share2, Menu, Play, Pause, RotateCcw } from "lucide-react";
+import { ArrowLeft, ArrowRight, Bookmark, Check, Maximize2, X, ChevronDown, List, PanelLeft, PanelRight, Search, Glasses, LibraryBig, ChevronsUpDown, ChevronRight, FileType, FileText, Headphones, Share2, Menu, Play, Pause, RotateCcw, Columns2 } from "lucide-react";
 
 import { db, auth } from "../../firebase";
 import { useLanguages } from "../../context/LanguageContext";
@@ -59,6 +60,17 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
   const pendingSearchRef = useRef(null);
 
   const [showFontMenu, setShowFontMenu] = useState(false);
+  const [showViewModeMenu, setShowViewModeMenu] = useState(false);
+  const [viewDropdownPos, setViewDropdownPos] = useState({ top: 0, right: 0 });
+  const viewPortalRef = useRef(null);
+  const initialViewMode = searchParams.get("view") || "none";
+  const [viewMode, setViewMode] = useState(initialViewMode); // "parallel", "dual", "none"
+  const [dualLang1, setDualLang1] = useState(searchParams.get("l1") || "EN");
+  const [dualLang2, setDualLang2] = useState(searchParams.get("l2") || (searchParams.get("lang") || "HI"));
+  const [showL1Menu, setShowL1Menu] = useState(false);
+  const [showL2Menu, setShowL2Menu] = useState(false);
+  const l1MenuRef = useRef(null);
+  const l2MenuRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isStopScroll, setIsStopScroll] = useState(true);
   const [langMenuPos, setLangMenuPos] = useState({ top: 0, left: 0 });
@@ -67,6 +79,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
   const langMenuRef = useRef(null);
   const langBtnRef = useRef(null);
   const fontMenuRef = useRef(null);
+  const viewModeMenuRef = useRef(null);
 
   // Auto-scroll in full screen
   useEffect(() => {
@@ -128,17 +141,33 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
       if (fontMenuRef.current && !fontMenuRef.current.contains(event.target)) {
         setShowFontMenu(false);
       }
+      const clickedInsideViewBtn = viewModeMenuRef.current?.contains(event.target);
+      const clickedInsideViewPortal = viewPortalRef.current?.contains(event.target);
+      if (!clickedInsideViewBtn && !clickedInsideViewPortal) {
+        setShowViewModeMenu(false);
+      }
+      if (l1MenuRef.current && !l1MenuRef.current.contains(event.target)) {
+        setShowL1Menu(false);
+      }
+      if (l2MenuRef.current && !l2MenuRef.current.contains(event.target)) {
+        setShowL2Menu(false);
+      }
     }
     document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
     };
-  }, [langMenuRef, fontMenuRef]);
+  }, [langMenuRef, fontMenuRef, viewModeMenuRef, l1MenuRef, l2MenuRef]);
 
   const activeChapter = chapters.find(c => c.id === visibleChapterId) || currentChapter;
-  const currentLangCode = activeTab === "Language" ? parallelLang : (activeTab === "Source" ? "CN" : lang);
+  const currentLangCode = activeTab === "Language" ? (viewMode === "parallel" ? dualLang1 : parallelLang) : (activeTab === "Source" ? "CN" : lang);
   const currentLangObj = languages.find(l => l.shortForm === currentLangCode);
   const currentLangName = currentLangObj?.name || currentLangCode;
+
+  const currentSaveUrl = `/chapter-view/${lessonId}/${visibleChapterId}?lang=${currentLangCode}&tab=${activeTab}${viewMode !== "none" ? `&view=${viewMode}&l1=${dualLang1}&l2=${dualLang2}` : ""
+    }`;
 
   useSaveProgress({
     bookId: lessonId,
@@ -149,43 +178,83 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
     activeTab,
     selectedLanguage: currentLangCode,
     languageName: currentLangName,
-    lastUrl: `/chapter-view/${lessonId}/${visibleChapterId}?lang=${currentLangCode}&tab=${activeTab}`,
-    dependencies: [lessonId, visibleChapterId, lang, parallelLang, activeTab, lesson, activeChapter]
+    lastUrl: currentSaveUrl,
+    dependencies: [lessonId, visibleChapterId, lang, parallelLang, activeTab, lesson, activeChapter, viewMode, dualLang1, dualLang2]
   });
 
-  useEffect(() => {
-    const container = document.getElementById('main-scroll-container');
-    if (!container || chapters.length === 0) return;
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const cid = entry.target.id.replace('chapter-', '');
-          if (cid) {
-            setVisibleChapterId(cid);
-            const currentLangParam = activeTab === "Language" ? parallelLang : (activeTab === "Source" ? "CN" : lang);
-            window.history.replaceState(null, '', `/chapter-view/${lessonId}/${cid}?lang=${currentLangParam}&tab=${activeTab}`);
-          }
-        }
-      });
-    }, {
-      root: container,
-      rootMargin: "-20% 0px -60% 0px" 
+  // Sync URL query params with state changes
+  const updateUrlParams = (newParams) => {
+    const params = new URLSearchParams(window.location.search);
+    Object.entries(newParams).forEach(([key, val]) => {
+      if (val === null || val === undefined || val === "") {
+        params.delete(key);
+      } else {
+        params.set(key, val);
+      }
     });
+    window.history.replaceState(null, "", `${window.location.pathname}?${params.toString()}`);
+  };
 
-    // We need a short timeout to ensure children components have rendered their IDs
-    const timer = setTimeout(() => {
-      chapters.forEach(c => {
-        const el = document.getElementById(`chapter-${c.id}`);
-        if (el) observer.observe(el);
-      });
-    }, 500);
+  const handleSelectL1 = (selected) => {
+    setDualLang1(selected);
+    let nextL2 = dualLang2;
+    if (dualLang2 === selected) {
+      const alternate = languages.find(
+        (l) => {
+          const sf = (l.shortForm || '').trim().toUpperCase();
+          return sf && sf !== selected;
+        }
+      );
+      nextL2 = alternate ? alternate.shortForm : (selected === "EN" ? "HI" : "EN");
+      setDualLang2(nextL2);
+    }
+    updateUrlParams({ l1: selected, l2: nextL2, view: viewMode });
+  };
 
-    return () => {
-      clearTimeout(timer);
-      observer.disconnect();
+  const handleSelectL2 = (selected) => {
+    setDualLang2(selected);
+    let nextL1 = dualLang1;
+    if (dualLang1 === selected) {
+      const alternate = languages.find(
+        (l) => {
+          const sf = (l.shortForm || '').trim().toUpperCase();
+          return sf && sf !== selected;
+        }
+      );
+      nextL1 = alternate ? alternate.shortForm : (selected === "EN" ? "HI" : "EN");
+      setDualLang1(nextL1);
+    }
+    updateUrlParams({ l1: nextL1, l2: selected, view: viewMode });
+  };
+
+  const handleViewModeChange = (mode) => {
+    setViewMode(mode);
+    setActiveTab("Language");
+    if (mode === "none") {
+      updateUrlParams({ view: null, l1: null, l2: null });
+    } else {
+      updateUrlParams({ view: mode, l1: dualLang1, l2: dualLang2 });
+    }
+  };
+
+  useEffect(() => {
+    if (chapterId) {
+      setVisibleChapterId(chapterId);
+    }
+  }, [chapterId]);
+
+  // Restrict dual mode on small screens
+  useEffect(() => {
+    const checkScreenSize = () => {
+      if (window.innerWidth < 768 && viewMode === "dual") {
+        setViewMode("parallel");
+        updateUrlParams({ view: "parallel", l1: dualLang1, l2: dualLang2 });
+      }
     };
-  }, [chapters, lessonId, lang, parallelLang, activeTab]);
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, [viewMode, dualLang1, dualLang2]);
 
   const fontSizes = [
     { label: "12", value: "12" },
@@ -278,7 +347,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
       setAuthModalOpen(true);
       return;
     }
-    
+
     const visibleChapter = chapters.find(c => c.id === visibleChapterId) || currentChapter;
     if (!visibleChapter) {
       ToastMSG("error", "Chapter not found.");
@@ -313,7 +382,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
     const pdfUrl = visibleChapter?.pdfLink?.[langId];
     if (pdfUrl) {
       window.open(pdfUrl, '_blank');
-      
+
       const currentUser = auth.currentUser || user;
       if (currentUser) {
         try {
@@ -348,6 +417,176 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
     setIsShareModalOpen(true);
   };
 
+  const [subChapters, setSubChapters] = useState([]);
+  const [loadingSubChapters, setLoadingSubChapters] = useState(false);
+  const [chapterAvailableLangs, setChapterAvailableLangs] = useState([]);
+
+  // Fetch languages that actually have posts for the current chapter
+  useEffect(() => {
+    const targetCid = chapterId || visibleChapterId;
+    if (!targetCid) return;
+    const fetchChapterLangs = async () => {
+      try {
+        const postQuery = query(
+          collection(db, "posts"),
+          where("chapterId", "==", targetCid)
+        );
+        const snapshot = await getDocs(postQuery);
+        const langIds = new Set();
+        snapshot.docs.forEach((d) => {
+          const lId = d.data().language;
+          if (lId) langIds.add(lId);
+        });
+
+        const filtered = languages.filter((l) => {
+          const sf = (l.shortForm || "").trim().toUpperCase();
+          if (!sf) return false;
+          const lId = l.id || "";
+          // Check against post languages in this chapter
+          for (const pid of langIds) {
+            const pUpper = String(pid).trim().toUpperCase();
+            if (pUpper === sf || pUpper === lId.toUpperCase() || pid === l.id || pid === langMap[sf]) {
+              return true;
+            }
+          }
+          return false;
+        });
+
+        setChapterAvailableLangs(filtered);
+      } catch (err) {
+        console.error("Error fetching chapter languages:", err);
+      }
+    };
+    fetchChapterLangs();
+  }, [chapterId, visibleChapterId, languages]);
+
+  // Fetch sub chapters (posts) for the selected chapter in TOC
+  const fetchSubChaptersForChapter = async (cid) => {
+    if (!cid) return;
+    try {
+      setLoadingSubChapters(true);
+      let targetLangId = null;
+      if (activeTab === "Translation") {
+        targetLangId = langMap["EN"];
+      } else if (activeTab === "Source") {
+        targetLangId = langMap["CN"];
+      } else {
+        targetLangId = langMap[parallelLang] || langMap[`${parallelLang}-EN`] || langMap[`EN-${parallelLang}`] || langMap[lang];
+      }
+
+      // If specific language ID found, query with it; otherwise query chapter posts
+      let postQuery;
+      if (targetLangId) {
+        postQuery = query(
+          collection(db, "posts"),
+          where("chapterId", "==", cid),
+          where("language", "==", targetLangId),
+          orderBy("position")
+        );
+      } else {
+        postQuery = query(
+          collection(db, "posts"),
+          where("chapterId", "==", cid),
+          orderBy("position")
+        );
+      }
+
+      let snapshot = await getDocs(postQuery);
+      // Fallback if no posts found with specific language
+      if (snapshot.empty && targetLangId) {
+        const fallbackQuery = query(
+          collection(db, "posts"),
+          where("chapterId", "==", cid),
+          orderBy("position")
+        );
+        snapshot = await getDocs(fallbackQuery);
+      }
+
+      const posts = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+
+      // Sort by position
+      posts.sort((a, b) => (a.position || 0) - (b.position || 0));
+
+      setSubChapters(posts);
+    } catch (err) {
+      console.error("Error fetching sub chapters:", err);
+    } finally {
+      setLoadingSubChapters(false);
+    }
+  };
+
+  // Automatically fetch sub chapters when chapterId, activeTab, parallelLang, or lang change
+  useEffect(() => {
+    if (chapterId) {
+      fetchSubChaptersForChapter(chapterId);
+    }
+  }, [chapterId, activeTab, parallelLang, lang]);
+
+  const scrollToPost = (postId) => {
+    const el = document.getElementById(`post-${postId}`);
+    const container = document.getElementById('main-scroll-container');
+    if (el && container) {
+      const elTop = el.getBoundingClientRect().top;
+      const containerTop = container.getBoundingClientRect().top;
+      container.scrollTop += (elTop - containerTop - 70);
+    }
+  };
+  const getEnglishChapterTitle = (rawName) => {
+    if (!rawName) return "";
+    const cjkRegex = /[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]/;
+    if (rawName.includes(":") || rawName.includes("：")) {
+      const parts = rawName.split(/[:：]/).map(p => p.trim()).filter(Boolean);
+      const nonCjk = parts.filter(p => !cjkRegex.test(p));
+      if (nonCjk.length > 0) {
+        const combined = nonCjk.join(": ").trim();
+        return combined.replace(/^Chapter\s+([0-9]+|[a-zA-Z]+):\s*/i, "").trim() || combined;
+      }
+    }
+    if (cjkRegex.test(rawName)) {
+      const stripped = rawName
+        .replace(/[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]+/g, "")
+        .replace(/[:：\s-]+$/, "")
+        .replace(/^[:：\s-]+/, "")
+        .replace(/\s{2,}/g, " ")
+        .trim();
+      if (stripped) {
+        return stripped.replace(/^Chapter\s+([0-9]+|[a-zA-Z]+)[:\s]*/i, "").trim() || stripped;
+      }
+    }
+    return rawName.replace(/^Chapter\s+([0-9]+|[a-zA-Z]+)[:\s]*/i, "").trim() || rawName.trim();
+  };
+
+  const getEnglishPostTitle = (rawName) => {
+    if (!rawName) return "";
+    const cjkRegex = /[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]/;
+    let res = rawName;
+    if (rawName.includes(":") || rawName.includes("：")) {
+      const parts = rawName.split(/[:：]/).map(p => p.trim()).filter(Boolean);
+      const nonCjk = parts.filter(p => !cjkRegex.test(p));
+      if (nonCjk.length > 0) {
+        res = nonCjk.join(": ").trim();
+      }
+    } else if (cjkRegex.test(rawName)) {
+      const stripped = rawName
+        .replace(/[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]+/g, "")
+        .replace(/[:：\s-]+$/, "")
+        .replace(/^[:：\s-]+/, "")
+        .replace(/\s{2,}/g, " ")
+        .trim();
+      if (stripped) res = stripped;
+    }
+    const langNames = ["English", "Chinese", "Sanskrit", "Tibetan", "Hindi", "Pali", "Tamil", "Telugu", "Japanese", "Korean", "French", "German", "Spanish", "Vietnamese", "Burmese", "Thai", "EN", "CN", "SA", "TI", "HI", "PA", "TA", "TE", "JA", "KO", "FR", "DE", "ES"];
+    const langPattern = langNames.join("|");
+    res = res.replace(new RegExp("\\s*[/\\|·•-]\\s*(" + langPattern + ")\\s*$", "i"), "");
+    res = res.replace(new RegExp("\\s*[\\(\\[]\\s*(" + langPattern + ")\\s*[\\)\\]]\\s*$", "i"), "");
+    res = res.replace(new RegExp("\\s+(" + langPattern + ")\\s*$", "i"), "");
+    return res.trim();
+  };
+
+  const selectedChapter = chapters.find(c => c.id === chapterId) || currentChapter;
   const currentChapterIndex = chapters.findIndex(c => c.id === chapterId);
   const prevChapter = currentChapterIndex > 0 ? chapters[currentChapterIndex - 1] : null;
   const nextChapter = currentChapterIndex < chapters.length - 1 ? chapters[currentChapterIndex + 1] : null;
@@ -378,7 +617,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
     if (result.chapterId !== chapterId) {
       navigate(`/chapter-view/${lessonId}/${result.chapterId}?lang=${lang}`);
     }
-    
+
     setIsSearchOpen(false);
 
     // Helper to highlight only the searched text in text nodes
@@ -528,8 +767,8 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
 
   return (
     <div className={`overflow-hidden flex flex-col ${isFullScreen ? "fixed inset-0 h-screen z-[100] bg-white" : "h-[calc(100vh)] bg-[#f0f4f6]"}`} ref={containerRef}>
-      <SEO 
-        title={`${currentChapter?.name || 'Chapter View'} - ${lesson?.name || 'Agamas'}`} 
+      <SEO
+        title={`${currentChapter?.name || 'Chapter View'} - ${lesson?.name || 'Agamas'}`}
         description={`Read ${currentChapter?.name} from ${lesson?.name}`}
       />
 
@@ -538,7 +777,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
         <div className="sticky top-0 z-40 w-full bg-[#cd5c3d]">
           <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 max-w-[1336px]">
             <div className="hidden lg:flex items-center justify-between gap-3 py-2 min-h-[40px]">
-              
+
               {/* Breadcrumbs */}
               <div className="flex-1 min-w-0 flex items-center">
                 <nav aria-label="Breadcrumb" className="m-0 p-0">
@@ -565,7 +804,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                       Download PDF
                     </span>
                   </div>
-                  
+
 
                   <div className="relative flex group items-center justify-center">
                     <button onClick={handleShareClick} className="inline-flex items-center justify-center h-8 w-8 rounded-sm text-white hover:text-white hover:bg-white/10 transition-colors">
@@ -595,7 +834,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                       Download PDF
                     </span>
                   </div>
-                  
+
 
                   <div className="relative flex group items-center justify-center">
                     <button onClick={handleShareClick} className="inline-flex items-center justify-center h-8 w-8 rounded-sm text-white hover:text-white hover:bg-white/10 transition-colors">
@@ -605,9 +844,9 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                       Share translation
                     </span>
                   </div>
+                </div>
               </div>
-              </div>
-              
+
               {/* Mobile Breadcrumb Dropdown */}
               {mobileMenuOpen && (
                 <div className="pb-3 px-2 border-t border-white/20 mt-1 pt-3 animate-in fade-in slide-in-from-top-2">
@@ -629,7 +868,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
           </div>
         </div>
       )}
-      
+
       {/* Mobile TOC Drawer */}
       {!isFullScreen && showLeftPanel && (
         <div className="lg:hidden fixed inset-0 z-[150] flex">
@@ -638,51 +877,84 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
           {/* Drawer */}
           <div className="relative flex w-full max-w-xs flex-col bg-white shadow-xl h-full overflow-hidden animate-in slide-in-from-left-full">
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-              <span className="font-semibold text-[#001e2d] text-sm uppercase">Table of Contents</span>
+              <span className="font-normal text-[#001e2d] text-sm uppercase">Table of Contents</span>
               <button onClick={() => setShowLeftPanel(false)} className="p-2 -mr-2 text-gray-500 hover:text-gray-800 rounded-md">
                 <X className="w-5 h-5" />
               </button>
             </div>
-            
-            <div className="flex-1 overflow-y-auto px-2 py-4">
-               {/* TOC Header */}
-               <div className="w-full py-2 text-sm text-[#555] flex gap-2 mb-4 px-2">
-                 <div className="my-auto text-[#cd5c3d]"><LibraryBig className="w-5 h-5 stroke-1" /></div>
-                 <span className="my-auto font-light text-[#001e2d]">{lesson?.name}</span>
-               </div>
-               
-               <div className="h-[1px] w-full bg-gray-200 my-4"></div>
 
-               {/* Chapter List */}
-               {chapters.map((c) => (
-                 <div key={c.id} className="border-b border-gray-100 last:border-b-0">
-                   <button
-                     onClick={() => {
-                       navigate(`/chapter-view/${lessonId}/${c.id}?lang=${lang}`);
-                       setShowLeftPanel(false);
-                     }}
-                     className="w-full py-2.5 px-2 text-left text-sm transition-colors flex gap-3 rounded-md items-start font-light text-[#001e2d] hover:bg-gray-50"
-                     style={{
-                       fontFamily: '"Noto Serif", "Noto Serif Fallback", serif'
-                     }}
-                   >
-                     <span className="shrink-0 text-xs text-gray-400 mt-[2px]">{c.position.toString().padStart(2, '0')}.</span>
-                     <span className="leading-snug">
-                       {c.name?.replace(/^Chapter\s+[0-9]+:/i, '').trim() || c.name}
-                     </span>
-                   </button>
-                 </div>
-               ))}
+            <div className="flex-1 overflow-y-auto px-2 py-4">
+              {/* TOC Header */}
+              <div className="w-full py-2 text-sm text-[#555] flex gap-2 mb-4 px-2">
+                <div className="my-auto text-[#cd5c3d]"><LibraryBig className="w-5 h-5 stroke-1" /></div>
+                <span className="my-auto font-light text-[#001e2d]">{lesson?.name}</span>
+              </div>
+
+              <div className="h-[1px] w-full bg-gray-200 my-4"></div>
+
+              {/* Chapter List - Showing sub chapters of the selected chapter */}
+              {selectedChapter && (
+                <div className="mb-4">
+                  <div
+                    className="w-full py-2.5 px-3 text-left text-sm rounded-md bg-[#fdf3ec] text-[#cd5c3d] font-semibold flex items-center gap-2.5"
+                    style={{
+                      fontFamily: '"Noto Serif", "Noto Serif Fallback", serif'
+                    }}
+                  >
+                    <span className="shrink-0 text-xs">
+                      {selectedChapter.position ? selectedChapter.position.toString().padStart(2, '0') : ''}.
+                    </span>
+                    <span className="leading-snug">
+                      {getEnglishChapterTitle(selectedChapter.name)}
+                    </span>
+                  </div>
+
+                  {/* Sub Chapters list of selected chapter */}
+                  <div className="mt-2 space-y-1">
+                    {loadingSubChapters ? (
+                      <div className="py-4 text-xs text-gray-400 flex items-center justify-center gap-2">
+                        <div className="w-3.5 h-3.5 border-2 border-[#cd5c3d] border-t-transparent rounded-full animate-spin"></div>
+                        <span>Loading sub chapters...</span>
+                      </div>
+                    ) : subChapters.length > 0 ? (
+                      subChapters.map((post, pIdx) => (
+                        <button
+                          key={post.id}
+                          onClick={() => {
+                            scrollToPost(post.id);
+                            setShowLeftPanel(false);
+                          }}
+                          className="w-full text-left py-2 px-3 text-xs text-[#2c2c2c] hover:text-[#cd5c3d] hover:bg-gray-50 rounded-md transition-colors flex items-start gap-2.5 border-b border-gray-50 last:border-b-0"
+                          style={{
+                            fontFamily: '"Noto Serif", "Noto Serif Fallback", serif'
+                          }}
+                        >
+                          <span className="text-[11px] text-gray-400 shrink-0 font-mono mt-0.5">
+                            {pIdx + 1}.
+                          </span>
+                          <span className="line-clamp-2 leading-snug">
+                            {getEnglishPostTitle(post.post_title) || `Section ${post.position || pIdx + 1}`}
+                          </span>
+                        </button>
+                      ))
+                    ) : (
+                      <div className="py-3 px-3 text-xs text-gray-400 italic">
+                        No sub chapters found for this chapter
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
       )}
-      
+
       {/* Full Screen Banner */}
       {!isFullScreen && (
         <div className="sticky z-30 w-full flex justify-center bg-[#f0f4f6]">
           <div className="w-full max-w-[1336px] bg-[#f0f4f6]">
-            <button 
+            <button
               onClick={() => setIsFullScreen(true)}
               className="w-full flex items-center justify-center gap-2 py-1.5 text-xs text-[#155370]/70 cursor-pointer group"
             >
@@ -696,103 +968,135 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
       <div className={`flex flex-1 min-h-0 w-full mx-auto max-w-[1336px] ${isFullScreen ? "" : "px-0 pb-0 lg:px-2 lg:pb-4 pt-0 bg-[#f0f4f6]"}`}>
         <div className={`flex h-full w-full overflow-hidden ${isFullScreen ? "bg-white" : ""}`}>
           <PanelGroup orientation="horizontal" id="agamas-reader-panels">
-          
-          {/* LEFT PANEL */}
-          {showLeftPanel && !isFullScreen && (
-            <>
-              <Panel defaultSize="20%" minSize="15%" maxSize="40%" className="hidden md:flex flex-col bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-                <div className="flex flex-col h-full w-full">
-                  <div className="w-full border-b border-gray-200 pt-3 pb-2.5 flex justify-center">
-                    <div className="text-[15px] text-[#555] font-medium tracking-wide border-b-2 border-[#cd5c3d] pb-1.5 px-2 inline-block">
-                      Table of Contents
-                    </div>
-                  </div>
-                  <div className="flex-1 overflow-y-auto bg-white pt-2">
-                    <div className="px-2 pb-16 max-w-sm mx-auto">
-                       {/* TOC Header */}
-                       <div className="w-full py-2 text-sm text-[#555] flex gap-2 mt-4 px-2">
-                         <div className="my-auto text-[#cd5c3d]"><LibraryBig className="w-5 h-5 stroke-1" /></div>
-                         <span className="my-auto font-light text-[#001e2d]">{lesson?.name}</span>
-                       </div>
-                       
-                       <div className="h-[1px] w-full bg-gray-200 my-4"></div>
-                       
-                       {/* Chapter List */}
-                       {chapters.map((c) => (
-                         <div key={c.id} className="border-b border-gray-100 last:border-b-0">
-                           <button
-                             onClick={() => {
-                               navigate(`/chapter-view/${lessonId}/${c.id}?lang=${lang}`);
-                             }}
-                             className="w-full py-2 px-3 text-left text-sm transition-colors flex gap-3 rounded-md items-start font-light text-[#001e2d]"
-                             style={{
-                               fontFamily: '"Noto Serif", "Noto Serif Fallback", serif',
-                               fontStyle: 'normal',
-                               fontVariantCaps: 'normal',
-                               fontVariantEastAsian: 'normal',
-                               fontVariantLigatures: 'none',
-                               fontVariantNumeric: 'normal'
-                             }}
-                           >
-                             <span className="shrink-0 text-xs text-gray-400 mt-[2px]">{c.position.toString().padStart(2, '0')}.</span>
-                             <span className="leading-snug">
-                               {c.name?.replace(/^Chapter\s+[0-9]+:/i, '').trim() || c.name}
-                             </span>
-                           </button>
-                         </div>
-                       ))}
-                    </div>
-                  </div>
-                </div>
-              </Panel>
-              <PanelResizeHandle className="hidden lg:flex w-2 relative items-center justify-center bg-transparent transition-colors cursor-col-resize hover:bg-black/5 rounded-md text-gray-400">
-                 <div className="flex h-full items-center justify-center">
-                   <div className="flex flex-col items-center justify-center space-y-2 mt-16">
-                     <span className="block w-1 h-1 rounded-full bg-current"></span>
-                     <span className="block w-1 h-1 rounded-full bg-current"></span>
-                     <span className="block w-1 h-1 rounded-full bg-current"></span>
-                   </div>
-                 </div>
-              </PanelResizeHandle>
-            </>
-          )}
 
-          {/* MAIN CONTENT PANEL */}
-          <Panel className={`flex flex-col h-full bg-white relative ${isFullScreen ? "" : "lg:border lg:border-gray-200 lg:rounded-xl lg:shadow-sm overflow-hidden"}`}>
-             {/* Sticky Toolbar */}
-             {!isFullScreen && (
-               <div className="sticky top-0 w-full flex items-center justify-between py-1 px-1 sm:px-4 bg-white z-20 min-h-[48px] border-b border-gray-100">
-                 <div className="flex shrink-0 w-auto lg:w-[110px]">
-                   <button 
-                     onClick={() => setShowLeftPanel(!showLeftPanel)}
-                     className="p-2 text-gray-500 hover:text-gray-800 rounded-md hover:bg-gray-100 transition-colors"
-                     title="Toggle Table of Contents"
-                   >
-                     <PanelLeft className="w-5 h-5 stroke-1" />
-                   </button>
-                 </div>
-                 
-                 <div className="flex-1 min-w-0 overflow-x-auto tabs-mobile-scroll sm:overflow-visible py-1 mx-1">
-                    <div className="flex items-center sm:justify-center gap-2 sm:gap-4 bg-white px-1 sm:px-2 flex-nowrap w-max sm:w-full min-w-full">
+            {/* LEFT PANEL */}
+            {showLeftPanel && !isFullScreen && (
+              <>
+                <Panel defaultSize="20%" minSize="15%" maxSize="40%" className="hidden md:flex flex-col bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                  <div className="flex flex-col h-full w-full">
+                    <div className="w-full border-b border-gray-200 h-12 flex items-stretch justify-center">
+                      <div className="text-[15px] text-[#555] font-medium tracking-wide border-b-2 border-[#cd5c3d] -mb-[1px] px-2 flex items-center justify-center">
+                        Table of Contents
+                      </div>
+                    </div>
+                    <div className="flex-1 overflow-y-auto bg-white pt-2">
+                      <div className="px-2 pb-16 max-w-sm mx-auto">
+                        {/* TOC Header */}
+                        <div className="w-full py-2 text-sm text-[#555] flex gap-2 mt-4 px-2">
+                          <div className="my-auto text-[#cd5c3d]"><LibraryBig className="w-5 h-5 stroke-1" /></div>
+                          <span className="my-auto font-light text-[#001e2d]">{lesson?.name}</span>
+                        </div>
+
+                        <div className="h-[1px] w-full bg-gray-200 my-4"></div>
+
+                        {/* Chapter List - Showing sub chapters of the selected chapter */}
+                        {selectedChapter && (
+                          <div className="mb-4">
+                            <div
+                              className="w-full py-2.5 px-3 text-left text-sm rounded-md bg-[#fdf3ec] text-[#cd5c3d] font-semibold flex items-center gap-2.5"
+                              style={{
+                                fontFamily: '"Noto Serif", "Noto Serif Fallback", serif',
+                                fontStyle: 'normal',
+                                fontVariantCaps: 'normal',
+                                fontVariantEastAsian: 'normal',
+                                fontVariantLigatures: 'none',
+                                fontVariantNumeric: 'normal'
+                              }}
+                            >
+                              <span className="shrink-0 text-xs">
+                                {selectedChapter.position ? selectedChapter.position.toString().padStart(2, '0') : ''}.
+                              </span>
+                              <span className="leading-snug">
+                                {getEnglishChapterTitle(selectedChapter.name)}
+                              </span>
+                            </div>
+
+                            {/* Sub Chapters list of selected chapter */}
+                            <div className="mt-2 space-y-1">
+                              {loadingSubChapters ? (
+                                <div className="py-4 text-xs text-gray-400 flex items-center justify-center gap-2">
+                                  <div className="w-3.5 h-3.5 border-2 border-[#cd5c3d] border-t-transparent rounded-full animate-spin"></div>
+                                  <span>Loading sub chapters...</span>
+                                </div>
+                              ) : subChapters.length > 0 ? (
+                                subChapters.map((post, pIdx) => (
+                                  <button
+                                    key={post.id}
+                                    onClick={() => {
+                                      scrollToPost(post.id);
+                                    }}
+                                    className="w-full text-left py-2 px-3 text-xs text-[#2c2c2c] hover:text-[#cd5c3d] hover:bg-gray-50 rounded-md transition-colors flex items-start gap-2.5 border-b border-gray-50 last:border-b-0 cursor-pointer"
+                                    style={{
+                                      fontFamily: '"Noto Serif", "Noto Serif Fallback", serif'
+                                    }}
+                                  >
+                                    <span className="text-[11px] text-gray-400 shrink-0 font-mono mt-0.5">
+                                      {pIdx + 1}.
+                                    </span>
+                                    <span className="line-clamp-2 leading-snug">
+                                      {getEnglishPostTitle(post.post_title) || `Section ${post.position || pIdx + 1}`}
+                                    </span>
+                                  </button>
+                                ))
+                              ) : (
+                                <div className="py-3 px-3 text-xs text-gray-400 italic">
+                                  No sub chapters found for this chapter
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </Panel>
+                <PanelResizeHandle className="hidden lg:flex w-2 relative items-center justify-center bg-transparent transition-colors cursor-col-resize hover:bg-black/5 rounded-md text-gray-400">
+                  <div className="flex h-full items-center justify-center">
+                    <div className="flex flex-col items-center justify-center space-y-2 mt-16">
+                      <span className="block w-1 h-1 rounded-full bg-current"></span>
+                      <span className="block w-1 h-1 rounded-full bg-current"></span>
+                      <span className="block w-1 h-1 rounded-full bg-current"></span>
+                    </div>
+                  </div>
+                </PanelResizeHandle>
+              </>
+            )}
+
+            {/* MAIN CONTENT PANEL */}
+            <Panel className={`flex flex-col h-full bg-white relative ${isFullScreen ? "" : "lg:border lg:border-gray-200 lg:rounded-xl lg:shadow-sm overflow-hidden"}`}>
+              {/* Sticky Toolbar */}
+              {!isFullScreen && (
+                <div className="sticky top-0 w-full flex items-stretch justify-between px-1 sm:px-4 bg-white z-20 h-12 border-b border-gray-200">
+                  <div className="flex shrink-0 w-auto lg:w-[110px] items-center">
+                    <button
+                      onClick={() => setShowLeftPanel(!showLeftPanel)}
+                      className="p-2 text-gray-500 hover:text-gray-800 rounded-md hover:bg-gray-100 transition-colors"
+                      title="Toggle Table of Contents"
+                    >
+                      <PanelLeft className="w-5 h-5 stroke-1" />
+                    </button>
+                  </div>
+
+                  <div className="flex-1 min-w-0 overflow-x-auto tabs-mobile-scroll sm:overflow-visible mx-1 h-full">
+                    <div className="flex items-stretch sm:justify-center gap-2 sm:gap-4 px-1 sm:px-2 flex-nowrap w-max sm:w-full min-w-full h-full">
                       {["Front", "Translation"].map(tab => (
-                        <button 
+                        <button
                           key={tab}
                           onClick={() => {
                             setActiveTab(tab);
                           }}
-                          className={`inline-flex items-center justify-center whitespace-nowrap px-2.5 py-1.5 sm:px-3 text-xs sm:text-sm transition-all border-b-2 shrink-0 ${
-                            activeTab === tab 
-                              ? "font-semibold text-[#cd5c3d] border-[#cd5c3d]" 
-                              : "text-gray-500 hover:text-gray-800 hover:border-gray-200 border-transparent"
-                          }`}
+                          className={`inline-flex items-center justify-center whitespace-nowrap px-2.5 sm:px-3 text-xs sm:text-sm transition-all border-b-2 -mb-[1px] h-full shrink-0 ${activeTab === tab
+                            ? "font-semibold text-[#cd5c3d] border-[#cd5c3d]"
+                            : "text-gray-500 hover:text-gray-800 hover:border-gray-200 border-transparent"
+                            }`}
                         >
                           {tab}
                         </button>
                       ))}
 
                       {/* Language Dropdown Tab */}
-                      <div className="relative inline-flex items-center h-full shrink-0" ref={langMenuRef}>
-                        <button 
+                      <div className="relative inline-flex items-stretch h-full shrink-0" ref={langMenuRef}>
+                        <button
                           ref={langBtnRef}
                           onClick={() => {
                             setActiveTab("Language");
@@ -805,34 +1109,30 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                             }
                             setShowLangMenu(!showLangMenu);
                           }}
-                          className={`inline-flex items-center justify-center whitespace-nowrap px-2.5 py-1.5 sm:px-3 text-xs sm:text-sm transition-all border-b-2 cursor-pointer shrink-0 ${
-                            activeTab === "Language"
-                              ? "font-semibold text-[#cd5c3d] border-[#cd5c3d]" 
-                              : "text-gray-500 hover:text-gray-800 hover:border-gray-200 border-transparent"
-                          }`}
+                          className={`inline-flex items-center justify-center whitespace-nowrap px-2.5 sm:px-3 text-xs sm:text-sm transition-all border-b-2 -mb-[1px] h-full cursor-pointer shrink-0 ${activeTab === "Language"
+                            ? "font-semibold text-[#cd5c3d] border-[#cd5c3d]"
+                            : "text-gray-500 hover:text-gray-800 hover:border-gray-200 border-transparent"
+                            }`}
                         >
                           Language <ChevronDown className={`ml-1 w-3 h-3 transition-transform duration-200 ${showLangMenu ? "rotate-180" : ""}`} />
                         </button>
                         {showLangMenu && (
-                          <div 
+                          <div
                             style={typeof window !== 'undefined' && window.innerWidth < 640 ? { top: `${langMenuPos.top}px`, left: `${langMenuPos.left}px` } : undefined}
-                            className="fixed sm:absolute sm:top-full sm:left-0 sm:translate-x-0 mt-0 sm:mt-1 w-44 sm:w-52 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden z-50 max-h-64 overflow-y-auto"
+                            className="fixed sm:absolute sm:top-full sm:left-0 sm:translate-x-0 mt-0 sm:mt-1 w-44 sm:w-52 bg-white border border-gray-200 rounded-lg z-50"
                           >
                             <div className="py-1 flex flex-col">
-                              {languages.filter(l => {
-                                const sf = (l.shortForm || '').trim().toUpperCase(); if (!sf || sf === 'CN') return false;
-                                return true;
-                              }).map((l) => (
+                              {chapterAvailableLangs.map((l) => (
                                 <button
                                   key={l.id}
                                   onClick={() => {
-                                    setParallelLang(l.shortForm);
-                                    setShowLangMenu(false);
-                                    setActiveTab("Language");
+                                    if (viewMode === "none") {
+                                      setParallelLang(l.shortForm);
+                                      setShowLangMenu(false);
+                                      setActiveTab("Language");
+                                    }
                                   }}
-                                  className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 ${
-                                    parallelLang === l.shortForm ? "font-semibold text-[#cd5c3d] bg-[#fdf3ec]" : "text-gray-700"
-                                  }`}
+                                  className={`w-full text-left px-4 py-2 text-sm transition-colors ${viewMode === "none" ? (parallelLang === l.shortForm ? "font-normal text-[#cd5c3d] bg-[#fdf3ec] cursor-pointer" : "font-normal text-gray-700 hover:bg-gray-50 hover:text-[#cd5c3d] cursor-pointer") : "font-normal text-gray-700 bg-transparent cursor-default select-none pointer-events-none"}`}
                                 >
                                   {l.name}
                                 </button>
@@ -842,25 +1142,94 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                         )}
                       </div>
 
-                      {["Source"].map(tab => (
-                        <button 
-                          key={tab}
-                          onClick={() => {
-                            setActiveTab(tab);
-                          }}
-                          className={`inline-flex items-center justify-center whitespace-nowrap px-2.5 py-1.5 sm:px-3 text-xs sm:text-sm transition-all border-b-2 shrink-0 ${
-                            activeTab === tab 
-                              ? "font-semibold text-[#cd5c3d] border-[#cd5c3d]" 
-                              : "text-gray-500 hover:text-gray-800 hover:border-gray-200 border-transparent"
+                      <button
+                        onClick={() => {
+                          setActiveTab("Source");
+                        }}
+                        className={`inline-flex items-center justify-center whitespace-nowrap px-2.5 sm:px-3 text-xs sm:text-sm transition-all border-b-2 -mb-[1px] h-full shrink-0 ${activeTab === "Source"
+                          ? "font-semibold text-[#cd5c3d] border-[#cd5c3d]"
+                          : "text-gray-500 hover:text-gray-800 hover:border-gray-200 border-transparent"
                           }`}
-                        >
-                          {tab}
-                        </button>
-                      ))}
-                    </div>
-                 </div>
+                      >
+                        Source (Original)
+                      </button>
 
-                  <div className="flex items-center shrink-0 w-auto justify-end bg-white pl-1 sm:pl-2 gap-1 sm:gap-1.5">
+                      {/* Divider line beside Source (Original) */}
+                      <div className="flex items-center h-full px-1 shrink-0 select-none">
+                        <div className="h-4 w-[1px] bg-gray-200"></div>
+                      </div>
+
+                      {/* View Mode Dropdown */}
+                      <div className="relative inline-flex items-center h-full shrink-0" ref={viewModeMenuRef}>
+                        <button
+                          onClick={() => {
+                            if (!showViewModeMenu && viewModeMenuRef.current) {
+                                const rect = viewModeMenuRef.current.getBoundingClientRect();
+                                const menuWidth = 192;
+                                const rightPos = Math.max(8, Math.min(window.innerWidth - rect.right, window.innerWidth - menuWidth - 8));
+                                setViewDropdownPos({
+                                  top: rect.bottom + 6,
+                                  right: rightPos,
+                                });
+                            }
+                            setShowViewModeMenu(!showViewModeMenu);
+                          }}
+                          className="flex items-center gap-1 px-2 py-1.5 text-xs sm:text-sm font-medium text-gray-600 rounded-md border border-gray-200 bg-white transition-colors cursor-pointer"
+                        >
+                          <Columns2 className="w-3.5 h-3.5 text-gray-500" />
+                          <span>View: <span className="capitalize">{viewMode}</span></span>
+                          <ChevronDown className={`w-3 h-3 text-gray-500 transition-transform duration-200 ${showViewModeMenu ? "rotate-180" : ""}`} />
+                        </button>
+                        {showViewModeMenu && typeof document !== "undefined" && createPortal(
+                          <div
+                            ref={viewPortalRef}
+                            style={{
+                              position: "fixed",
+                              top: `${viewDropdownPos.top}px`,
+                              right: `${Math.max(8, viewDropdownPos.right)}px`,
+                              zIndex: 9999,
+                            }}
+                            className="w-48 bg-white border border-gray-200 rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-100"
+                          >
+                            <div className="px-3.5 pt-3 pb-2 border-b border-gray-100 text-[11px] font-normal text-gray-400 uppercase tracking-wider font-sans">
+                              VIEW MODE
+                            </div>
+                            <div className="py-1 flex flex-col">
+                              {[
+                                { label: "None", sublabel: "Single language", value: "none", desktopOnly: false },
+                                { label: "Parallel", sublabel: "One by one (stacked)", value: "parallel", desktopOnly: false },
+                                { label: "Dual", sublabel: "Side by side", value: "dual", desktopOnly: true },
+                              ].map((mode) => (
+                                <button
+                                  key={mode.value}
+                                  onClick={() => {
+                                    handleViewModeChange(mode.value);
+                                    setShowViewModeMenu(false);
+                                  }}
+                                  className={`w-full text-left px-3.5 py-2.5 flex items-center justify-between transition-colors hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0 ${mode.desktopOnly ? "hidden md:flex" : "flex"} ${
+                                    viewMode === mode.value
+                                      ? "text-[#cd5c3d] font-normal bg-[#fdf3ec]"
+                                      : "text-gray-700"
+                                  }`}
+                                >
+                                  <div className="flex flex-col">
+                                    <span className={`text-sm leading-tight ${viewMode === mode.value ? "font-normal text-[#cd5c3d]" : "font-normal text-gray-800"}`}>{mode.label}</span>
+                                    <span className="text-xs mt-0.5 leading-tight text-gray-400 whitespace-nowrap">
+                                      {mode.sublabel}
+                                    </span>
+                                  </div>
+                                  {viewMode === mode.value && <Check className="w-4 h-4 text-[#cd5c3d] shrink-0 ml-2" />}
+                                </button>
+                              ))}
+                            </div>
+                          </div>,
+                          document.body
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center shrink-0 w-auto justify-end pl-1 sm:pl-2 gap-1 sm:gap-1.5">
                     {/* Font Size Dropdown */}
                     <div className="relative inline-flex items-center" ref={fontMenuRef}>
                       <button
@@ -874,8 +1243,8 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                       </button>
 
                       {showFontMenu && (
-                        <div className="absolute top-full right-0 mt-1 w-28 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-50 animate-in fade-in zoom-in-95 duration-100">
-                          <div className="px-3 py-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                        <div className="absolute top-full right-0 mt-1.5 min-w-[84px] w-auto whitespace-nowrap bg-white border border-gray-200 rounded-2xl py-1 z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-100">
+                          <div className="px-3 py-1 text-[10px] font-normal text-gray-400 uppercase tracking-wider border-b border-gray-100 whitespace-nowrap px-2.5 py-1">
                             Font Size
                           </div>
                           {fontSizes.map((f) => (
@@ -885,11 +1254,10 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                                 setFontSize(f.value);
                                 setShowFontMenu(false);
                               }}
-                              className={`w-full text-left px-3 py-1.5 text-xs sm:text-sm flex items-center justify-between transition-colors ${
-                                fontSize === f.value
-                                  ? "text-[#cd5c3d] font-semibold bg-[#cd5c3d]/10"
-                                  : "text-gray-700 hover:bg-gray-50"
-                              }`}
+                              className={`w-full text-left px-3 py-1.5 text-xs sm:text-sm flex items-center justify-between transition-colors ${fontSize === f.value
+                                ? "text-[#cd5c3d] font-semibold bg-[#cd5c3d]/10"
+                                : "text-gray-700 hover:bg-gray-50"
+                                }`}
                             >
                               <span>{f.label}px</span>
                               {fontSize === f.value && <Check className="w-3.5 h-3.5 text-[#cd5c3d]" />}
@@ -899,18 +1267,18 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                       )}
                     </div>
 
-                    <button 
-                      onClick={() => setIsSearchOpen(true)} 
+                    <button
+                      onClick={() => setIsSearchOpen(true)}
                       className="p-2 text-gray-500 hover:text-gray-800 rounded-md hover:bg-gray-100 transition-colors"
                       title="Search"
                     >
                       <Search className="w-5 h-5 stroke-1" />
                     </button>
                   </div>
-               </div>
-             )}
-             
-             {isFullScreen && (
+                </div>
+              )}
+
+              {isFullScreen && (
                 <>
                   {/* Top-right controls overlay */}
                   <div className="fixed top-5 right-5 z-50 flex items-center">
@@ -922,7 +1290,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                           document?.mozCancelFullScreen ||
                           document?.msExitFullscreen;
                         if (exit && document.fullscreenElement) {
-                          try { exit.call(document); } catch (e) {}
+                          try { exit.call(document); } catch (e) { }
                         }
                         setIsFullScreen(false);
                       }}
@@ -978,70 +1346,180 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                 </>
               )}
 
-             <div id="main-scroll-container" className="flex-1 overflow-y-auto bg-white">
+              <div id="main-scroll-container" className="flex-1 overflow-y-auto bg-white">
 
-               {/* Tabs are now in the sticky toolbar */}
+                {/* Tabs are now in the sticky toolbar */}
 
-               <div className="w-full max-w-[800px] mx-auto px-6 py-10 md:py-16">
-                 
-                 {/* Language Tab Content */}
-                 {activeTab === "Language" && (
-                   <LanguageTab 
-                     chapters={chapters}
-                     langMap={langMap}
-                     lang={parallelLang}
-                     fontSize={fontSize}
-                     targetChapterId={targetChapterId}
-                   />
-                 )}
+                {/* Main Reading Container - expands width when in dual side-by-side mode */}
+                <div className={`w-full mx-auto px-3 sm:px-6 py-8 md:py-12 transition-all duration-300 ${activeTab === "Language" && viewMode === "dual"
+                  ? "max-w-[1240px]"
+                  : "max-w-[800px]"
+                  }`}>
 
-                 {/* Front Tab Content */}
-                 {activeTab === "Front" && (
-                   <FrontTab lesson={lesson} />
-                 )}
+                  {/* Language 1 & Language 2 Selectors in Parallel Mode */}
+                  {activeTab === "Language" && (viewMode === "parallel" || viewMode === "dual") && (
+                    <div className={`flex flex-row items-center mb-12 w-full ${viewMode === "dual" ? "justify-between" : "justify-center sm:justify-end gap-1.5 sm:gap-3"}`}>
+                      {/* Language 1 Dropdown */}
+                      <div className="relative inline-flex items-center shrink-0" ref={l1MenuRef}>
+                        <button
+                          onClick={() => {
+                            setShowL1Menu(!showL1Menu);
+                            setShowL2Menu(false);
+                          }}
+                          className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 text-[11px] sm:text-sm font-medium rounded-lg border border-gray-200 bg-white hover:border-[#cd5c3d] hover:text-[#cd5c3d] text-gray-700 transition-colors cursor-pointer text-left leading-tight shrink-0"
+                        >
+                          <span className="text-gray-500 font-normal">Language 1:</span>
+                          <span className="font-normal text-[#001e2d]">
+                            {languages.find(l => l.shortForm === dualLang1)?.name || dualLang1}
+                          </span>
+                          <ChevronDown className={`w-3.5 h-3.5 text-gray-400 transition-transform duration-200 ${showL1Menu ? "rotate-180 text-[#cd5c3d]" : ""}`} />
+                        </button>
 
-                 {/* Reading Content */}
-                 {activeTab === "Translation" && (
-                   <TranslationTab 
-                     chapters={chapters} 
-                     langMap={langMap} 
-                     lang="EN" 
-                     fontSize={fontSize} 
-                     targetChapterId={targetChapterId}
-                   />
-                 )}
+                        {showL1Menu && (
+                          <div className="absolute top-full left-0 sm:left-0 sm:right-auto mt-1.5 w-44 bg-white border border-gray-200 rounded-xl z-50 animate-in fade-in zoom-in-95 duration-100">
+                            <div className="px-3 pt-2.5 pb-1 text-[10px] font-normal text-gray-400 uppercase tracking-wider">
+                              Language 1
+                            </div>
+                            <div className="py-1 flex flex-col">
+                              {chapterAvailableLangs.map((l) => (
+                                <button
+                                  key={l.id}
+                                  onClick={() => {
+                                    handleSelectL1(l.shortForm);
+                                    setShowL1Menu(false);
+                                  }}
+                                  className={`w-full text-left px-3.5 py-2 text-xs sm:text-sm font-normal flex items-center justify-between transition-colors ${
+                                    dualLang1 === l.shortForm
+                                      ? "bg-[#fdf3ec] text-[#cd5c3d]"
+                                      : "text-gray-700 hover:bg-[#fdf3ec]/50 hover:text-[#cd5c3d]"
+                                  }`}
+                                >
+                                  <span>{l.name}</span>
+                                  {dualLang1 === l.shortForm && <Check className="w-3.5 h-3.5 text-[#cd5c3d]" />}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
 
-                 {/* Source Tab Content */}
-                 {activeTab === "Source" && (
-                   <SourceTab 
-                     chapters={chapters} 
-                     langMap={langMap} 
-                     fontSize={fontSize} 
-                     targetChapterId={targetChapterId}
-                   />
-                 )}
+                      {/* Language 2 Dropdown */}
+                      <div className="relative inline-flex items-center shrink-0" ref={l2MenuRef}>
+                        <button
+                          onClick={() => {
+                            setShowL2Menu(!showL2Menu);
+                            setShowL1Menu(false);
+                          }}
+                          className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 text-[11px] sm:text-sm font-medium rounded-lg border border-gray-200 bg-white hover:border-[#cd5c3d] hover:text-[#cd5c3d] text-gray-700 transition-colors cursor-pointer text-left leading-tight shrink-0"
+                        >
+                          <span className="text-gray-500 font-normal">Language 2:</span>
+                          <span className="font-normal text-[#001e2d]">
+                            {chapterAvailableLangs.length <= 1 ? "None" : (languages.find(l => l.shortForm === dualLang2)?.name || dualLang2)}
+                          </span>
+                          <ChevronDown className={`w-3.5 h-3.5 text-gray-400 transition-transform duration-200 ${showL2Menu ? "rotate-180 text-[#cd5c3d]" : ""}`} />
+                        </button>
 
-               </div>
-             </div>
-          </Panel>
+                        {showL2Menu && (
+                          <div className="absolute top-full right-0 mt-1.5 w-44 bg-white border border-gray-200 rounded-xl z-50 animate-in fade-in zoom-in-95 duration-100">
+                            <div className="px-3 pt-2.5 pb-1 text-[10px] font-normal text-gray-400 uppercase tracking-wider">
+                              Language 2
+                            </div>
+                            <div className="py-1 flex flex-col">
+                              {chapterAvailableLangs.length <= 1 ? (
+                                <div className="px-3.5 py-2.5 text-xs text-gray-400 italic">
+                                  None (Single language)
+                                </div>
+                              ) : (
+                                chapterAvailableLangs.map((l) => (
+                                  <button
+                                    key={l.id}
+                                    onClick={() => {
+                                      handleSelectL2(l.shortForm);
+                                      setShowL2Menu(false);
+                                    }}
+                                    className={`w-full text-left px-3.5 py-2 text-xs sm:text-sm font-normal flex items-center justify-between transition-colors ${
+                                      dualLang2 === l.shortForm
+                                        ? "bg-[#fdf3ec] text-[#cd5c3d]"
+                                        : "text-gray-700 hover:bg-[#fdf3ec]/50 hover:text-[#cd5c3d]"
+                                    }`}
+                                  >
+                                    <span>{l.name}</span>
+                                    {dualLang2 === l.shortForm && <Check className="w-3.5 h-3.5 text-[#cd5c3d]" />}
+                                  </button>
+                                ))
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
 
-          {/* RIGHT PANEL */}
-          {showRightPanel && !isFullScreen && (
-             <>
-               <PanelResizeHandle className="w-2 relative flex items-center justify-center bg-gray-50 border-l border-gray-200 hover:bg-gray-100 transition-colors cursor-col-resize">
-                 <div className="flex flex-col space-y-1">
-                   <span className="block w-1 h-1 rounded-full bg-gray-400"></span>
-                   <span className="block w-1 h-1 rounded-full bg-gray-400"></span>
-                   <span className="block w-1 h-1 rounded-full bg-gray-400"></span>
-                 </div>
-               </PanelResizeHandle>
-               <Panel defaultSize="20%" minSize="15%" maxSize="40%" className="hidden lg:flex flex-col bg-white border-l border-gray-200">
-                  <div className="p-6 text-center text-gray-500 text-sm mt-10">
-                     Right side panel content (e.g. notes, glossary).
+                  {/* Language Tab Content */}
+                  {activeTab === "Language" && (
+                    <LanguageTab
+                      chapters={chapters}
+                      currentChapterId={chapterId}
+                      langMap={langMap}
+                      lang={parallelLang}
+                      fontSize={fontSize}
+                      targetChapterId={targetChapterId}
+                      viewMode={viewMode}
+                      dualLang1={dualLang1}
+                      dualLang2={dualLang2}
+                      languages={languages}
+                    />
+                  )}
+
+                  {/* Front Tab Content */}
+                  {activeTab === "Front" && (
+                    <FrontTab lesson={lesson} />
+                  )}
+
+                  {/* Reading Content */}
+                  {activeTab === "Translation" && (
+                    <TranslationTab
+                      chapters={chapters}
+                      currentChapterId={chapterId}
+                      langMap={langMap}
+                      lang="EN"
+                      fontSize={fontSize}
+                      targetChapterId={targetChapterId}
+                    />
+                  )}
+
+                  {/* Source Tab Content */}
+                  {activeTab === "Source" && (
+                    <SourceTab
+                      chapters={chapters}
+                      currentChapterId={chapterId}
+                      langMap={langMap}
+                      fontSize={fontSize}
+                      targetChapterId={targetChapterId}
+                    />
+                  )}
+
+                </div>
+              </div>
+            </Panel>
+
+            {/* RIGHT PANEL */}
+            {showRightPanel && !isFullScreen && (
+              <>
+                <PanelResizeHandle className="w-2 relative flex items-center justify-center bg-gray-50 border-l border-gray-200 hover:bg-gray-100 transition-colors cursor-col-resize">
+                  <div className="flex flex-col space-y-1">
+                    <span className="block w-1 h-1 rounded-full bg-gray-400"></span>
+                    <span className="block w-1 h-1 rounded-full bg-gray-400"></span>
+                    <span className="block w-1 h-1 rounded-full bg-gray-400"></span>
                   </div>
-               </Panel>
-             </>
-          )}
+                </PanelResizeHandle>
+                <Panel defaultSize="20%" minSize="15%" maxSize="40%" className="hidden lg:flex flex-col bg-white border-l border-gray-200">
+                  <div className="p-6 text-center text-gray-500 text-sm mt-10">
+                    Right side panel content (e.g. notes, glossary).
+                  </div>
+                </Panel>
+              </>
+            )}
           </PanelGroup>
         </div>
       </div>
@@ -1066,8 +1544,8 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
           }, 500); // Give auth state a moment to settle
         }}
       />
-      
-      <SearchOverlay 
+
+      <SearchOverlay
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
         lessonId={lessonId}

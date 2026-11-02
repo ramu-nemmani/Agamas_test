@@ -141,38 +141,24 @@ export default function Categories() {
       const chaptersData = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-        postsData: { english: [], chinese: [], chineseToEnglish: [] },
       }));
-      // Determine which languages are actually used in these chapters and populate posts
-      const used = new Set();
-      await Promise.all(chaptersData.map(async (chapter) => {
-        const postQuery = query(collection(db, "posts"), where("chapterId", "==", chapter.id));
-        const postSnap = await getDocs(postQuery);
-        postSnap.docs.forEach(doc => {
-          const data = doc.data();
-          const langId = data.language;
-          used.add(langId);
-          if (!chapter.postsData[langId]) {
-            chapter.postsData[langId] = [];
-          }
-          chapter.postsData[langId].push({
-            id: doc.id,
-            postTitle: data.post_title,
-            position: data.position
-          });
-        });
-        
-        // Sort the populated posts by position
-        Object.keys(chapter.postsData).forEach(langId => {
-          chapter.postsData[langId].sort((a, b) => (a.position || 0) - (b.position || 0));
-        });
-      }));
-      setChapters(chaptersData);
-      setUsedLanguages(Array.from(used));
       
+      // Render chapters immediately so the page displays instantly!
+      setChapters(chaptersData);
+      setLoading(false);
+
+      // Extract used languages from chapter pdfLink keys if present, or all available languages
+      const used = new Set();
+      chaptersData.forEach((c) => {
+        if (c.pdfLink) {
+          Object.keys(c.pdfLink).forEach((lid) => used.add(lid));
+        }
+      });
+      if (used.size > 0) {
+        setUsedLanguages(Array.from(used));
+      }
     } catch (error) {
-      console.log("🚀 ~ fetchChapters ~ error:", error);
-    } finally {
+      console.error("fetchChapters error:", error);
       setLoading(false);
     }
   };

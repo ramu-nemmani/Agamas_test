@@ -20,7 +20,7 @@ const TEXT_MUTED = "#5D554D";
 const BG_PAGE = "#f8fafc";
 const CARD_BG = "#ffffff";
 const SUPPORT_EMAIL = "no-reply@theagamas.com";
-const LOGO_URL = "https://theagamas.com/assets/favicon-DETFG3_X.jpg";
+const LOGO_URL = "https://firebasestorage.googleapis.com/v0/b/agamatranslationsfordrlim.firebasestorage.app/o/logos%2Ffavicon.jpg?alt=media&token=3c623cb9-2310-401d-9963-1680848092e9";
 const SES_CONFIGURATION_SET = "TheAgamas";
 
 function authCtaButton(url, text) {
