@@ -36,8 +36,8 @@ const VideoCard = ({ video, onClick, active }) => {
       type="button"
       onClick={onClick}
       className={`group relative flex w-full flex-col overflow-hidden rounded-2xl border transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#cd5c3d] focus-visible:ring-offset-2 text-left ${active
-        ? "border-[#cd5c3d] shadow-[0_8px_30px_rgba(205,92,61,0.2)]"
-        : "border-[#e8e0d8] bg-white hover:border-[#cd5c3d60]"
+        ? "border-[#cd5c3d] shadow-sm"
+        : "border-[#e8e0d8] bg-white hover:border-gray-300 hover:shadow-sm"
         }`}
     >
       {/* Thumbnail */}
@@ -56,10 +56,7 @@ const VideoCard = ({ video, onClick, active }) => {
           </div>
         </div>
 
-        {/* Active ring */}
-        {active && (
-          <div className="pointer-events-none absolute inset-0 ring-2 ring-inset ring-[#cd5c3d]" />
-        )}
+
       </div>
 
       {/* Info */}
@@ -241,6 +238,7 @@ export default function VideosListPage() {
             <p className="section-description text-center">
               Curated teachings — watch and explore episodes.
             </p>
+
           </div>
         </div>
       </section>

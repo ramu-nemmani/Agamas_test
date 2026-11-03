@@ -4,7 +4,7 @@ import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom"
 import { collection, doc, getDoc, getDocs, orderBy, query, where, setDoc, addDoc } from "firebase/firestore";
 import DOMPurify from "dompurify";
 import { Panel, Group as PanelGroup, Separator as PanelResizeHandle } from "react-resizable-panels";
-import { ArrowLeft, ArrowRight, Bookmark, Check, Maximize2, X, ChevronDown, List, PanelLeft, PanelRight, Search, Glasses, LibraryBig, ChevronsUpDown, ChevronRight, FileType, FileText, Headphones, Share2, Menu, Play, Pause, RotateCcw, Columns2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Bookmark, Check, Maximize2, X, ChevronDown, List, PanelLeft, PanelRight, Search, Glasses, LibraryBig, ChevronsUpDown, ChevronRight, FileType, FileText, Headphones, Share2, Menu, Play, Pause, RotateCcw, Columns2, Video } from "lucide-react";
 
 import { db, auth } from "../../firebase";
 import { useLanguages } from "../../context/LanguageContext";
@@ -1293,6 +1293,15 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                     >
                       <Search className="w-5 h-5 stroke-1" />
                     </button>
+                    <Link
+                      to="/tutorials?id=2"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 text-gray-500 hover:text-[#cd5c3d] rounded-md hover:bg-gray-100 transition-colors flex items-center gap-1"
+                      title="View Mode Tutorial Video"
+                    >
+                      <Video className="w-5 h-5 stroke-1" />
+                    </Link>
                   </div>
                 </div>
               )}

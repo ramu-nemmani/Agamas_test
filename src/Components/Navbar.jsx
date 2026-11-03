@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/favicon.webp";
 import { useAuth } from "../context/AuthContext";
 import AuthModal from "./AuthModal";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Video } from "lucide-react";
 
 function MobileDropdown({ link, isActive, handleHashLinkClick, setMenuOpen }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -51,6 +51,7 @@ function Navbar() {
   const navLinks = [
     { label: "Home", to: "/" },
     { label: "Reading Room", to: "/#chapters" },
+    { label: "Tutorials", to: "/tutorials" },
     { label: "Videos", to: "/video" },
     { label: "Features", to: "/features" },
     { 
@@ -109,7 +110,7 @@ function Navbar() {
 
         <div className="flex items-center gap-4">
           {/* Desktop Nav Links */}
-          <nav className="hidden sm:flex items-center gap-5">
+          <nav className="hidden md:flex items-center gap-4 lg:gap-5">
             {navLinks.map((link) => (
               link.dropdown ? (
                 <div key={link.label} className="relative group">
@@ -167,6 +168,8 @@ function Navbar() {
               )
             ))}
           </nav>
+
+
 
           {/* User / Auth */}
           <div className="relative group flex items-center">

@@ -20,6 +20,7 @@ import FAQPage from "./FAQPage";
 import Profile from "./Profile/Profile";
 import FeaturesPage from "./FeaturesPage";
 import ChapterViewPage from "./ChapterView";
+import TutorialsPage from "./Tutorials/TutorialsPage";
 const HomePage = () => {
   const [isFullScreen, setIsFullScreen] = useState(false);
 
@@ -42,6 +43,7 @@ const HomePage = () => {
         <Route path="/chapters/:id" element={<Categories />} />
         <Route path="/features" element={<FeaturesPage />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/tutorials" element={<TutorialsPage />} />
         <Route path="/video" element={<VideoListPage />} />
         <Route path="/login" element={<LandingPage />} />
         {/* <Route path="/video" element={<CategoriesVideos />} /> */}

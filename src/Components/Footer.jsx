@@ -132,6 +132,9 @@ function Footer() {
                   <Link to="/#chapters" className="transition-colors hover:text-[#cd5c3d]">Reading Room</Link>
                 </li>
                 <li>
+                  <Link to="/tutorials" className="transition-colors hover:text-[#cd5c3d]">Tutorials</Link>
+                </li>
+                <li>
                   <a
                     href="https://www.sifworld.com/"
                     target="_blank"
