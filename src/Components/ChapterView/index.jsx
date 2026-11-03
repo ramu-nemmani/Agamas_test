@@ -51,7 +51,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
   const [showLeftPanel, setShowLeftPanel] = useState(window.innerWidth >= 1024);
   const [showRightPanel, setShowRightPanel] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-  const initialTab = searchParams.get("tab") || "Translation";
+  const initialTab = searchParams.get("tab") || "Front";
   const [activeTab, setActiveTab] = useState(initialTab);
   const [showLangMenu, setShowLangMenu] = useState(false);
   const [parallelLang, setParallelLang] = useState(lang);
@@ -453,6 +453,25 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
         });
 
         setChapterAvailableLangs(filtered);
+
+        // If current dualLang1 or dualLang2 is not available in this chapter, automatically select available languages
+        if (filtered.length > 0) {
+          const isL1Available = filtered.some(l => l.shortForm === dualLang1);
+          const isL2Available = filtered.some(l => l.shortForm === dualLang2);
+          let newL1 = dualLang1;
+          let newL2 = dualLang2;
+
+          if (!isL1Available) {
+            newL1 = filtered[0].shortForm;
+            setDualLang1(newL1);
+          }
+
+          if (!isL2Available || newL2 === newL1) {
+            const secondLang = filtered.find(l => l.shortForm !== newL1);
+            newL2 = secondLang ? secondLang.shortForm : "";
+            setDualLang2(newL2);
+          }
+        }
       } catch (err) {
         console.error("Error fetching chapter languages:", err);
       }
@@ -1549,7 +1568,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
         lessonId={lessonId}
-        chapters={chapters}
+        chapters={selectedChapter ? [selectedChapter] : chapters.filter(c => c.id === (chapterId || visibleChapterId))}
         languages={languages}
         currentLang={currentLangCode}
         langMap={langMap}

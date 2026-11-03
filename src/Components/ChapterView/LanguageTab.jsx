@@ -20,11 +20,19 @@ const cleanPostTitle = (title) => {
 
 const stripInlineStyles = (htmlString) => {
   if (!htmlString) return "";
-  const sanitized = DOMPurify.sanitize(htmlString, { FORBID_ATTR: ["style"] });
-  // Remove empty paragraphs/breaks that cause huge vertical white gaps
-  return sanitized
-    .replace(/<p[^>]*>(\s|&nbsp;|<br\s*\/?>)*<\/p>/gi, "")
-    .replace(/(<br\s*\/?>\s*){2,}/gi, "<br/>");
+  let sanitized = DOMPurify.sanitize(htmlString, { FORBID_ATTR: ["style"] });
+  
+  // Recursively remove empty tags or tags that only contain &nbsp;, <br>, whitespace
+  let prev;
+  do {
+    prev = sanitized;
+    sanitized = sanitized.replace(/<(p|h[1-6]|div|span|strong|b|em|i)[^>]*>\s*(?:&nbsp;|<br\s*\/?>|\s)*<\/\1>/gi, "");
+    sanitized = sanitized.replace(/<p[^>]*>\s*<br\s*\/?>/gi, "<p>");
+    sanitized = sanitized.replace(/<br\s*\/?>\s*<\/p>/gi, "</p>");
+    sanitized = sanitized.replace(/(?:<br\s*\/?>\s*){2,}/gi, "<br/>");
+  } while (sanitized !== prev);
+
+  return sanitized.trim();
 };
 
 function LanguageChapterRenderer({ chapter, langMap, lang, fontSize, isFirst, targetChapterId, viewMode, dualLang1, dualLang2, languages }) {
