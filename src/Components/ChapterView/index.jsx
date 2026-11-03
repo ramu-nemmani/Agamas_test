@@ -1293,15 +1293,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                     >
                       <Search className="w-5 h-5 stroke-1" />
                     </button>
-                    <Link
-                      to="/tutorials?id=2"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 text-gray-500 hover:text-[#cd5c3d] rounded-md hover:bg-gray-100 transition-colors flex items-center gap-1"
-                      title="View Mode Tutorial Video"
-                    >
-                      <Video className="w-5 h-5 stroke-1" />
-                    </Link>
+
                   </div>
                 </div>
               )}
