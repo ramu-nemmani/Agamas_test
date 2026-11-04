@@ -63,13 +63,13 @@ const VideoCard = ({ video, onClick, active }) => {
       {/* Info */}
       <div className="flex flex-1 flex-col gap-2 bg-white p-4">
         <div className="flex items-start justify-between gap-2">
-          <h3 className="line-clamp-2 text-sm font-semibold text-[#1e1e1e] leading-snug">
+          <h3 className="line-clamp-2 text-sm font-semibold leading-snug" style={{ color: "#001E2D" }}>
             {video.title}
           </h3>
           {video?.label && <Badge>{video.label}</Badge>}
         </div>
         {video?.description && (
-          <p className="line-clamp-2 text-xs text-[#666] leading-relaxed">
+          <p className="line-clamp-2 text-xs leading-relaxed" style={{ color: "#001E2D" }}>
             {video.description}
           </p>
         )}
@@ -181,10 +181,10 @@ export default function TutorialsPage() {
       </div>
 
       {/* ── Page Header ────────────────────────────────────────────── */}
-      <section className="pt-12 pb-8">
+      <section className="pt-8 md:pt-12 pb-8">
         <div className="mx-auto max-w-[1360px] px-4 sm:px-6 lg:px-8">
           {/* Back Link */}
-          <div className="mb-8 -ml-1">
+          <div className="mb-8">
             <Link
               to="/"
               className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#cd5c3d] hover:opacity-80 transition font-sans"
@@ -196,7 +196,10 @@ export default function TutorialsPage() {
 
           {/* Header */}
           <div className="text-center max-w-[800px] mx-auto space-y-4">
-            <span className="text-[14px] font-bold tracking-[3px] text-[#888888] uppercase font-sans block mb-4 text-center">
+            <span
+              className="text-[16px] font-bold tracking-[3px] uppercase font-sans block mb-4 text-center"
+              style={{ color: "oklab(0.221459 -0.0272409 -0.0374657 / 0.6)" }}
+            >
               TUTORIALS
             </span>
             <h2
@@ -213,14 +216,17 @@ export default function TutorialsPage() {
                 Video Guides
               </span>
             </h2>
-            <p className="section-description text-center max-w-2xl mx-auto">
+            <p
+              className="section-description text-center max-w-2xl mx-auto"
+              style={{ color: "oklab(0.221459 -0.0272409 -0.0374657 / 0.7)" }}
+            >
               Learn how to explore The Agamas, use reading features, and navigate translations.
             </p>
           </div>
         </div>
       </section>
 
-      <div className="max-w-screen-xl mx-auto px-6 md:px-10 py-10">
+      <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 pb-16 md:pb-24">
         {/* ── Player + Meta ───────────────────────────────────────── */}
         <section className="items-start gap-6 mb-10">
           <div className="">
@@ -279,15 +285,15 @@ export default function TutorialsPage() {
               ) : hasTutorials ? (
                 <>
                   <h2
-                    className="font-semibold text-[#1e1e1e]"
-                    style={{ fontSize: "20px" }}
+                    className="font-semibold"
+                    style={{ fontSize: "20px", color: "#001E2D" }}
                   >
                     {selectedTutorial?.title}
                   </h2>
                   {selectedTutorial?.description && (
                     <p
-                      className="mt-2 text-[#555555] font-normal leading-[1.625] font-sans"
-                      style={{ fontSize: "18px" }}
+                      className="mt-2 font-normal leading-[1.625] font-sans"
+                      style={{ fontSize: "16px", color: "#001E2D" }}
                     >
                       {selectedTutorial.description}
                     </p>
@@ -302,7 +308,7 @@ export default function TutorialsPage() {
         <section>
           <div className="mb-6 md:flex items-center justify-between">
             <div>
-              <h3 className="text-xl font-semibold text-[#1e1e1e]">
+              <h3 className="text-xl font-semibold" style={{ color: "#001E2D" }}>
                 All Video Guides
               </h3>
               {hasTutorials && (

@@ -47,11 +47,11 @@ const FeaturesPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#fffdf8] pt-12 pb-24">
+    <div className="min-h-screen bg-[#fffdf8] pt-8 md:pt-12 pb-24">
       <div className="mx-auto max-w-[1360px] px-4 sm:px-6 lg:px-8">
 
         {/* Back Link */}
-        <div className="mb-8 -ml-1">
+        <div className="mb-8">
           <Link
             to="/"
             className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#cd5c3d] hover:opacity-80 transition font-sans"

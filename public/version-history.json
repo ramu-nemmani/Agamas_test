@@ -1,5 +1,38 @@
 [
     {
+        "version": "v1.5.0",
+        "type": "minor",
+        "date": "2026-11-04",
+        "changes": [
+            {
+                "category": "New Features",
+                "icon": "✨",
+                "items": [
+                    "Introduced dedicated Video Tutorials page and interactive video guides showcase.",
+                    "Added side-by-side Dual Language reading mode in ChapterView with independent language selection (L1 / L2).",
+                    "Added quick video guide shortcuts directly in the ChapterView navigation bar and footer."
+                ]
+            },
+            {
+                "category": "Improvements & UI Polish",
+                "icon": "🎨",
+                "items": [
+                    "Refined Tutorials and Features pages typography, responsive container spacing, and color styling.",
+                    "Enhanced ChapterView with improved multi-language tab layouts, parallel reading support, and smooth font resizing.",
+                    "Updated global navigation and footer with direct links to the new Tutorials section."
+                ]
+            },
+            {
+                "category": "Bug Fixes",
+                "icon": "🐛",
+                "items": [
+                    "Fixed language selection synchronisation and fallback handling in ChapterView parallel and dual views.",
+                    "Resolved responsive header padding and layout alignments on mobile screens across informational pages."
+                ]
+            }
+        ]
+    },
+    {
         "version": "v1.4.0",
         "type": "minor",
         "date": "2026-10-27",
