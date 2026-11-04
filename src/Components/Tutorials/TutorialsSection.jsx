@@ -166,6 +166,8 @@ export default function TutorialsSection() {
             <div className="relative aspect-video bg-black">
               <video
                 controls
+                controlsList="nodownload"
+                onContextMenu={(e) => e.preventDefault()}
                 autoPlay
                 playsInline
                 poster={activeModalVideo.thumbnailURL}

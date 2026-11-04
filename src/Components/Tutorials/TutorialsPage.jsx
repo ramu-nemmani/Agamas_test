@@ -243,6 +243,8 @@ export default function TutorialsPage() {
                     src={selectedTutorial?.videoURL}
                     poster={selectedTutorial?.thumbnailURL}
                     controls
+                    controlsList="nodownload"
+                    onContextMenu={(e) => e.preventDefault()}
                     preload="metadata"
                     playsInline
                     onPlay={() => setIsPlaying(true)}
