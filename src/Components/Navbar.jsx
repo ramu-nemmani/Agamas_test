@@ -153,15 +153,11 @@ function Navbar() {
                     e.preventDefault();
                     handleHashLinkClick(link.to);
                   } : undefined}
-                  className={
-                    link.label === "Reading Room"
-                      ? "inline-flex items-center justify-center px-5 py-2 text-sm font-medium text-white bg-[#cd5c3d] rounded-full hover:opacity-90 transition font-serif-display"
-                      : `nav-link font-serif-display transition-colors duration-200 ${
-                          (link.to === "/#chapters" && location.pathname === "/" && location.hash === "#chapters") || (link.to !== "/#chapters" && isActive(link.to))
-                            ? "text-[#cd5c3d]"
-                            : "text-[#5D554D] hover:text-[#cd5c3d]"
-                        }`
-                  }
+                  className={`nav-link font-serif-display transition-colors duration-200 ${
+                    (link.to === "/#chapters" && location.pathname === "/" && location.hash === "#chapters") || (link.to !== "/#chapters" && isActive(link.to))
+                      ? "text-[#cd5c3d]"
+                      : "text-[#5D554D] hover:text-[#cd5c3d]"
+                  }`}
                 >
                   {link.label}
                 </Link>
@@ -279,12 +275,10 @@ function Navbar() {
                       e.preventDefault();
                       handleHashLinkClick(link.to);
                     } : () => setMenuOpen(false)}
-                    className={`block px-4 py-2.5 text-sm font-medium ${link.label === "Reading Room" ? "rounded-full text-center mt-2 mb-1" : "rounded-lg"} transition ${
-                      link.label === "Reading Room"
-                        ? "bg-[#cd5c3d] text-white shadow-sm"
-                        : (link.to === "/#chapters" && location.pathname === "/" && location.hash === "#chapters") || (link.to !== "/#chapters" && isActive(link.to))
-                          ? "text-[#111B33] bg-slate-200/40"
-                          : "text-[#5F6F87] hover:bg-slate-200/40 hover:text-[#111B33]"
+                    className={`block px-4 py-2.5 text-sm font-medium rounded-lg transition ${
+                      (link.to === "/#chapters" && location.pathname === "/" && location.hash === "#chapters") || (link.to !== "/#chapters" && isActive(link.to))
+                        ? "text-[#111B33] bg-slate-200/40"
+                        : "text-[#5F6F87] hover:bg-slate-200/40 hover:text-[#111B33]"
                     }`}
                   >
                     {link.label}

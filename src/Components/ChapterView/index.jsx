@@ -22,7 +22,7 @@ import SearchOverlay from "../Search/SearchOverlay";
 export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setIsFullScreen: globalSetIsFullScreen }) {
   const { lessonId, chapterId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
-  const lang = searchParams.get("lang") || "CN-EN";
+  const lang = searchParams.get("lang") || "EN";
   const navigate = useNavigate();
 
   const { languages } = useLanguages();
@@ -54,7 +54,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
   const initialTab = searchParams.get("tab") || "Front";
   const [activeTab, setActiveTab] = useState(initialTab);
   const [showLangMenu, setShowLangMenu] = useState(false);
-  const [parallelLang, setParallelLang] = useState(lang);
+  const [parallelLang, setParallelLang] = useState(searchParams.get("lang") || "EN");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [targetChapterId, setTargetChapterId] = useState(chapterId);
   const pendingSearchRef = useRef(null);
@@ -282,6 +282,46 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
       const chapSnap = await getDocs(chapQuery);
       const chaps = chapSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       setChapters(chaps);
+
+      // Check all used languages across chapters in this book
+      const usedLangs = new Set();
+      chaps.forEach((c) => {
+        if (c.pdfLink) {
+          Object.keys(c.pdfLink).forEach((lid) => usedLangs.add(lid));
+        }
+      });
+
+      if (chaps.length > 0) {
+        try {
+          const chapIds = chaps.map(c => c.id);
+          const postQ = query(
+            collection(db, "posts"),
+            where("chapterId", "in", chapIds.slice(0, 10))
+          );
+          const postSnap = await getDocs(postQ);
+          postSnap.docs.forEach((d) => {
+            const lId = d.data().language;
+            if (lId) usedLangs.add(lId);
+          });
+        } catch (e) {
+          // fallback
+        }
+      }
+
+      if (usedLangs.size > 0 && languages.length > 0) {
+        const filteredBookLangs = languages.filter((l) => {
+          const sf = (l.shortForm || "").trim().toUpperCase();
+          const lId = (l.id || "").toUpperCase();
+          for (const uid of usedLangs) {
+            const uUpper = String(uid).trim().toUpperCase();
+            if (uUpper === sf || uUpper === lId || uid === l.id || uid === langMap[sf]) {
+              return true;
+            }
+          }
+          return false;
+        });
+        setBookAvailableLangs(filteredBookLangs);
+      }
     } catch (e) {
       console.error(e);
     } finally {
@@ -420,6 +460,8 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
   const [subChapters, setSubChapters] = useState([]);
   const [loadingSubChapters, setLoadingSubChapters] = useState(false);
   const [chapterAvailableLangs, setChapterAvailableLangs] = useState([]);
+  const [bookAvailableLangs, setBookAvailableLangs] = useState([]);
+  const isSingleLanguageBook = bookAvailableLangs.length === 1 || (bookAvailableLangs.length === 0 && chapterAvailableLangs.length === 1);
 
   // Fetch languages that actually have posts for the current chapter
   useEffect(() => {
@@ -453,6 +495,18 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
         });
 
         setChapterAvailableLangs(filtered);
+        if (filtered.length === 1 && activeTab === "Language") {
+          setActiveTab("Source");
+        }
+
+        // Ensure default parallelLang is set to English if available, or if not yet set
+        if (filtered.length > 0) {
+          const hasEnglish = filtered.some(l => l.shortForm === "EN");
+          const isCurrentLangAvailable = filtered.some(l => l.shortForm === parallelLang);
+          if (!parallelLang || !isCurrentLangAvailable) {
+            setParallelLang(hasEnglish ? "EN" : filtered[0].shortForm);
+          }
+        }
 
         // If current dualLang1 or dualLang2 is not available in this chapter, automatically select available languages
         if (filtered.length > 0) {
@@ -484,16 +538,60 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
     if (!cid) return;
     try {
       setLoadingSubChapters(true);
-      let targetLangId = null;
-      if (activeTab === "Translation") {
-        targetLangId = langMap["EN"];
-      } else if (activeTab === "Source") {
-        targetLangId = langMap["CN"];
-      } else {
-        targetLangId = langMap[parallelLang] || langMap[`${parallelLang}-EN`] || langMap[`EN-${parallelLang}`] || langMap[lang];
+
+      const getLangId = (code) => {
+        if (!code) return null;
+        return langMap[code] || langMap[`${code}-EN`] || langMap[`EN-${code}`] || langMap[code.toUpperCase()] || code;
+      };
+
+      // In parallel or dual mode with 2 languages selected
+      if (activeTab === "Language" && (viewMode === "parallel" || viewMode === "dual") && dualLang1) {
+        const l1Id = getLangId(dualLang1);
+        const l2Id = dualLang2 && dualLang2 !== dualLang1 ? getLangId(dualLang2) : null;
+
+        const queries = [
+          l1Id ? getDocs(query(collection(db, "posts"), where("chapterId", "==", cid), where("language", "==", l1Id), orderBy("position"))) : Promise.resolve({ docs: [] })
+        ];
+        if (l2Id) {
+          queries.push(getDocs(query(collection(db, "posts"), where("chapterId", "==", cid), where("language", "==", l2Id), orderBy("position"))));
+        }
+
+        const [snap1, snap2] = await Promise.all(queries);
+        const l1Docs = (snap1?.docs || []).map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.position || 0) - (b.position || 0));
+        const l2Docs = (snap2?.docs || []).map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.position || 0) - (b.position || 0));
+
+        const maxLen = Math.max(l1Docs.length, l2Docs.length);
+        const paired = [];
+        for (let i = 0; i < maxLen; i++) {
+          const p1 = l1Docs[i];
+          const p2 = l2Docs[i];
+          paired.push({
+            id: p1?.id || p2?.id,
+            p1Id: p1?.id,
+            p2Id: p2?.id,
+            titleL1: p1?.post_title || "",
+            titleL2: p2?.post_title || "",
+            lang1: dualLang1,
+            lang2: dualLang2,
+            position: p1?.position ?? p2?.position ?? (i + 1),
+            post_title: p1?.post_title || p2?.post_title || "",
+          });
+        }
+        setSubChapters(paired);
+        return;
       }
 
-      // If specific language ID found, query with it; otherwise query chapter posts
+      // Single language mode or Source/Translation/Front
+      let targetLangId = null;
+      if (activeTab === "Source") {
+        targetLangId = langMap["CN"];
+      } else if (activeTab === "Translation" || activeTab === "Front") {
+        targetLangId = langMap["EN"] || langMap[lang];
+      } else {
+        const activeLangCode = viewMode === "parallel" ? dualLang1 : parallelLang;
+        targetLangId = getLangId(activeLangCode) || langMap[lang] || langMap["EN"];
+      }
+
       let postQuery;
       if (targetLangId) {
         postQuery = query(
@@ -511,7 +609,6 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
       }
 
       let snapshot = await getDocs(postQuery);
-      // Fallback if no posts found with specific language
       if (snapshot.empty && targetLangId) {
         const fallbackQuery = query(
           collection(db, "posts"),
@@ -526,7 +623,6 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
         ...doc.data()
       }));
 
-      // Sort by position
       posts.sort((a, b) => (a.position || 0) - (b.position || 0));
 
       setSubChapters(posts);
@@ -542,69 +638,95 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
     if (chapterId) {
       fetchSubChaptersForChapter(chapterId);
     }
-  }, [chapterId, activeTab, parallelLang, lang]);
+  }, [chapterId, activeTab, parallelLang, dualLang1, dualLang2, viewMode, lang, languages]);
 
   const scrollToPost = (postId) => {
-    const el = document.getElementById(`post-${postId}`);
+    if (activeTab === "Front") {
+      setActiveTab(isSingleLanguageBook ? "Source" : "Language");
+    }
     const container = document.getElementById('main-scroll-container');
-    if (el && container) {
-      const elTop = el.getBoundingClientRect().top;
-      const containerTop = container.getBoundingClientRect().top;
-      container.scrollTop += (elTop - containerTop - 70);
-    }
+    let attempts = 0;
+    const maxAttempts = 60;
+    const interval = setInterval(() => {
+      attempts++;
+      const el = document.getElementById(`post-${postId}`);
+      const cont = container || document.getElementById('main-scroll-container');
+      if (el && cont) {
+        clearInterval(interval);
+        const elTop = el.getBoundingClientRect().top;
+        const contTop = cont.getBoundingClientRect().top;
+        cont.scrollTop += (elTop - contTop - 70);
+      } else if (attempts >= maxAttempts) {
+        clearInterval(interval);
+      }
+    }, 50);
   };
-  const getEnglishChapterTitle = (rawName) => {
-    if (!rawName) return "";
-    const cjkRegex = /[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]/;
-    if (rawName.includes(":") || rawName.includes("：")) {
-      const parts = rawName.split(/[:：]/).map(p => p.trim()).filter(Boolean);
-      const nonCjk = parts.filter(p => !cjkRegex.test(p));
-      if (nonCjk.length > 0) {
-        const combined = nonCjk.join(": ").trim();
-        return combined.replace(/^Chapter\s+([0-9]+|[a-zA-Z]+):\s*/i, "").trim() || combined;
-      }
-    }
-    if (cjkRegex.test(rawName)) {
-      const stripped = rawName
-        .replace(/[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]+/g, "")
-        .replace(/[:：\s-]+$/, "")
-        .replace(/^[:：\s-]+/, "")
-        .replace(/\s{2,}/g, " ")
-        .trim();
-      if (stripped) {
-        return stripped.replace(/^Chapter\s+([0-9]+|[a-zA-Z]+)[:\s]*/i, "").trim() || stripped;
-      }
-    }
-    return rawName.replace(/^Chapter\s+([0-9]+|[a-zA-Z]+)[:\s]*/i, "").trim() || rawName.trim();
+  const cjkRegex = /[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]/;
+  const langNamesList = [
+    'English', 'Chinese', 'Sanskrit', 'Tibetan', 'Hindi', 'Pali', 'Tamil', 'Telugu',
+    'Japanese', 'Korean', 'French', 'German', 'Spanish', 'Vietnamese', 'Burmese', 'Thai',
+    'EN', 'CN', 'SA', 'TI', 'HI', 'PA', 'TA', 'TE', 'JA', 'KO', 'FR', 'DE', 'ES'
+  ];
+
+  const cleanPostTitle = (title) => {
+    if (!title) return '';
+    const langPattern = langNamesList.join('|');
+    let cleaned = title.replace(new RegExp(`\\s*[/\\|·•-]\\s*(${langPattern})\\s*$`, 'i'), '');
+    cleaned = cleaned.replace(new RegExp(`\\s*[\\(\\[]\\s*(${langPattern})\\s*[\\)\\]]\\s*$`, 'i'), '');
+    cleaned = cleaned.replace(new RegExp(`\\s+(${langPattern})\\s*$`, 'i'), '');
+    return cleaned.trim();
   };
 
-  const getEnglishPostTitle = (rawName) => {
-    if (!rawName) return "";
-    const cjkRegex = /[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]/;
-    let res = rawName;
-    if (rawName.includes(":") || rawName.includes("：")) {
-      const parts = rawName.split(/[:：]/).map(p => p.trim()).filter(Boolean);
-      const nonCjk = parts.filter(p => !cjkRegex.test(p));
-      if (nonCjk.length > 0) {
-        res = nonCjk.join(": ").trim();
+  const formatPostTitleForToc = (rawTitle, langCode) => {
+    if (!rawTitle) return '';
+    const isEn = langCode === 'EN' || langCode === 'english';
+
+    // If English post has Chinese characters, isolate non-CJK part
+    if (isEn && cjkRegex.test(rawTitle)) {
+      if (rawTitle.includes(':') || rawTitle.includes('：')) {
+        const parts = rawTitle.split(/[:：]/).map(p => p.trim()).filter(Boolean);
+        const nonCjk = parts.filter(p => !cjkRegex.test(p));
+        if (nonCjk.length > 0) {
+          return cleanPostTitle(nonCjk.join(': '));
+        }
       }
-    } else if (cjkRegex.test(rawName)) {
-      const stripped = rawName
-        .replace(/[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]+/g, "")
-        .replace(/[:：\s-]+$/, "")
-        .replace(/^[:：\s-]+/, "")
-        .replace(/\s{2,}/g, " ")
+      const stripped = rawTitle
+        .replace(/[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]+/g, '')
+        .replace(/[:：\s-]+$/, '')
+        .replace(/^[:：\s-]+/, '')
+        .replace(/\s{2,}/g, ' ')
         .trim();
-      if (stripped) res = stripped;
+      if (stripped) return cleanPostTitle(stripped);
     }
-    const langNames = ["English", "Chinese", "Sanskrit", "Tibetan", "Hindi", "Pali", "Tamil", "Telugu", "Japanese", "Korean", "French", "German", "Spanish", "Vietnamese", "Burmese", "Thai", "EN", "CN", "SA", "TI", "HI", "PA", "TA", "TE", "JA", "KO", "FR", "DE", "ES"];
-    const langPattern = langNames.join("|");
-    res = res.replace(new RegExp("\\s*[/\\|·•-]\\s*(" + langPattern + ")\\s*$", "i"), "");
-    res = res.replace(new RegExp("\\s*[\\(\\[]\\s*(" + langPattern + ")\\s*[\\)\\]]\\s*$", "i"), "");
-    res = res.replace(new RegExp("\\s+(" + langPattern + ")\\s*$", "i"), "");
-    return res.trim();
+
+    return cleanPostTitle(rawTitle);
   };
 
+  const getChapterTitlesForToc = (rawName) => {
+    if (!rawName) return { titleL1: '', titleL2: '' };
+    const parts = rawName.split(/[:：]/).map(p => p.trim()).filter(Boolean);
+    const cjkParts = parts.filter(p => cjkRegex.test(p));
+    const nonCjkParts = parts.filter(p => !cjkRegex.test(p));
+
+    const enFull = (nonCjkParts.join(': ').replace(/^Chapter\s+([0-9]+|[a-zA-Z]+):\s*/i, '').trim()) || rawName;
+    const cnFull = cjkParts.join(': ').trim() || rawName;
+
+    if (activeTab === "Language" && (viewMode === "parallel" || viewMode === "dual")) {
+      const isL1Chinese = dualLang1 === "CN" || dualLang1 === "chinese";
+      const isL2Chinese = dualLang2 === "CN" || dualLang2 === "chinese";
+
+      const t1 = isL1Chinese ? cnFull : enFull;
+      const t2 = isL2Chinese ? cnFull : (dualLang2 ? enFull : "");
+
+      return { titleL1: t1, titleL2: t2 !== t1 ? t2 : "" };
+    }
+
+    if (activeTab === "Source" || parallelLang === "CN" || parallelLang === "chinese") {
+      return { titleL1: cnFull || enFull, titleL2: "" };
+    }
+
+    return { titleL1: enFull, titleL2: "" };
+  };
   const selectedChapter = chapters.find(c => c.id === chapterId) || currentChapter;
   const currentChapterIndex = chapters.findIndex(c => c.id === chapterId);
   const prevChapter = currentChapterIndex > 0 ? chapters[currentChapterIndex - 1] : null;
@@ -924,7 +1046,19 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                       {selectedChapter.position ? selectedChapter.position.toString().padStart(2, '0') : ''}.
                     </span>
                     <span className="leading-snug">
-                      {getEnglishChapterTitle(selectedChapter.name)}
+                    <div className="flex flex-col gap-0.5 leading-snug">
+                      {(() => {
+                        const { titleL1, titleL2 } = getChapterTitlesForToc(selectedChapter.name);
+                        return (
+                          <>
+                            <span className="font-normal">{titleL1}</span>
+                            {titleL2 && titleL2 !== titleL1 && (
+                              <span className="text-[11px] opacity-80 font-normal">{titleL2}</span>
+                            )}
+                          </>
+                        );
+                      })()}
+                    </div>
                     </span>
                   </div>
 
@@ -948,12 +1082,26 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                             fontFamily: '"Noto Serif", "Noto Serif Fallback", serif'
                           }}
                         >
-                          <span className="text-[11px] text-gray-400 shrink-0 font-mono mt-0.5">
-                            {pIdx + 1}.
-                          </span>
-                          <span className="line-clamp-2 leading-snug">
-                            {getEnglishPostTitle(post.post_title) || `Section ${post.position || pIdx + 1}`}
-                          </span>
+                          <div className="flex flex-col gap-0.5 leading-snug">
+                            {post.titleL1 || post.titleL2 ? (
+                              <>
+                                {post.titleL1 && (
+                                  <span className="line-clamp-2 font-normal text-[#2c2c2c]">
+                                    {formatPostTitleForToc(post.titleL1, post.lang1 || dualLang1) || `Section ${post.position || pIdx + 1}`}
+                                  </span>
+                                )}
+                                {post.titleL2 && post.titleL2 !== post.titleL1 && (
+                                  <span className="line-clamp-2 text-[11px] text-[#777] font-normal">
+                                    {formatPostTitleForToc(post.titleL2, post.lang2 || dualLang2)}
+                                  </span>
+                                )}
+                              </>
+                            ) : (
+                              <span className="line-clamp-2">
+                                {formatPostTitleForToc(post.post_title, currentLangCode) || `Section ${post.position || pIdx + 1}`}
+                              </span>
+                            )}
+                          </div>
                         </button>
                       ))
                     ) : (
@@ -1026,7 +1174,19 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                                 {selectedChapter.position ? selectedChapter.position.toString().padStart(2, '0') : ''}.
                               </span>
                               <span className="leading-snug">
-                                {getEnglishChapterTitle(selectedChapter.name)}
+                              <div className="flex flex-col gap-0.5 leading-snug">
+                                {(() => {
+                                  const { titleL1, titleL2 } = getChapterTitlesForToc(selectedChapter.name);
+                                  return (
+                                    <>
+                                      <span className="font-normal">{titleL1}</span>
+                                      {titleL2 && titleL2 !== titleL1 && (
+                                        <span className="text-[11px] opacity-80 font-normal">{titleL2}</span>
+                                      )}
+                                    </>
+                                  );
+                                })()}
+                              </div>
                               </span>
                             </div>
 
@@ -1049,12 +1209,26 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                                       fontFamily: '"Noto Serif", "Noto Serif Fallback", serif'
                                     }}
                                   >
-                                    <span className="text-[11px] text-gray-400 shrink-0 font-mono mt-0.5">
-                                      {pIdx + 1}.
-                                    </span>
-                                    <span className="line-clamp-2 leading-snug">
-                                      {getEnglishPostTitle(post.post_title) || `Section ${post.position || pIdx + 1}`}
-                                    </span>
+                                    <div className="flex flex-col gap-0.5 leading-snug">
+                                      {post.titleL1 || post.titleL2 ? (
+                                        <>
+                                          {post.titleL1 && (
+                                            <span className="line-clamp-2 font-normal text-[#2c2c2c]">
+                                              {formatPostTitleForToc(post.titleL1, post.lang1 || dualLang1) || `Section ${post.position || pIdx + 1}`}
+                                            </span>
+                                          )}
+                                          {post.titleL2 && post.titleL2 !== post.titleL1 && (
+                                            <span className="line-clamp-2 text-[11px] text-[#777] font-normal">
+                                              {formatPostTitleForToc(post.titleL2, post.lang2 || dualLang2)}
+                                            </span>
+                                          )}
+                                        </>
+                                      ) : (
+                                        <span className="line-clamp-2">
+                                          {formatPostTitleForToc(post.post_title, currentLangCode) || `Section ${post.position || pIdx + 1}`}
+                                        </span>
+                                      )}
+                                    </div>
                                   </button>
                                 ))
                               ) : (
@@ -1098,27 +1272,30 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
 
                   <div className="flex-1 min-w-0 overflow-x-auto tabs-mobile-scroll sm:overflow-visible mx-1 h-full">
                     <div className="flex items-stretch sm:justify-center gap-2 sm:gap-4 px-1 sm:px-2 flex-nowrap w-max sm:w-full min-w-full h-full">
-                      {["Front", "Translation"].map(tab => (
-                        <button
-                          key={tab}
-                          onClick={() => {
-                            setActiveTab(tab);
-                          }}
-                          className={`inline-flex items-center justify-center whitespace-nowrap px-2.5 sm:px-3 text-xs sm:text-sm transition-all border-b-2 -mb-[1px] h-full shrink-0 ${activeTab === tab
-                            ? "font-semibold text-[#cd5c3d] border-[#cd5c3d]"
-                            : "text-gray-500 hover:text-gray-800 hover:border-gray-200 border-transparent"
-                            }`}
-                        >
-                          {tab}
-                        </button>
-                      ))}
+                      <button
+                        onClick={() => {
+                          setActiveTab("Front");
+                        }}
+                        className={`inline-flex items-center justify-center whitespace-nowrap px-2.5 sm:px-3 text-xs sm:text-sm transition-all border-b-2 -mb-[1px] h-full shrink-0 ${activeTab === "Front"
+                          ? "font-semibold text-[#cd5c3d] border-[#cd5c3d]"
+                          : "text-gray-500 hover:text-gray-800 hover:border-gray-200 border-transparent"
+                          }`}
+                      >
+                        Front
+                      </button>
 
                       {/* Language Dropdown Tab */}
+                      {!isSingleLanguageBook && (
                       <div className="relative inline-flex items-stretch h-full shrink-0" ref={langMenuRef}>
                         <button
                           ref={langBtnRef}
                           onClick={() => {
                             setActiveTab("Language");
+                            // Default to English if no language is selected or if parallelLang is not English
+                            if (!parallelLang || parallelLang === "CN" || parallelLang === "CN-EN") {
+                              const hasEn = chapterAvailableLangs.some(l => l.shortForm === "EN");
+                              if (hasEn) setParallelLang("EN");
+                            }
                             if (!showLangMenu && langBtnRef.current) {
                               const rect = langBtnRef.current.getBoundingClientRect();
                               setLangMenuPos({
@@ -1145,14 +1322,14 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                                 <button
                                   key={l.id}
                                   onClick={() => {
-                                    if (viewMode === "none") {
                                       setParallelLang(l.shortForm);
-                                      setShowLangMenu(false);
+                                      setViewMode("none");
                                       setActiveTab("Language");
-                                    }
-                                  }}
-                                  className={`w-full text-left px-4 py-2 text-sm transition-colors ${viewMode === "none" ? (parallelLang === l.shortForm ? "font-normal text-[#cd5c3d] bg-[#fdf3ec] cursor-pointer" : "font-normal text-gray-700 hover:bg-gray-50 hover:text-[#cd5c3d] cursor-pointer") : "font-normal text-gray-700 bg-transparent cursor-default select-none pointer-events-none"}`}
-                                >
+                                      setShowLangMenu(false);
+                                      updateUrlParams({ view: null, l1: null, l2: null, lang: l.shortForm });
+                                    }}
+                                    className={`w-full text-left px-4 py-2 text-sm transition-colors ${(viewMode === "none" && parallelLang === l.shortForm) ? "font-normal text-[#cd5c3d] bg-[#fdf3ec] cursor-pointer" : "font-normal text-gray-700 hover:bg-gray-50 hover:text-[#cd5c3d] cursor-pointer"}`}
+                                  >
                                   {l.name}
                                 </button>
                               ))}
@@ -1160,6 +1337,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                           </div>
                         )}
                       </div>
+                      )}
 
                       <button
                         onClick={() => {
@@ -1174,11 +1352,14 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                       </button>
 
                       {/* Divider line beside Source (Original) */}
+                      {!isSingleLanguageBook && (
                       <div className="flex items-center h-full px-1 shrink-0 select-none">
                         <div className="h-4 w-[1px] bg-gray-200"></div>
                       </div>
 
+                      )}
                       {/* View Mode Dropdown */}
+                      {!isSingleLanguageBook && (
                       <div className="relative inline-flex items-center h-full shrink-0" ref={viewModeMenuRef}>
                         <button
                           onClick={() => {
@@ -1215,7 +1396,6 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                             </div>
                             <div className="py-1 flex flex-col">
                               {[
-                                { label: "None", sublabel: "Single language", value: "none", desktopOnly: false },
                                 { label: "Parallel", sublabel: "One by one (stacked)", value: "parallel", desktopOnly: false },
                                 { label: "Dual", sublabel: "Side by side", value: "dual", desktopOnly: true },
                               ].map((mode) => (
@@ -1245,6 +1425,7 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                           document.body
                         )}
                       </div>
+                      )}
                     </div>
                   </div>
 

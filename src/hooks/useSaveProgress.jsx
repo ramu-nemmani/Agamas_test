@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "../firebase";
+import { auth, db } from "../firebase";
 import { useAuth } from "../context/AuthContext";
 
 export function useSaveProgress({
@@ -16,15 +16,16 @@ export function useSaveProgress({
   dependencies = []
 }) {
   const { user } = useAuth();
+  const currentUser = user || auth.currentUser;
 
   useEffect(() => {
-    if (!user || !bookId || !lastUrl) return;
+    if (!currentUser || !bookId || !lastUrl) return;
 
     const saveProgress = async () => {
       try {
-        const docRef = doc(db, "readingProgress", `${user.uid}_${bookId}`);
+        const docRef = doc(db, "readingProgress", `${currentUser.uid}_${bookId}`);
         const dataToSave = {
-          userId: user.uid,
+          userId: currentUser.uid,
           bookId,
           bookTitle: bookTitle || "Unknown Book",
           coverUrl: coverUrl || null,

@@ -318,7 +318,7 @@ export default function Categories() {
                 {/* Chapter Item */}
                 <div
                   className={`flex justify-between items-center px-6 py-5 cursor-pointer transition-colors duration-150 bg-white hover:bg-[#fdf3ec]`}
-                  onClick={() => navigate(`/chapter-view/${id}/${cat.id}?lang=${lang || "CN-EN"}`)}
+                  onClick={() => navigate(`/chapter-view/${id}/${cat.id}?lang=${lang || "EN"}`)}
                 >
                   <div className="flex items-center gap-5">
                     {/* Circle Index */}
