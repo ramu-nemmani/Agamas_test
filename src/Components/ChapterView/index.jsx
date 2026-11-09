@@ -588,8 +588,8 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
       } else if (activeTab === "Translation" || activeTab === "Front") {
         targetLangId = langMap["EN"] || langMap[lang];
       } else {
-        const activeLangCode = viewMode === "parallel" ? dualLang1 : parallelLang;
-        targetLangId = getLangId(activeLangCode) || langMap[lang] || langMap["EN"];
+        const activeLangCode = (viewMode === "parallel" || viewMode === "dual") ? dualLang1 : parallelLang;
+        targetLangId = getLangId(activeLangCode) || langMap[parallelLang] || langMap[lang] || langMap["EN"];
       }
 
       let postQuery;
@@ -721,7 +721,22 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
       return { titleL1: t1, titleL2: t2 !== t1 ? t2 : "" };
     }
 
-    if (activeTab === "Source" || parallelLang === "CN" || parallelLang === "chinese") {
+    if (activeTab === "Language" && viewMode === "none") {
+      const isParallelChinese = (parallelLang || '').toUpperCase() === "CN" ||
+                                (parallelLang || '').toUpperCase().startsWith("CN-") ||
+                                (parallelLang || '').toLowerCase().includes("chinese");
+      const isDualChinese = parallelLang?.toUpperCase() === "CN-EN" || parallelLang?.toUpperCase() === "EN-CN";
+
+      if (isDualChinese) {
+        return { titleL1: cnFull, titleL2: enFull !== cnFull ? enFull : "" };
+      }
+      if (isParallelChinese) {
+        return { titleL1: cnFull || enFull, titleL2: "" };
+      }
+      return { titleL1: enFull, titleL2: "" };
+    }
+
+    if (activeTab === "Source" || (parallelLang || '').toUpperCase() === "CN" || (parallelLang || '').toLowerCase() === "chinese") {
       return { titleL1: cnFull || enFull, titleL2: "" };
     }
 
