@@ -1,5 +1,41 @@
 [
     {
+        "version": "v1.6.0",
+        "type": "minor",
+        "date": "2026-11-16",
+        "changes": [
+            {
+                "category": "New Features & Enhancements",
+                "icon": "✨",
+                "items": [
+                    "Enhanced Table of Contents (TOC) with dynamic multi-language synchronization across None, Parallel, and Dual view modes.",
+                    "Added primary language priority (Language 1 before Language 2) in TOC titles for Parallel and Dual reading modes.",
+                    "Configured default initial reading view to Front tab with English language pre-selected in TOC and reader options.",
+                    "Integrated immediate reading progress persistence hook supporting new, registered, and existing logged-in users."
+                ]
+            },
+            {
+                "category": "Improvements & UI Polish",
+                "icon": "🎨",
+                "items": [
+                    "Removed redundant serial number indicators from Table of Contents for cleaner presentation.",
+                    "Added automatic view mode and language tab visibility toggle for single-language books (routing directly to Source).",
+                    "Streamlined language dropdown interactions in ChapterView to activate and display chosen language seamlessly.",
+                    "Enhanced TOC chapter title navigation when switching from Front tab directly into target chapter sections."
+                ]
+            },
+            {
+                "category": "Bug Fixes",
+                "icon": "🐛",
+                "items": [
+                    "Fixed duplicate password eye icon in authentication modals across Microsoft Edge and mobile browsers by disabling native browser reveal buttons.",
+                    "Resolved reference error with TOC section title formatting (getEnglishPostTitle) preventing blank page crashes.",
+                    "Fixed Chinese title display handling in Table of Contents during dual and parallel language modes."
+                ]
+            }
+        ]
+    },
+    {
         "version": "v1.5.0",
         "type": "minor",
         "date": "2026-11-04",
