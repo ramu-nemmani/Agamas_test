@@ -1567,14 +1567,14 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                 {/* Tabs are now in the sticky toolbar */}
 
                 {/* Main Reading Container - expands width when in dual side-by-side mode */}
-                <div className={`w-full mx-auto px-3 sm:px-6 py-8 md:py-12 transition-all duration-300 ${activeTab === "Language" && viewMode === "dual"
+                <div className={`w-full mx-auto px-3 sm:px-6 pt-6 sm:pt-8 pb-8 md:pb-12 transition-all duration-300 ${activeTab === "Language" && viewMode === "dual"
                   ? "max-w-[1240px]"
                   : "max-w-[800px]"
                   }`}>
 
                   {/* Language 1 & Language 2 Selectors in Parallel Mode */}
                   {activeTab === "Language" && (viewMode === "parallel" || viewMode === "dual") && (
-                    <div className={`flex flex-row items-center mb-12 w-full ${viewMode === "dual" ? "justify-between" : "justify-center sm:justify-end gap-1.5 sm:gap-3"}`}>
+                    <div className={`flex flex-row items-center mb-6 sm:mb-8 w-full ${viewMode === "dual" ? "justify-between" : "justify-center sm:justify-end gap-1.5 sm:gap-3"}`}>
                       {/* Language 1 Dropdown */}
                       <div className="relative inline-flex items-center shrink-0" ref={l1MenuRef}>
                         <button

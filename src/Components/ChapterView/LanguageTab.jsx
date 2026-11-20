@@ -339,7 +339,7 @@ function LanguageChapterRenderer({ chapter, langMap, lang, fontSize, isFirst, ta
     <div ref={chapterRef} className={isFirst ? "" : "mt-16 pt-16 border-t border-gray-200"}>
       <div className="mb-14 text-center">
         <div 
-          className="text-xs text-gray-500 mb-6 uppercase tracking-[0.2em]"
+          className="text-sm md:text-base text-gray-500 mb-6 uppercase tracking-[0.2em]"
           style={{
             fontFamily: '"Noto Serif", "Noto Serif Fallback", serif',
             fontStyle: 'normal',
