@@ -1,5 +1,39 @@
 [
     {
+        "version": "v1.6.1",
+        "type": "patch",
+        "date": "2026-11-25",
+        "changes": [
+            {
+                "category": "New Features & Enhancements",
+                "icon": "✨",
+                "items": [
+                    "Added automatic smooth transition from the Front tab to the next reading tab (Language or Source) when scrolling to the bottom.",
+                    "Added scroll-based Table of Contents (TOC) highlighting to automatically activate the current chapter and subchapter headings while reading in Language and Source tabs.",
+                    "Enhanced Parallel and Dual view mode TOC tracking using post position matching so active subchapters remain highlighted throughout the entire scroll.",
+                    "Updated TOC chapter title resolution in Language tab (none view) to support Chinese, English, and dual Chinese-English formats.",
+                    "Unified target language resolution across both Parallel and Dual view modes using Language 1."
+                ]
+            },
+            {
+                "category": "Improvements & UI Polish",
+                "icon": "🎨",
+                "items": [
+                    "Removed hover text color changes on TOC subchapter items to keep text color consistent.",
+                    "Applied active highlight color to the second language title in TOC subchapter items.",
+                    "Removed uppercase language badges above post titles in LanguageTab for a cleaner reading layout."
+                ]
+            },
+            {
+                "category": "Bug Fixes",
+                "icon": "🐛",
+                "items": [
+                    "Fixed a ReferenceError in ChapterViewPage caused by accessing isSingleLanguageBook before initialization."
+                ]
+            }
+        ]
+    },
+    {
         "version": "v1.6.0",
         "type": "minor",
         "date": "2026-11-16",

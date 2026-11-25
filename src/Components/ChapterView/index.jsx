@@ -37,6 +37,8 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
   const [currentChapter, setCurrentChapter] = useState(null);
   const [loading, setLoading] = useState(true);
   const [visibleChapterId, setVisibleChapterId] = useState(chapterId);
+  const [activePostId, setActivePostId] = useState(null);
+  const [activePostPosition, setActivePostPosition] = useState(null);
 
   // Settings
   const [fontSize, setFontSize] = useState("16");
@@ -81,7 +83,6 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
   const fontMenuRef = useRef(null);
   const viewModeMenuRef = useRef(null);
 
-  // Auto-scroll in full screen
   useEffect(() => {
     if (!isFullScreen || isStopScroll) return;
     const scrollContainer = document.getElementById("main-scroll-container");
@@ -113,6 +114,53 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
       clearInterval(scrollInterval);
     };
   }, [isFullScreen, isStopScroll]);
+
+  // Track visible chapter and subchapter headings in TOC while scrolling Language and Source tabs
+  useEffect(() => {
+    if (activeTab !== "Language" && activeTab !== "Source") return;
+    const scrollContainer = document.getElementById("main-scroll-container");
+    if (!scrollContainer) return;
+
+    const updateActiveHeading = () => {
+      const containerTop = scrollContainer.getBoundingClientRect().top;
+
+      const chapterEls = scrollContainer.querySelectorAll('[id^="chapter-"]');
+      if (chapterEls.length > 0) {
+        let currentChapId = chapterEls[0].id.replace("chapter-", "");
+        for (const el of chapterEls) {
+          if (el.getBoundingClientRect().top <= containerTop + 120) {
+            currentChapId = el.id.replace("chapter-", "");
+          } else {
+            break;
+          }
+        }
+        setVisibleChapterId((prev) => (prev !== currentChapId ? currentChapId : prev));
+      }
+
+      const postEls = scrollContainer.querySelectorAll('[id^="post-"]');
+      if (postEls.length > 0) {
+        let currentPostEl = postEls[0];
+        for (const el of postEls) {
+          if (el.getBoundingClientRect().top <= containerTop + 140) {
+            currentPostEl = el;
+          } else {
+            break;
+          }
+        }
+        const currentPostId = currentPostEl.id.replace("post-", "");
+        const currentPostPos = currentPostEl.getAttribute("data-post-position");
+        setActivePostId((prev) => (prev !== currentPostId ? currentPostId : prev));
+        setActivePostPosition((prev) => (prev !== currentPostPos ? currentPostPos : prev));
+      }
+    };
+
+    const rafId = requestAnimationFrame(updateActiveHeading);
+    scrollContainer.addEventListener("scroll", updateActiveHeading, { passive: true });
+    return () => {
+      cancelAnimationFrame(rafId);
+      scrollContainer.removeEventListener("scroll", updateActiveHeading);
+    };
+  }, [activeTab, chapters, viewMode, parallelLang, dualLang1, dualLang2]);
 
   // Synchronize fullscreen state with global state if provided
   useEffect(() => {
@@ -723,8 +771,8 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
 
     if (activeTab === "Language" && viewMode === "none") {
       const isParallelChinese = (parallelLang || '').toUpperCase() === "CN" ||
-                                (parallelLang || '').toUpperCase().startsWith("CN-") ||
-                                (parallelLang || '').toLowerCase().includes("chinese");
+        (parallelLang || '').toUpperCase().startsWith("CN-") ||
+        (parallelLang || '').toLowerCase().includes("chinese");
       const isDualChinese = parallelLang?.toUpperCase() === "CN-EN" || parallelLang?.toUpperCase() === "EN-CN";
 
       if (isDualChinese) {
@@ -1061,19 +1109,19 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                       {selectedChapter.position ? selectedChapter.position.toString().padStart(2, '0') : ''}.
                     </span>
                     <span className="leading-snug">
-                    <div className="flex flex-col gap-0.5 leading-snug">
-                      {(() => {
-                        const { titleL1, titleL2 } = getChapterTitlesForToc(selectedChapter.name);
-                        return (
-                          <>
-                            <span className="font-normal">{titleL1}</span>
-                            {titleL2 && titleL2 !== titleL1 && (
-                              <span className="text-[11px] opacity-80 font-normal">{titleL2}</span>
-                            )}
-                          </>
-                        );
-                      })()}
-                    </div>
+                      <div className="flex flex-col gap-0.5 leading-snug">
+                        {(() => {
+                          const { titleL1, titleL2 } = getChapterTitlesForToc(selectedChapter.name);
+                          return (
+                            <>
+                              <span className="font-normal">{titleL1}</span>
+                              {titleL2 && titleL2 !== titleL1 && (
+                                <span className="text-[11px] opacity-80 font-normal">{titleL2}</span>
+                              )}
+                            </>
+                          );
+                        })()}
+                      </div>
                     </span>
                   </div>
 
@@ -1085,40 +1133,47 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                         <span>Loading sub chapters...</span>
                       </div>
                     ) : subChapters.length > 0 ? (
-                      subChapters.map((post, pIdx) => (
-                        <button
-                          key={post.id}
-                          onClick={() => {
-                            scrollToPost(post.id);
-                            setShowLeftPanel(false);
-                          }}
-                          className="w-full text-left py-2 px-3 text-xs text-[#2c2c2c] hover:text-[#cd5c3d] hover:bg-gray-50 rounded-md transition-colors flex items-start gap-2.5 border-b border-gray-50 last:border-b-0"
-                          style={{
-                            fontFamily: '"Noto Serif", "Noto Serif Fallback", serif'
-                          }}
-                        >
-                          <div className="flex flex-col gap-0.5 leading-snug">
-                            {post.titleL1 || post.titleL2 ? (
-                              <>
-                                {post.titleL1 && (
-                                  <span className="line-clamp-2 font-normal text-[#2c2c2c]">
-                                    {formatPostTitleForToc(post.titleL1, post.lang1 || dualLang1) || `Section ${post.position || pIdx + 1}`}
-                                  </span>
-                                )}
-                                {post.titleL2 && post.titleL2 !== post.titleL1 && (
-                                  <span className="line-clamp-2 text-[11px] text-[#777] font-normal">
-                                    {formatPostTitleForToc(post.titleL2, post.lang2 || dualLang2)}
-                                  </span>
-                                )}
-                              </>
-                            ) : (
-                              <span className="line-clamp-2">
-                                {formatPostTitleForToc(post.post_title, currentLangCode) || `Section ${post.position || pIdx + 1}`}
-                              </span>
-                            )}
-                          </div>
-                        </button>
-                      ))
+                      subChapters.map((post, pIdx) => {
+                        const isActivePost = activePostId === post.id || (activePostPosition != null && post.position != null && String(post.position) === String(activePostPosition));
+                        return (
+                          <button
+                            key={post.id}
+                            onClick={() => {
+                              setActivePostId(post.id);
+                              scrollToPost(post.id);
+                              setShowLeftPanel(false);
+                            }}
+                            className={`w-full text-left py-2 px-3 text-xs rounded-md transition-colors flex items-start gap-2.5 border-b border-gray-50 last:border-b-0 ${isActivePost
+                              ? "text-[#cd5c3d] bg-[#cd5c3d]/10 font-medium"
+                              : "text-[#2c2c2c] hover:bg-gray-50"
+                              }`}
+                            style={{
+                              fontFamily: '"Noto Serif", "Noto Serif Fallback", serif'
+                            }}
+                          >
+                            <div className="flex flex-col gap-0.5 leading-snug">
+                              {post.titleL1 || post.titleL2 ? (
+                                <>
+                                  {post.titleL1 && (
+                                    <span className={`line-clamp-2 ${isActivePost ? "text-[#cd5c3d] font-medium" : "font-normal text-[#2c2c2c]"}`}>
+                                      {formatPostTitleForToc(post.titleL1, post.lang1 || dualLang1) || `Section ${post.position || pIdx + 1}`}
+                                    </span>
+                                  )}
+                                  {post.titleL2 && post.titleL2 !== post.titleL1 && (
+                                    <span className={`line-clamp-2 text-[11px] ${isActivePost ? "text-[#cd5c3d] font-medium" : "text-[#777] font-normal"}`}>
+                                      {formatPostTitleForToc(post.titleL2, post.lang2 || dualLang2)}
+                                    </span>
+                                  )}
+                                </>
+                              ) : (
+                                <span className="line-clamp-2">
+                                  {formatPostTitleForToc(post.post_title, currentLangCode) || `Section ${post.position || pIdx + 1}`}
+                                </span>
+                              )}
+                            </div>
+                          </button>
+                        );
+                      })
                     ) : (
                       <div className="py-3 px-3 text-xs text-gray-400 italic">
                         No sub chapters found for this chapter
@@ -1189,19 +1244,19 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                                 {selectedChapter.position ? selectedChapter.position.toString().padStart(2, '0') : ''}.
                               </span>
                               <span className="leading-snug">
-                              <div className="flex flex-col gap-0.5 leading-snug">
-                                {(() => {
-                                  const { titleL1, titleL2 } = getChapterTitlesForToc(selectedChapter.name);
-                                  return (
-                                    <>
-                                      <span className="font-normal">{titleL1}</span>
-                                      {titleL2 && titleL2 !== titleL1 && (
-                                        <span className="text-[11px] opacity-80 font-normal">{titleL2}</span>
-                                      )}
-                                    </>
-                                  );
-                                })()}
-                              </div>
+                                <div className="flex flex-col gap-0.5 leading-snug">
+                                  {(() => {
+                                    const { titleL1, titleL2 } = getChapterTitlesForToc(selectedChapter.name);
+                                    return (
+                                      <>
+                                        <span className="font-normal">{titleL1}</span>
+                                        {titleL2 && titleL2 !== titleL1 && (
+                                          <span className="text-[11px] opacity-80 font-normal">{titleL2}</span>
+                                        )}
+                                      </>
+                                    );
+                                  })()}
+                                </div>
                               </span>
                             </div>
 
@@ -1213,39 +1268,46 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                                   <span>Loading sub chapters...</span>
                                 </div>
                               ) : subChapters.length > 0 ? (
-                                subChapters.map((post, pIdx) => (
-                                  <button
-                                    key={post.id}
-                                    onClick={() => {
-                                      scrollToPost(post.id);
-                                    }}
-                                    className="w-full text-left py-2 px-3 text-xs text-[#2c2c2c] hover:text-[#cd5c3d] hover:bg-gray-50 rounded-md transition-colors flex items-start gap-2.5 border-b border-gray-50 last:border-b-0 cursor-pointer"
-                                    style={{
-                                      fontFamily: '"Noto Serif", "Noto Serif Fallback", serif'
-                                    }}
-                                  >
-                                    <div className="flex flex-col gap-0.5 leading-snug">
-                                      {post.titleL1 || post.titleL2 ? (
-                                        <>
-                                          {post.titleL1 && (
-                                            <span className="line-clamp-2 font-normal text-[#2c2c2c]">
-                                              {formatPostTitleForToc(post.titleL1, post.lang1 || dualLang1) || `Section ${post.position || pIdx + 1}`}
-                                            </span>
-                                          )}
-                                          {post.titleL2 && post.titleL2 !== post.titleL1 && (
-                                            <span className="line-clamp-2 text-[11px] text-[#777] font-normal">
-                                              {formatPostTitleForToc(post.titleL2, post.lang2 || dualLang2)}
-                                            </span>
-                                          )}
-                                        </>
-                                      ) : (
-                                        <span className="line-clamp-2">
-                                          {formatPostTitleForToc(post.post_title, currentLangCode) || `Section ${post.position || pIdx + 1}`}
-                                        </span>
-                                      )}
-                                    </div>
-                                  </button>
-                                ))
+                                subChapters.map((post, pIdx) => {
+                                  const isActivePost = activePostId === post.id || (activePostPosition != null && post.position != null && String(post.position) === String(activePostPosition));
+                                  return (
+                                    <button
+                                      key={post.id}
+                                      onClick={() => {
+                                        setActivePostId(post.id);
+                                        scrollToPost(post.id);
+                                      }}
+                                      className={`w-full text-left py-2 px-3 text-xs rounded-md transition-colors flex items-start gap-2.5 border-b border-gray-50 last:border-b-0 cursor-pointer ${isActivePost
+                                        ? "text-[#cd5c3d] bg-[#cd5c3d]/10 font-medium"
+                                        : "text-[#2c2c2c] hover:bg-gray-50"
+                                        }`}
+                                      style={{
+                                        fontFamily: '"Noto Serif", "Noto Serif Fallback", serif'
+                                      }}
+                                    >
+                                      <div className="flex flex-col gap-0.5 leading-snug">
+                                        {post.titleL1 || post.titleL2 ? (
+                                          <>
+                                            {post.titleL1 && (
+                                              <span className={`line-clamp-2 ${isActivePost ? "text-[#cd5c3d] font-medium" : "font-normal text-[#2c2c2c]"}`}>
+                                                {formatPostTitleForToc(post.titleL1, post.lang1 || dualLang1) || `Section ${post.position || pIdx + 1}`}
+                                              </span>
+                                            )}
+                                            {post.titleL2 && post.titleL2 !== post.titleL1 && (
+                                              <span className={`line-clamp-2 text-[11px] ${isActivePost ? "text-[#cd5c3d] font-medium" : "text-[#777] font-normal"}`}>
+                                                {formatPostTitleForToc(post.titleL2, post.lang2 || dualLang2)}
+                                              </span>
+                                            )}
+                                          </>
+                                        ) : (
+                                          <span className="line-clamp-2">
+                                            {formatPostTitleForToc(post.post_title, currentLangCode) || `Section ${post.position || pIdx + 1}`}
+                                          </span>
+                                        )}
+                                      </div>
+                                    </button>
+                                  );
+                                })
                               ) : (
                                 <div className="py-3 px-3 text-xs text-gray-400 italic">
                                   No sub chapters found for this chapter
@@ -1301,42 +1363,42 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
 
                       {/* Language Dropdown Tab */}
                       {!isSingleLanguageBook && (
-                      <div className="relative inline-flex items-stretch h-full shrink-0" ref={langMenuRef}>
-                        <button
-                          ref={langBtnRef}
-                          onClick={() => {
-                            setActiveTab("Language");
-                            // Default to English if no language is selected or if parallelLang is not English
-                            if (!parallelLang || parallelLang === "CN" || parallelLang === "CN-EN") {
-                              const hasEn = chapterAvailableLangs.some(l => l.shortForm === "EN");
-                              if (hasEn) setParallelLang("EN");
-                            }
-                            if (!showLangMenu && langBtnRef.current) {
-                              const rect = langBtnRef.current.getBoundingClientRect();
-                              setLangMenuPos({
-                                top: rect.bottom + 4,
-                                left: Math.max(8, Math.min(rect.left + rect.width / 2 - 88, window.innerWidth - 184))
-                              });
-                            }
-                            setShowLangMenu(!showLangMenu);
-                          }}
-                          className={`inline-flex items-center justify-center whitespace-nowrap px-2.5 sm:px-3 text-xs sm:text-sm transition-all border-b-2 -mb-[1px] h-full cursor-pointer shrink-0 ${activeTab === "Language"
-                            ? "font-semibold text-[#cd5c3d] border-[#cd5c3d]"
-                            : "text-gray-500 hover:text-gray-800 hover:border-gray-200 border-transparent"
-                            }`}
-                        >
-                          Language <ChevronDown className={`ml-1 w-3 h-3 transition-transform duration-200 ${showLangMenu ? "rotate-180" : ""}`} />
-                        </button>
-                        {showLangMenu && (
-                          <div
-                            style={typeof window !== 'undefined' && window.innerWidth < 640 ? { top: `${langMenuPos.top}px`, left: `${langMenuPos.left}px` } : undefined}
-                            className="fixed sm:absolute sm:top-full sm:left-0 sm:translate-x-0 mt-0 sm:mt-1 w-44 sm:w-52 bg-white border border-gray-200 rounded-lg z-50"
+                        <div className="relative inline-flex items-stretch h-full shrink-0" ref={langMenuRef}>
+                          <button
+                            ref={langBtnRef}
+                            onClick={() => {
+                              setActiveTab("Language");
+                              // Default to English if no language is selected or if parallelLang is not English
+                              if (!parallelLang || parallelLang === "CN" || parallelLang === "CN-EN") {
+                                const hasEn = chapterAvailableLangs.some(l => l.shortForm === "EN");
+                                if (hasEn) setParallelLang("EN");
+                              }
+                              if (!showLangMenu && langBtnRef.current) {
+                                const rect = langBtnRef.current.getBoundingClientRect();
+                                setLangMenuPos({
+                                  top: rect.bottom + 4,
+                                  left: Math.max(8, Math.min(rect.left + rect.width / 2 - 88, window.innerWidth - 184))
+                                });
+                              }
+                              setShowLangMenu(!showLangMenu);
+                            }}
+                            className={`inline-flex items-center justify-center whitespace-nowrap px-2.5 sm:px-3 text-xs sm:text-sm transition-all border-b-2 -mb-[1px] h-full cursor-pointer shrink-0 ${activeTab === "Language"
+                              ? "font-semibold text-[#cd5c3d] border-[#cd5c3d]"
+                              : "text-gray-500 hover:text-gray-800 hover:border-gray-200 border-transparent"
+                              }`}
                           >
-                            <div className="py-1 flex flex-col">
-                              {chapterAvailableLangs.map((l) => (
-                                <button
-                                  key={l.id}
-                                  onClick={() => {
+                            Language <ChevronDown className={`ml-1 w-3 h-3 transition-transform duration-200 ${showLangMenu ? "rotate-180" : ""}`} />
+                          </button>
+                          {showLangMenu && (
+                            <div
+                              style={typeof window !== 'undefined' && window.innerWidth < 640 ? { top: `${langMenuPos.top}px`, left: `${langMenuPos.left}px` } : undefined}
+                              className="fixed sm:absolute sm:top-full sm:left-0 sm:translate-x-0 mt-0 sm:mt-1 w-44 sm:w-52 bg-white border border-gray-200 rounded-lg z-50"
+                            >
+                              <div className="py-1 flex flex-col">
+                                {chapterAvailableLangs.map((l) => (
+                                  <button
+                                    key={l.id}
+                                    onClick={() => {
                                       setParallelLang(l.shortForm);
                                       setViewMode("none");
                                       setActiveTab("Language");
@@ -1345,13 +1407,13 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                                     }}
                                     className={`w-full text-left px-4 py-2 text-sm transition-colors ${(viewMode === "none" && parallelLang === l.shortForm) ? "font-normal text-[#cd5c3d] bg-[#fdf3ec] cursor-pointer" : "font-normal text-gray-700 hover:bg-gray-50 hover:text-[#cd5c3d] cursor-pointer"}`}
                                   >
-                                  {l.name}
-                                </button>
-                              ))}
+                                    {l.name}
+                                  </button>
+                                ))}
+                              </div>
                             </div>
-                          </div>
-                        )}
-                      </div>
+                          )}
+                        </div>
                       )}
 
                       <button
@@ -1368,17 +1430,17 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
 
                       {/* Divider line beside Source (Original) */}
                       {!isSingleLanguageBook && (
-                      <div className="flex items-center h-full px-1 shrink-0 select-none">
-                        <div className="h-4 w-[1px] bg-gray-200"></div>
-                      </div>
+                        <div className="flex items-center h-full px-1 shrink-0 select-none">
+                          <div className="h-4 w-[1px] bg-gray-200"></div>
+                        </div>
 
                       )}
                       {/* View Mode Dropdown */}
                       {!isSingleLanguageBook && (
-                      <div className="relative inline-flex items-center h-full shrink-0" ref={viewModeMenuRef}>
-                        <button
-                          onClick={() => {
-                            if (!showViewModeMenu && viewModeMenuRef.current) {
+                        <div className="relative inline-flex items-center h-full shrink-0" ref={viewModeMenuRef}>
+                          <button
+                            onClick={() => {
+                              if (!showViewModeMenu && viewModeMenuRef.current) {
                                 const rect = viewModeMenuRef.current.getBoundingClientRect();
                                 const menuWidth = 192;
                                 const rightPos = Math.max(8, Math.min(window.innerWidth - rect.right, window.innerWidth - menuWidth - 8));
@@ -1386,60 +1448,59 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                                   top: rect.bottom + 6,
                                   right: rightPos,
                                 });
-                            }
-                            setShowViewModeMenu(!showViewModeMenu);
-                          }}
-                          className="flex items-center gap-1 px-2 py-1.5 text-xs sm:text-sm font-medium text-gray-600 rounded-md border border-gray-200 bg-white transition-colors cursor-pointer"
-                        >
-                          <Columns2 className="w-3.5 h-3.5 text-gray-500" />
-                          <span>View: <span className="capitalize">{viewMode}</span></span>
-                          <ChevronDown className={`w-3 h-3 text-gray-500 transition-transform duration-200 ${showViewModeMenu ? "rotate-180" : ""}`} />
-                        </button>
-                        {showViewModeMenu && typeof document !== "undefined" && createPortal(
-                          <div
-                            ref={viewPortalRef}
-                            style={{
-                              position: "fixed",
-                              top: `${viewDropdownPos.top}px`,
-                              right: `${Math.max(8, viewDropdownPos.right)}px`,
-                              zIndex: 9999,
+                              }
+                              setShowViewModeMenu(!showViewModeMenu);
                             }}
-                            className="w-48 bg-white border border-gray-200 rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-100"
+                            className="flex items-center gap-1 px-2 py-1.5 text-xs sm:text-sm font-medium text-gray-600 rounded-md border border-gray-200 bg-white transition-colors cursor-pointer"
                           >
-                            <div className="px-3.5 pt-3 pb-2 border-b border-gray-100 text-[11px] font-normal text-gray-400 uppercase tracking-wider font-sans">
-                              VIEW MODE
-                            </div>
-                            <div className="py-1 flex flex-col">
-                              {[
-                                { label: "Parallel", sublabel: "One by one (stacked)", value: "parallel", desktopOnly: false },
-                                { label: "Dual", sublabel: "Side by side", value: "dual", desktopOnly: true },
-                              ].map((mode) => (
-                                <button
-                                  key={mode.value}
-                                  onClick={() => {
-                                    handleViewModeChange(mode.value);
-                                    setShowViewModeMenu(false);
-                                  }}
-                                  className={`w-full text-left px-3.5 py-2.5 flex items-center justify-between transition-colors hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0 ${mode.desktopOnly ? "hidden md:flex" : "flex"} ${
-                                    viewMode === mode.value
+                            <Columns2 className="w-3.5 h-3.5 text-gray-500" />
+                            <span>View: <span className="capitalize">{viewMode}</span></span>
+                            <ChevronDown className={`w-3 h-3 text-gray-500 transition-transform duration-200 ${showViewModeMenu ? "rotate-180" : ""}`} />
+                          </button>
+                          {showViewModeMenu && typeof document !== "undefined" && createPortal(
+                            <div
+                              ref={viewPortalRef}
+                              style={{
+                                position: "fixed",
+                                top: `${viewDropdownPos.top}px`,
+                                right: `${Math.max(8, viewDropdownPos.right)}px`,
+                                zIndex: 9999,
+                              }}
+                              className="w-48 bg-white border border-gray-200 rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-100"
+                            >
+                              <div className="px-3.5 pt-3 pb-2 border-b border-gray-100 text-[11px] font-normal text-gray-400 uppercase tracking-wider font-sans">
+                                VIEW MODE
+                              </div>
+                              <div className="py-1 flex flex-col">
+                                {[
+                                  { label: "Parallel", sublabel: "One by one (stacked)", value: "parallel", desktopOnly: false },
+                                  { label: "Dual", sublabel: "Side by side", value: "dual", desktopOnly: true },
+                                ].map((mode) => (
+                                  <button
+                                    key={mode.value}
+                                    onClick={() => {
+                                      handleViewModeChange(mode.value);
+                                      setShowViewModeMenu(false);
+                                    }}
+                                    className={`w-full text-left px-3.5 py-2.5 flex items-center justify-between transition-colors hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0 ${mode.desktopOnly ? "hidden md:flex" : "flex"} ${viewMode === mode.value
                                       ? "text-[#cd5c3d] font-normal bg-[#fdf3ec]"
                                       : "text-gray-700"
-                                  }`}
-                                >
-                                  <div className="flex flex-col">
-                                    <span className={`text-sm leading-tight ${viewMode === mode.value ? "font-normal text-[#cd5c3d]" : "font-normal text-gray-800"}`}>{mode.label}</span>
-                                    <span className="text-xs mt-0.5 leading-tight text-gray-400 whitespace-nowrap">
-                                      {mode.sublabel}
-                                    </span>
-                                  </div>
-                                  {viewMode === mode.value && <Check className="w-4 h-4 text-[#cd5c3d] shrink-0 ml-2" />}
-                                </button>
-                              ))}
-                            </div>
-                          </div>,
-                          document.body
-                        )}
-                      </div>
+                                      }`}
+                                  >
+                                    <div className="flex flex-col">
+                                      <span className={`text-sm leading-tight ${viewMode === mode.value ? "font-normal text-[#cd5c3d]" : "font-normal text-gray-800"}`}>{mode.label}</span>
+                                      <span className="text-xs mt-0.5 leading-tight text-gray-400 whitespace-nowrap">
+                                        {mode.sublabel}
+                                      </span>
+                                    </div>
+                                    {viewMode === mode.value && <Check className="w-4 h-4 text-[#cd5c3d] shrink-0 ml-2" />}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>,
+                            document.body
+                          )}
+                        </div>
                       )}
                     </div>
                   </div>
@@ -1604,11 +1665,10 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                                     handleSelectL1(l.shortForm);
                                     setShowL1Menu(false);
                                   }}
-                                  className={`w-full text-left px-3.5 py-2 text-xs sm:text-sm font-normal flex items-center justify-between transition-colors ${
-                                    dualLang1 === l.shortForm
-                                      ? "bg-[#fdf3ec] text-[#cd5c3d]"
-                                      : "text-gray-700 hover:bg-[#fdf3ec]/50 hover:text-[#cd5c3d]"
-                                  }`}
+                                  className={`w-full text-left px-3.5 py-2 text-xs sm:text-sm font-normal flex items-center justify-between transition-colors ${dualLang1 === l.shortForm
+                                    ? "bg-[#fdf3ec] text-[#cd5c3d]"
+                                    : "text-gray-700 hover:bg-[#fdf3ec]/50 hover:text-[#cd5c3d]"
+                                    }`}
                                 >
                                   <span>{l.name}</span>
                                   {dualLang1 === l.shortForm && <Check className="w-3.5 h-3.5 text-[#cd5c3d]" />}
@@ -1653,11 +1713,10 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
                                       handleSelectL2(l.shortForm);
                                       setShowL2Menu(false);
                                     }}
-                                    className={`w-full text-left px-3.5 py-2 text-xs sm:text-sm font-normal flex items-center justify-between transition-colors ${
-                                      dualLang2 === l.shortForm
-                                        ? "bg-[#fdf3ec] text-[#cd5c3d]"
-                                        : "text-gray-700 hover:bg-[#fdf3ec]/50 hover:text-[#cd5c3d]"
-                                    }`}
+                                    className={`w-full text-left px-3.5 py-2 text-xs sm:text-sm font-normal flex items-center justify-between transition-colors ${dualLang2 === l.shortForm
+                                      ? "bg-[#fdf3ec] text-[#cd5c3d]"
+                                      : "text-gray-700 hover:bg-[#fdf3ec]/50 hover:text-[#cd5c3d]"
+                                      }`}
                                   >
                                     <span>{l.name}</span>
                                     {dualLang2 === l.shortForm && <Check className="w-3.5 h-3.5 text-[#cd5c3d]" />}
@@ -1689,7 +1748,16 @@ export default function ChapterViewPage({ isFullScreen: globalIsFullScreen, setI
 
                   {/* Front Tab Content */}
                   {activeTab === "Front" && (
-                    <FrontTab lesson={lesson} />
+                    <FrontTab
+                      lesson={lesson}
+                      onReachBottom={() => {
+                        setActiveTab(isSingleLanguageBook ? "Source" : "Language");
+                        const container = document.getElementById("main-scroll-container");
+                        if (container) {
+                          container.scrollTo({ top: 0, behavior: "smooth" });
+                        }
+                      }}
+                    />
                   )}
 
                   {/* Reading Content */}

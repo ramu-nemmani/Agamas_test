@@ -171,21 +171,6 @@ function LanguageChapterRenderer({ chapter, langMap, lang, fontSize, isFirst, ta
     if (!post) return null;
     return (
       <div key={post.id} id={`post-${post.id}`} data-post-position={post.position} className="relative group mb-4">
-        {tag && (
-          isDual ? (
-            <div className="mb-4">
-              <span className="text-xs uppercase font-semibold tracking-wider text-[#cd5c3d]">
-                {tag}
-              </span>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-gray-100 text-[#cd5c3d]">
-                {tag}
-              </span>
-            </div>
-          )
-        )}
         {post.post_title && post.post_title !== chapter.name && (
           <h4 
             className="font-semibold text-[#001e2d] text-base md:text-lg mb-3"
